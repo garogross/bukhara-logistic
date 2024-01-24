@@ -1,0 +1,18 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+.addFormPopup {
+
+  &__form {
+    @include flexCol();
+    gap: 10px;
+    flex-direction: column;
+  }
+  &__btn {
+    max-width: 182px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 26px;
+  }
+}

@@ -1,0 +1,98 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+
+.authBlock {
+  @include flexCol(center,stretch);
+  min-height: 100vh;
+
+  &__main {
+    flex: 5;
+    @include flexCol();
+    background-color: rgba(10, 12, 26, 0.83);
+    flex-direction: column;
+    padding: 20px 16px 20px;
+    overflow-y: auto;
+    max-width: 718px;
+  }
+
+  &__mainContainer {
+    width: 100%;
+    max-width: 478px;
+    background-color: $color-black;
+    border-radius: 10px;
+    @include flexCol();
+    padding: 70px 48px 30px;
+    flex-direction: column;
+
+    @include smScreenMedia {
+      padding: 20px 10px 40px;
+    }
+  }
+
+
+  &__logoImg {
+    width: 74px;
+    margin-bottom: 10px;
+
+    @include smScreenMedia {
+      width: 64px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__title {
+    @include setFont(25px, 700);
+    margin-bottom: 35px;
+  }
+
+  &__input {
+    margin-bottom: 10px;
+  }
+
+  &__submitBtn {
+    margin-top: 35px;
+    margin-bottom: 30px;
+
+    @include smScreenMedia {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__linkText {
+    text-align: center;
+    @include setFont(15px, 400)
+  }
+
+  &__errorBlock {
+    max-width: 0px;
+    min-height: 0px;
+    overflow: hidden;
+    transition: $transition;
+
+    &_active {
+      max-width: 600px;
+      min-height: 50px;
+      padding: 12px 16px;
+      border-left-width: 3px;
+    }
+  }
+
+  &__errorBox {
+    border-radius: 8px;
+    background-color: $color-black;
+    border-left: 3px solid $color-red;
+    @include flexCol();
+    gap: 5px;
+    padding: 12px 16px;
+  }
+
+  &__errorIcon {
+    @include svg(16px, $color-red)
+  }
+
+  &__errorBoxText {
+    @include setFont(14px, 400, $color-red);
+    white-space: nowrap;
+  }
+}

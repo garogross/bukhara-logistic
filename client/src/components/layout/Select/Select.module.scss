@@ -1,0 +1,80 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+
+  &__dropDownBtn {
+    &:focus-within{
+      background-color: $color-main;
+    }
+  }
+
+  &__dropDownBtnContent {
+    @include flexCol(space-between);
+  }
+
+  &__selectDropdownBtnText {
+    color: $color-white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @include setFont(18px,400)
+  }
+
+  &__selectDropdownBtnInput {
+    color: $color-white;
+    width: 100%;
+    height: 100%;
+    border: none;
+    @include setFont(20px,400);
+    outline: none;
+    background: transparent;
+  }
+
+  &__arrowDownIcon {
+    @include svg(16px,transparent,16px,$color-white)
+  }
+
+  &__arrowDownIcon_active {
+    transform: rotate(180deg);
+  }
+
+  &__dropdownContent {
+    border: 2px solid $color-main;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    transform: translateY(100%);
+    width: 100%;
+    left: 0;
+    background-color: $color-black;
+    z-index: 1;
+    padding-right: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  &__dropdownContentItems {
+    max-height: 225px;
+    overflow-y: auto;
+  }
+
+  &__dropdownItem {
+    @include setFont(20px, 400);
+    padding: 5px 16px;
+    transition: $transition;
+    height: 45px;
+    @include flexCol(center,flex-start);
+    flex-direction: column;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color:$color-main;
+    }
+  }
+
+}

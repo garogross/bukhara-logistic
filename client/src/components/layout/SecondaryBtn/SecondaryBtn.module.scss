@@ -1,0 +1,19 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.secondaryBtn {
+  cursor: pointer;
+  border: none;
+  background-color: $color-main;
+  border-radius: 52px;
+  @include setFont(20px, 600);
+  padding: 10px 16px;
+
+  &:disabled {
+    cursor: default;
+  }
+
+  @include smScreenMedia {
+    font-size: 15px;
+  }
+}

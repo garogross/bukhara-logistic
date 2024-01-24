@@ -1,0 +1,20 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+
+.loader {
+  border-radius: 50%;
+  border-style: solid;
+  border-color: $color-white;
+  border-top-color: $color-main;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

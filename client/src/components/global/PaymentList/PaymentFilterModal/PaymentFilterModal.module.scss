@@ -1,0 +1,143 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+
+.filterModal {
+  width: 100%;
+  max-width: 440px;
+  background-color: $color-blue-bold;
+  padding: 40px 20px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow-y: hidden;
+  z-index: 99999999;
+
+  @include smScreenMedia {
+    max-width: calc(100% - 32px);
+    height: calc(100% - 80px);
+    top: 50%;
+    transform: translate(calc(0% - 16px), -50%);
+    padding: 16px 16px 20px;
+    border-radius: 20px;
+  }
+
+  &__crossBtn {
+    display: none;
+    @include mdScreenMedia {
+      display: block;
+    }
+  }
+
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    padding-left: 2px;
+    padding-right: 6px;
+    height: 100%;
+
+    @include smScreenMedia {
+      height: calc(100% - 30px);
+      margin-top: 30px;
+    }
+  }
+
+  &__item {
+    padding-bottom: 16px;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__title {
+    margin-bottom: 16px;
+    gap: 5px;
+
+    @include smScreenMedia {
+      text-align: center;
+    }
+
+    & svg {
+      @include svg(18px,$color-white,12px)
+    }
+
+    &__withLabel {
+      margin-bottom: 5px;
+    }
+  }
+
+  &__inputLabelText {
+    @include setFont(15, 400);
+    margin-bottom: 15px;
+
+    @include smScreenMedia {
+      text-align: center;
+    }
+  }
+
+  &__checkboxesList {
+    @include flexCol(flex-start);
+    gap: 15px;
+    flex-wrap: wrap;
+
+    @include smScreenMedia {
+      justify-content: center;
+    }
+  }
+
+  &__checkbox__input {
+    visibility: hidden;
+    width: 0;
+
+    &:checked + label {
+
+      &::before {
+        background-color: $color-main;
+      }
+    }
+  }
+
+  &__checkbox__label {
+    @include setFont(15px, 400);
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+    width: 100%;
+
+    &:before {
+      content: "";
+      width: 15px;
+      height: 15px;
+      border: 2px solid $color-main;
+      border-radius: 2px;
+      position: absolute;
+      left: 0;
+      transform: translateY(-50%);
+      top: 50%;
+      background-repeat: no-repeat;
+      background-size: 15px;
+      background-position: center;
+    }
+  }
+
+  &__input {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  &__btnsBlock {
+    @include flexCol();
+    gap: 5px;
+    margin-top: 40px;
+
+    @include smScreenMedia {
+      margin-top: 30px;
+    }
+  }
+
+}

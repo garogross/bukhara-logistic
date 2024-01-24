@@ -1,0 +1,132 @@
+@import "../../styles/vars";
+@import "../../styles/mixins";
+
+.addPaymentForm {
+  padding-bottom: 40px;
+
+  &__subtitle {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  &__form {
+    border-radius: 16px;
+    background-color: $color-blue-bold;
+    padding: 40px;
+    position: relative;
+    max-width: 1064px;
+    margin: 0 auto;
+
+    @include mdScreenMedia {
+      padding: 40px 20px 20px;
+    }
+
+    @include smScreenMedia {
+      padding: 40px 14px 14px;
+    }
+  }
+
+  &__infoText {
+    position: absolute;
+    text-align: right;
+    right: 12px;
+    top: 6px;
+
+    @include smScreenMedia {
+      font-size: 12px!important;
+    }
+  }
+
+  &__labelText {
+    white-space: nowrap;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+
+  &__textArea {
+    min-height: 80px;
+    resize: none;
+  }
+
+  &__btn {
+    max-width: 240px;
+    display: block;
+
+    &_invalid {
+      box-shadow: 0px 0px 0px 1px $color-red;
+    }
+
+    @include smScreenMedia {
+      max-width: 180px;
+    }
+  }
+
+  &__fileUploadInput {
+    visibility: hidden;
+    width: 0;
+  }
+
+  &__filesList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 24px;
+    margin-bottom: 30px;
+  }
+
+  &__fileItem {
+    width: 100%;
+    overflow: hidden;
+    @include flexCol(flex-start);
+    gap: 8px;
+  }
+
+  &__fileName {
+   overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__cancelFileBtn {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+  }
+
+  &__cancelFileIcon {
+    @include svg(12px, $color-white,12px, $color-red)
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+
+    @include smScreenMedia {
+      gap: 16px;
+    }
+  }
+
+  &__field {
+    width: 100%;
+    overflow: hidden;
+    padding: 1px;
+  }
+
+  &__col {
+    display: flex;
+    gap: 16px;
+
+    @include smScreenMedia {
+      flex-direction: column;
+    }
+  }
+
+  &__saveBtn {
+    margin: 0 auto;
+    display: block;
+  }
+}

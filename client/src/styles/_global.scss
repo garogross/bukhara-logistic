@@ -1,0 +1,228 @@
+@import "vars";
+@import "mixins";
+
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('../assets/fonts/SuisseIntl-Regular.ttf') format('ttf');
+  font-weight: 400
+}
+
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('../assets/fonts/SuisseIntl-Medium.ttf') format('ttf');
+  font-weight: 500;
+}
+
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*:not(i) {
+  font-family: $font-fam-def;
+}
+
+body {
+  background: $color-bg;
+}
+
+.container {
+  width: 100%;
+  max-width: 1250px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: $container-padding;
+  padding-left: $container-padding;
+
+  @include xlScreenMedia {
+    max-width: 960px;
+  }
+
+  @include lgScreenMedia {
+    max-width: 720px;
+  }
+
+  @include mdScreenMedia {
+    max-width: 560px;
+  }
+}
+
+.titleTxt {
+  @include setFont(45px, 600, $color-white);
+  text-align: center;
+
+  @include lgScreenMedia {
+    font-size: 40px;
+  }
+
+  @include mdScreenMedia {
+    font-size: 36px;
+  }
+
+  @include smScreenMedia {
+    font-size: 25px;
+  }
+}
+
+.subtitleTxt {
+  @include setFont(16px, 400, $color-polo-blue);
+  text-align: center;
+}
+
+.contentTxt {
+  @include setFont(16px, 700, $color-white);
+
+  @include smScreenMedia {
+    font-size: 14px;
+  }
+}
+
+.blueText {
+  color: $color-main;
+}
+
+
+.scrollbarDef {
+  cursor: auto;
+
+  &::-webkit-scrollbar {
+    cursor: default;
+    background: $color-grey;
+    border-radius: 6px;
+    background-clip: padding-box;
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    cursor: default !important;
+    width: 14px;
+    border-radius: 6px;
+    background-clip: padding-box;
+    background: $color-main;
+  }
+
+}
+
+.blackBox {
+  background: rgba(6, 7, 13, 0.3);
+  width: 100%;
+  border-radius: 16px;
+  padding: 40px;
+
+  @include mdScreenMedia {
+    padding: 20px;
+  }
+
+  @include smScreenMedia {
+    padding: 0;
+  }
+}
+
+.topDistanceBlock {
+  padding-top: 100px;
+
+  @include smScreenMedia {
+    padding-top: 80px;
+  }
+}
+
+.popupBox {
+  background-color: $color-blue-bold;
+  border-radius: 10px;
+  padding: 24px 24px 14px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: calc(100% - 16px);
+  max-width: 550px;
+  transform: translate(-50%,-50%);
+  z-index: 999999;
+}
+
+.popupTitle {
+  @include setFont(19px,500);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.gradientBg {
+  background: radial-gradient(circle at -20% 50%, rgba(88, 113, 242, 0.2) 2%, rgba(88, 113, 242, 0) 37%),
+  radial-gradient(circle at 120% 50%, rgba(88, 113, 242, 0.2) 2%, rgba(88, 113, 242, 0) 37%);
+  min-height: 100vh;
+
+  @include smScreenMedia {
+    background: none;
+  }
+}
+
+.mainInput {
+  background-color: $color-input-bg;
+  border-radius: 10px;
+  padding: 16px;
+  @include setFont(16px, 400);
+  border: none;
+  outline: none;
+  transition: $transition;
+  width: 100%;
+
+  &:hover, &:focus {
+    box-shadow: 0px 0px 0px 1px $color-main;
+    background-color: #101320;
+  }
+
+  &::placeholder {
+    color: #585859;
+  }
+
+  &_withIcon {
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: 17px 50%;
+    padding-left: 50px;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    border: none;
+    background-image: inherit;
+    -webkit-text-fill-color: $color-white;
+    padding-left: 16px;
+    -webkit-box-shadow: 0 0 0px 1000px #101320 inset;
+    transition: $transition;
+  }
+
+  &_invalid {
+    box-shadow: 0px 0px 0px 1px $color-red;
+  }
+}
+
+.mainBtn {
+  width: 100%;
+  cursor: pointer;
+  border: none;
+  background: $color-main;
+  white-space: nowrap;
+  text-align: center;
+  padding: 15px 10px;
+  border-radius: 10px;
+  transition: $transition;
+  @include setFont(17px,700,$color-white);
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  @include smScreenMedia {
+    font-size: 12px;
+  }
+
+  &:disabled {
+    background: $color-grey;
+    cursor: default;
+  }
+
+  &_passive {
+    background-color: $color-blue-passive;
+  }
+}

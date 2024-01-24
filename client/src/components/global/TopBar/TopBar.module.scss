@@ -1,0 +1,76 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.topBar {
+  width: 100%;
+  transition: $transition;
+  z-index: 777;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60px;
+  background: transparent;
+  @include flexCol();
+
+  &_active {
+    background: $color-blue-active;
+
+  }
+
+  &__container {
+    @include flexCol(space-between);
+  }
+
+  &__logoBtn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__logo {
+    object-fit: contain;
+    max-width: 147px;
+
+    @include smScreenMedia {
+      max-width: 100px;
+    }
+  }
+
+  &__authBlock {
+    @include flexCol();
+    gap: 28px;
+
+    @include smScreenMedia {
+      gap: 18px;
+    }
+  }
+
+  &__usernameText {
+    @include setFont(20px, 500);
+
+    @include smScreenMedia {
+      font-size: 16px;
+    }
+  }
+
+  &__logoutBtnDesk {
+    @include smScreenMedia {
+      display: none;
+    }
+  }
+
+  &__logoutBtnMob {
+    display: none;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+
+    @include smScreenMedia {
+      display: block;
+    }
+  }
+
+  &__logoutIcon {
+    @include svg(24px, $color-white)
+  }
+}

@@ -1,0 +1,22 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.crossBtn {
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+
+  &:hover svg {
+    stroke: $color-main;
+  }
+
+  &_positionDef {
+    right: 20px;
+    top: 20px;
+  }
+
+  &__icon {
+    @include svg(12px, transparent,12px,$color-white);
+  }
+}

@@ -1,0 +1,37 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+
+.paymentFilesModal {
+
+  &__main {
+    @include flexCol();
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__images {
+    @include flexCol();
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__img {
+    max-width: 160px;
+    aspect-ratio: 14/8;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: $color-black;
+  }
+
+  &__files {
+    @include flexCol(center, flex-start);
+    gap: 6px;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  &__fileText {
+    @include setFont(14px, 400)
+  }
+}

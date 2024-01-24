@@ -1,0 +1,35 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.mainCardsList {
+  @include flexCol();
+  flex-direction: column;
+  gap: 20px;
+
+  @include smScreenMedia {
+    gap: 14px;
+  }
+
+  &__item {
+    cursor: pointer;
+    width: 100%;
+    border-radius: 10px;
+    background-color: $color-blue-bold;
+    @include flexCol(space-between);
+    padding: 18px 30px;
+    gap: 8px;
+
+    @include mdScreenMedia {
+      flex-direction: column;
+      padding: 14px 20px;
+    }
+  }
+
+  &__text {
+    @include setFont(16px, 500);
+
+    @include smScreenMedia {
+      text-align: center;
+    }
+  }
+}

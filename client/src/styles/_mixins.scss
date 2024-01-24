@@ -1,0 +1,47 @@
+@import "vars";
+
+@mixin smScreenMedia {
+  @media  (max-width: $sm-screen) {
+    @content;
+  }
+}
+
+@mixin mdScreenMedia {
+  @media  (max-width: $md-screen) {
+    @content;
+  }
+}
+
+@mixin lgScreenMedia {
+  @media  (max-width: $lg-screen) {
+    @content;
+  }
+}
+
+@mixin xlScreenMedia {
+  @media  (max-width: $xl-screen) {
+    @content;
+  }
+}
+
+
+
+@mixin svg($width,$color,$height: $width,$stroke: none) {
+  width: $width;
+  height: $height;
+  transition: $transition;
+  fill: $color;
+  stroke: $stroke;
+}
+
+@mixin setFont($size,$weight,$color: $color-white) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color,
+}
+
+@mixin flexCol($layout: center,$align: center) {
+  display: flex;
+  justify-content: $layout;
+  align-items: $align;
+}

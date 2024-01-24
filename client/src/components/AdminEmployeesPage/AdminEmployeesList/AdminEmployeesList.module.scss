@@ -1,0 +1,136 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.adminEmployeesList {
+
+  &__addEmployeeBtn {
+    margin-top: 20px;
+    margin-bottom: 30px;
+
+    @include smScreenMedia {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+
+  &__main {
+    @include flexCol();
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__item {
+    background-color: $color-blue-bold;
+    border-radius: 10px;
+    padding: 14px 30px;
+    width: 100%;
+
+    @include lgScreenMedia {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+
+  &__itemHeader {
+    @include flexCol(space-between);
+    border-bottom: 1px solid $color-border;
+    padding-bottom: 6px;
+    gap: 14px;
+
+    @include mdScreenMedia {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__ammountBlock {
+    @include flexCol();
+    gap: 20px;
+
+    @include lgScreenMedia {
+      gap: 10px;
+    }
+
+    @include mdScreenMedia {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__deleteBtn {
+    cursor: pointer;
+    border: none;
+    background-color: $color-red-bold;
+    border-radius: 6px;
+    padding: 6px 8px;
+    @include setFont(14px, 700)
+  }
+
+  &__cardsBlockHeader {
+    @include flexCol(space-between);
+    padding-top: 8px;
+    padding-bottom: 10px;
+  }
+
+  &__cardsTitle {
+    @include setFont(14px, 600, $color-polo-blue);
+  }
+
+  &__addCardBtn {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: $color-main;
+    padding: 8px;
+    @include flexCol();
+    gap: 6px;
+  }
+
+  &__plusIcon {
+    @include svg(16px, $color-white,16px,$color-white)
+  }
+
+  &__addCardBtnText {
+    @include setFont(14px, 700)
+  }
+
+  &__cardsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__cardItem {
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid $color-white;
+    padding: 12px 30px;
+    @include flexCol(space-between);
+
+    @include lgScreenMedia {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    @include mdScreenMedia {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+  }
+
+  &__cardAmountBlock {
+    @include flexCol();
+    gap: 30px;
+
+    @include lgScreenMedia {
+      gap: 10px;
+    }
+
+    @include mdScreenMedia {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}
