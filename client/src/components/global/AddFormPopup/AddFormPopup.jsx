@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {useFormValue} from "../../../../hooks/useFormValue";
 import {setAddEmployeeError} from "../../../../redux/action/users";
 
@@ -11,6 +11,8 @@ import MainInput from "../../../layout/MainInput/MainInput";
 import MainBtn from "../../../layout/MainBtn/MainBtn";
 
 import styles from "./AddFormPopup.module.scss"
+import Select from "../../../layout/Select/Select";
+import {userRoles} from "../../../../constants";
 
 function AddFormPopup({
                           show,
@@ -19,13 +21,15 @@ function AddFormPopup({
                           title,
                           loading,
                           error,
-                          onSubmit
+                          onSubmit,
+    setError
                       }) {
     const initialData = fields.reduce((acc, cur) => {
         acc[cur.key] = ""
         return acc;
     }, {})
-    const {formData, onChange,setFormData, onResetForm} = useFormValue(initialData, setAddEmployeeError, error)
+    const {formData, onChange,setFormData, onResetForm} = useFormValue(initialData,
+        setError, error)
 
     const onClosePopup = () => {
             onResetForm()
@@ -35,18 +39,6 @@ function AddFormPopup({
         e.preventDefault()
 
         onSubmit(formData, onClosePopup)
-    }
-
-    const onCardChange = (e) => {
-        const cleanedInput = e.target.value.replace(/\D/g, '');
-        let formattedInput = e.target.value[e.target.value.length - 1] === " " ?
-            e.target.value.trim() :
-            cleanedInput.replace(/(\d{4})/g, '$1 ').trim();
-
-        setFormData(prevState => ({
-            ...prevState,
-            [e.target.name]: formattedInput
-        }))
     }
 
     return (
@@ -65,17 +57,31 @@ function AddFormPopup({
                         onSubmit={onSubmitForm}
                     >
                         {
-                            fields.map(({placeholder, key, isCard}, index) => (
-                                <MainInput
-                                    key={key}
-                                    maxLength={isCard ? 19 : null}
-                                    isInvalid={error?.[key]}
-                                    disabled={loading}
-                                    placeholder={placeholder}
-                                    value={formData[key]}
-                                    name={key}
-                                    onChange={isCard ? onCardChange : onChange}
-                                />
+                            fields.map(({placeholder, key, isCard,type,selectValues}) => (
+                                <Fragment key={key}>
+                                    {
+                                        type === 'select' ?
+                                            <Select
+                                                disableState={false}
+                                                valuesArr={selectValues}
+                                                selectedValueProp={selectValues.find(item => item.value === userRoles.employee) || null}
+                                                onChange={(value) => setFormData(prevState => ({
+                                                    ...prevState,
+                                                    [key]: value
+                                                }))}
+                                                name={'Пусто'}
+                                            /> :
+                                            <MainInput
+                                                maxLength={isCard ? 4 : null}
+                                                isInvalid={error?.[key]}
+                                                disabled={loading}
+                                                placeholder={placeholder}
+                                                value={formData[key]}
+                                                name={key}
+                                                onChange={onChange}
+                                            />
+                                    }
+                                </Fragment>
                             ))
                         }
                         <TransitionProvider

@@ -1,0 +1,46 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+.arbitrageFilterNotPopup {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  @include flexCol();
+
+
+  &__container {
+    max-width: 500px;
+    width: 100%;
+    padding: 20px 16px;
+    background-color: $color-blue-bold;
+    border-radius: 19px;
+    @include flexCol();
+    gap: 20px;
+
+    @include smScreenMedia {
+      flex-direction: column;
+    }
+  }
+
+  &__text {
+    @include setFont(16px,400,$color-white);
+
+    @include smScreenMedia {
+      text-align: center;
+    }
+  }
+
+  &__crossIcon {
+    @include svg(16px,transparent,16px,$color-white)
+  }
+  &__btn {
+    cursor: pointer;
+    background: $color-main;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    @include flexCol()
+
+  }
+}
