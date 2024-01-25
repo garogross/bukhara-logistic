@@ -1,0 +1,8 @@
+PORT=5000
+NODE_ENV=development
+
+USERNAME=garo21
+PASSWORD=wbpgtzKidqCdK2Gm
+DATABASE=mongodb+srv://garo21:<PASSWORD>@tources.fuwvhlj.mongodb.net/bukhara?retryWrites=true&w=majority
+
+JWT_SECRET=this-is-non-programming-code

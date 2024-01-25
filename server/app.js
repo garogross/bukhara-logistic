@@ -15,6 +15,8 @@ import {userRoutes} from "./src/routes/userRoutes.js";
 import multer from "multer";
 import {multerStorage} from "./src/utils/multer.js";
 import bodyParser from "body-parser";
+import * as path from "path";
+import {DIRNAME} from "./src/constants.js";
 
 export const app = express()
 
@@ -54,8 +56,7 @@ app.use(hpp({
 }))
 
 
-app.use(express.static('public'))
-app.use(express.static('images'));
+app.use('/api', express.static('public'));
 
 // ROUTES2
 app.use('/api/v1/payments', paymentRouter)
