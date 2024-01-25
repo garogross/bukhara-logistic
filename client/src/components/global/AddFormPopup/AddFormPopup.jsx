@@ -1,18 +1,18 @@
 import React, {Fragment} from 'react';
-import {useFormValue} from "../../../../hooks/useFormValue";
-import {setAddEmployeeError} from "../../../../redux/action/users";
+import {useFormValue} from "../../../hooks/useFormValue";
+import {setAddEmployeeError} from "../../../redux/action/users";
 
-import Backdrop from "../../../layout/Backdrop/Backdrop";
-import NewPortalProvider from "../../../../providers/NewPortalProvider";
-import TransitionProvider from "../../../../providers/TransitionProvider";
-import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
-import Loader from "../../../layout/Loader/Loader";
-import MainInput from "../../../layout/MainInput/MainInput";
-import MainBtn from "../../../layout/MainBtn/MainBtn";
+import Backdrop from "../../layout/Backdrop/Backdrop";
+import NewPortalProvider from "../../../providers/NewPortalProvider";
+import TransitionProvider from "../../../providers/TransitionProvider";
+import CrossBtn from "../../layout/CrossBtn/CrossBtn";
+import Loader from "../../layout/Loader/Loader";
+import MainInput from "../../layout/MainInput/MainInput";
+import MainBtn from "../../layout/MainBtn/MainBtn";
 
 import styles from "./AddFormPopup.module.scss"
-import Select from "../../../layout/Select/Select";
-import {userRoles} from "../../../../constants";
+import Select from "../../layout/Select/Select";
+import {userRoles} from "../../../constants";
 
 function AddFormPopup({
                           show,
@@ -57,7 +57,7 @@ function AddFormPopup({
                         onSubmit={onSubmitForm}
                     >
                         {
-                            fields.map(({placeholder, key, isCard,type,selectValues}) => (
+                            fields.map(({placeholder, key, isCard,type,selectValues,inputType}) => (
                                 <Fragment key={key}>
                                     {
                                         type === 'select' ?
@@ -72,12 +72,14 @@ function AddFormPopup({
                                                 name={'Пусто'}
                                             /> :
                                             <MainInput
+                                                data-text={key}
                                                 maxLength={isCard ? 4 : null}
                                                 isInvalid={error?.[key]}
                                                 disabled={loading}
                                                 placeholder={placeholder}
                                                 value={formData[key]}
                                                 name={key}
+                                                type={inputType || "text"}
                                                 onChange={onChange}
                                             />
                                     }

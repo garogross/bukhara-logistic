@@ -25,6 +25,7 @@ export const authConfig = (isFormData) => {
 
 // auth
 export const siginUrl = '/users/login'
+export const updatePasUrl = '/users/updatePassword'
 
 // cards
 export const getCardsUrl = '/cards/'

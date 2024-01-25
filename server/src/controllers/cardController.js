@@ -60,13 +60,13 @@ export const getCards = async (id) => {
 }
 
 export const validateCard = catchAsync(async (req,res,next) => {
-    if(!req.body.number || !!(!+req.body.number || req.body.number.length !== 16)) return next(new AppError("Не верный номер карты",400,{number: "invalid"}))
+    if(!req.body.number || !!(!+req.body.number || req.body.number.length !== 4)) return next(new AppError("Не верный номер карты",400,{number: "invalid"}))
     next()
 })
 
 export const createCard = handleFactory.create()
 export const getAllCard = catchAsync(async (req,res) => {
-    const id = req.user.role === userRoles.admin ? null : req.user.id
+    const id = req.user.role === userRoles.employee ? req.user.id : null
     const cards = await getCards(id)
 
     res.send({
@@ -75,6 +75,4 @@ export const getAllCard = catchAsync(async (req,res) => {
         length: cards.length
     })
 })
-export const getOneCard = handleFactory.getOne()
-export const updateCard = handleFactory.updateOne()
 export const deleteCard = handleFactory.deleteOne()

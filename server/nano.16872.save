@@ -4,5 +4,5 @@ NODE_ENV=development
 USERNAME=garo21
 PASSWORD=wbpgtzKidqCdK2Gm
 DATABASE=mongodb+srv://garo21:<PASSWORD>@tources.fuwvhlj.mongodb.net/bukhara?retryWrites=true&w=majority
-
+DATABASE_LOCAL=mongodb://localhost:27017/bukhara
 JWT_SECRET=this-is-non-programming-code

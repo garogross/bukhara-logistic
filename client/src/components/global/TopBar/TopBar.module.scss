@@ -45,12 +45,32 @@
     }
   }
 
-  &__usernameText {
+  &__usernameBlock {
+    position: relative;
+  }
+
+  &__usernameBtn {
+    cursor: pointer;
+    border: none;
+    background: transparent;
     @include setFont(20px, 500);
+    white-space: nowrap;
 
     @include smScreenMedia {
       font-size: 16px;
     }
+  }
+
+  &__options {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    border: 1px solid $color-main;
+    background: $color-blue-bold;
+    padding: 16px;
+    border-radius: 20px;
+    @include flexCol();
+    min-width: 220px;
   }
 
   &__logoutBtnDesk {

@@ -1,12 +1,11 @@
 import {
     ADD_PAYMENT_ERROR,
     ADD_PAYMENT_LOADING_START,
-    ADD_PAYMENT_SUCCESS,
+    ADD_PAYMENT_SUCCESS, DELETE_PAYMENTS_ERROR, DELETE_PAYMENTS_LOADING_START, DELETE_PAYMENTS_SUCCESS,
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
-    GET_PAYMENTS_SUCCESS,
+    GET_PAYMENTS_SUCCESS, HIDE_ADD_NOT_POPUP,
     RESET_PAYMENT_STATE,
-    RESET_USER_STATE,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
     UPDATE_PAYMENT_SUCCESS
@@ -21,6 +20,10 @@ const initialState = {
     updateError: null,
     addLoading: false,
     addError: null,
+    daleteLoading: false,
+    daleteError: null,
+    isAddNotShowing: false,
+    totalCount: 0,
 }
 
 export const paymentsReducer = (state = initialState, action) => {
@@ -30,8 +33,9 @@ export const paymentsReducer = (state = initialState, action) => {
         case GET_PAYMENTS_SUCCESS: {
             return {
                 ...state,
-                data: payload,
-                getLoading: false
+                data: payload.data,
+                getLoading: false,
+                totalCount: payload.totalCount === undefined ? state.totalCount : payload.totalCount
             }
         }
         case GET_PAYMENTS_LOADING_START: {
@@ -73,7 +77,8 @@ export const paymentsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 data: payload,
-                addLoading: false
+                addLoading: false,
+                isAddNotShowing: true,
             }
         }
         case ADD_PAYMENT_LOADING_START: {
@@ -88,6 +93,33 @@ export const paymentsReducer = (state = initialState, action) => {
                 ...state,
                 addError: payload,
                 addLoading: false
+            }
+        }
+        case DELETE_PAYMENTS_SUCCESS: {
+            return {
+                ...state,
+                data: payload,
+                deleteLoading: false,
+            }
+        }
+        case DELETE_PAYMENTS_LOADING_START: {
+            return {
+                ...state,
+                deleteLoading: true,
+                deleteError: null,
+            }
+        }
+        case DELETE_PAYMENTS_ERROR: {
+            return {
+                ...state,
+                deleteError: payload,
+                deleteLoading: false
+            }
+        }
+        case HIDE_ADD_NOT_POPUP: {
+            return {
+                ...state,
+                isAddNotShowing: false
             }
         }
         case RESET_PAYMENT_STATE: return initialState

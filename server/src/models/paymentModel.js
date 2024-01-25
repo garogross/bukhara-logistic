@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 
 import {setRequiredProp} from "../utils/setRequiredProp.js";
 
-import {DIRNAME, paymentStatuses} from "../constants.js";
-import * as fs from "fs";
-import * as path from "path";
+import {paymentStatuses} from "../constants.js";
+import bcrypt from "bcryptjs";
+import {AppError} from "../utils/appError.js";
 
 const paymentSchema = new mongoose.Schema({
     files: {
         type: [String],
         ...setRequiredProp('Files'),
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 return v && v.length > 0;
             },
             message: props => `You need to upload file`
@@ -47,11 +47,35 @@ const paymentSchema = new mongoose.Schema({
         ref: "Card",
         ...setRequiredProp('Card')
     },
+    acceptedBy: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        default: null
+    },
+    acceptedAt: {
+        type: Date,
+        default: null
+    },
+    submittedAt: {
+        type: Date,
+        default: null
+    },
     comments: String
-},{
+}, {
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
 })
 
 
-export const Payment = mongoose.model('Payment',paymentSchema)
+paymentSchema.pre('findOneAndUpdate',  async function (next) {
+    const status = this._update.status
+    if (!status) return next()
+    if (status === paymentStatuses.submitted) this._update.submittedAt = new Date()
+    if (status === paymentStatuses.accepted) {
+        if (!this._update.acceptedBy) return next(new AppError("acceptedBy is required prop."))
+        this._update.acceptedAt = new Date()
+    }
+    next()
+})
+
+export const Payment = mongoose.model('Payment', paymentSchema)

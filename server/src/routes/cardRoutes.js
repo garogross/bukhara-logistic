@@ -15,7 +15,7 @@ cardRouter.use(protect)
 cardRouter.get('/', getAllCard)
 // private routes
 
-cardRouter.use(restrictTo(userRoles.admin))
+cardRouter.use(restrictTo(userRoles.admin,userRoles.superAdmin))
 // admin restricted routes
 cardRouter.post('/create',validateCard, createCard)
 cardRouter.delete("/:id",deleteCard)

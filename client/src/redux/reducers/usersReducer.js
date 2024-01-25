@@ -2,12 +2,9 @@ import {
     ADD_USERS_ERROR,
     ADD_USERS_LOADING_START,
     ADD_USERS_SUCCESS, DELETE_USER_ERROR, DELETE_USER_LOADING_START, DELETE_USER_SUCCESS,
-    GET_CARDS_ERROR,
-    GET_CARDS_LOADING_START,
-    GET_CARDS_SUCCESS,
     GET_USERS_ERROR,
     GET_USERS_LOADING_START,
-    GET_USERS_SUCCESS, RESET_USER_STATE
+    GET_USERS_SUCCESS, RESET_USER_STATE,
 } from "../types";
 
 
@@ -88,6 +85,7 @@ export const usersReducer = (state = initialState, action) => {
                 deleteLoading: false
             }
         }
+
         case RESET_USER_STATE: return initialState
         default:
             return state

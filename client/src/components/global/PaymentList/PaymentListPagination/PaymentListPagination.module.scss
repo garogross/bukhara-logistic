@@ -1,0 +1,60 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+
+.paymentListPagination {
+  padding: 20px 0;
+
+  &__link {
+    text-decoration: none;
+    list-style-type: none;
+    @include setFont(14px, 500);
+    font-style: normal;
+
+    &_icon {
+      color: transparent;
+    }
+  }
+  &__container {
+    @include flexCol();
+    gap: 16px;
+
+  }
+
+  &__item {
+    padding: 10px 16px;
+    background-color: $color-main;
+    border-radius: 10px;
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+
+    &_active {
+      background-color: $color-blue-active;
+    }
+
+    &_disabled {
+      background-color: $color-polo-blue;
+    }
+
+    &_arrow {
+      background-size: 16px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    &_prev {
+      background-image: url("../../../../assets/images/icons/arrowLeft.png");
+    }
+    &_next {
+      background-image: url("../../../../assets/images/icons/arrowRight.png");
+    }
+
+    &_first {
+      background-image: url("../../../../assets/images/icons/dubbleArrowLeft.png");
+    }
+    &_last {
+      background-image: url("../../../../assets/images/icons/dubbleArrowRight.png");
+    }
+  }
+}

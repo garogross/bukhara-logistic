@@ -1,8 +1,8 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {addCard} from "../../../../redux/action/cards";
+import {addCard, setAddCardError} from "../../../../redux/action/cards";
 
-import AddFormPopup from "../AddFormPopup/AddFormPopup";
+import AddFormPopup from "../../../global/AddFormPopup/AddFormPopup";
 
 const addCardFields = [
     {
@@ -17,11 +17,10 @@ function AddCardPopup({onClose,id}) {
 
     const loading = useSelector(state => state.cards.addLoading)
     const error = useSelector(state => state.cards.addError)
-
     const onAddCard = (data,onClose) => {
         const reqData = {
             owner: id,
-            number: data.number.replaceAll(" ","")
+            number: data.number
         }
         dispatch(addCard(reqData,onClose))
     }
@@ -33,8 +32,10 @@ function AddCardPopup({onClose,id}) {
             show={id}
             onClose={onClose}
             fields={addCardFields}
+            setError={setAddCardError}
             onSubmit={onAddCard}
             title={'Добавить Карту'}
+
         />
     );
 }

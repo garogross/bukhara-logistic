@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useFormValue} from "../../../hooks/useFormValue";
-import {getPayments, updatePayment} from "../../../redux/action/payments";
-import {formatDate} from "../../../utils/functions/date";
+import {getPayments, hideAddNotPopup} from "../../../redux/action/payments";
 import {setCardNumText} from "../../../utils/functions/card";
 import {getCards} from "../../../redux/action/cards";
 
@@ -13,72 +12,25 @@ import PaymentFilesModal from "./PaymentFilesModal/PaymentFilesModal";
 import LoadingPopup from "../../layout/LoadingPopup/LoadingPopup";
 import DataLoader from "../../layout/DataLoader/DataLoader";
 
-import {paymentStatuses} from "../../../constants";
+import {paginationItemCount, paymentStatuses} from "../../../constants";
 import {addPaymentPagePath} from "../../../router/path";
 import styles from "./PaymentList.module.scss"
+import {setSelectValues} from "../../../utils/functions/setSelectValues";
+import PaymentListItem from "./PaymentListItem/PaymentListItem";
+import NotPopup from "../../layout/NotPopup/NotPopup";
+import PaymentListPagination from "./PaymentListPagination/PaymentListPagination";
+import {scrollTop} from "../../../utils/functions/scrollTop";
+import PaymentDeleteModal from "./PaymentDeleteModal/PaymentDeleteModal";
 
-const filters = [
-    {
-        type: 'select',
-        selectValues: Object.values(paymentStatuses).map(item => ({
-            value: item,
-            item: item[0].toUpperCase() + item.slice(1)
-        })),
-        key: 'status',
-        name: 'Статус',
-    },
-    {
-        type: 'input',
-        key: 'subject',
-        name: 'Предмет',
-    },
-    {
-        type: 'input',
-        key: 'purpose',
-        name: 'Цель',
-    },
-    {
-        type: 'input',
-        key: 'date',
-        inputType: "date",
-        name: 'Дата',
-    },
-    {
-        type: 'input',
-        key: 'min_amount',
-        inputType: "number",
-        name: 'Мин. Сумма',
-    },
-    {
-        type: 'input',
-        key: 'max_amount',
-        inputType: "number",
-        name: 'Макс. Сумма',
-    },
-    {
-        type: 'input',
-        key: 'checkNum',
-        name: 'Номер чека',
-    },
-]
 
-const filterData = (formData, curPayments) => (
-    curPayments.filter(({
-                            status,
-                            subject,
-                            purpose,
-                            date,
-                            amount,
-                            checkNum,
-                        }) => (
-        (!formData.status || status === formData.status) &&
-        (!formData.subject || subject.includes(formData.subject)) &&
-        (!formData.purpose || purpose.includes(formData.purpose)) &&
-        (!formData.date || new Date(date) === new Date(formData.date)) &&
-        (!formData.min_amount || amount >= formData.min_amount) &&
-        (!formData.max_amount || amount <= formData.max_amount) &&
-        (!formData.checkNum || checkNum === formData.checkNum)
-    )))
+const notModalTexts = {
+    add: "Списание Добовлено",
+    filter: "Фильтры Сохранены",
+    submit: "Списание Сдано",
+    accept: "Списание Принято",
+    delete: "Списания удалены",
+}
+
 
 function PaymentList({isAdmin}) {
     const dispatch = useDispatch()
@@ -90,38 +42,58 @@ function PaymentList({isAdmin}) {
     const getLoading = useSelector(state => state.payments.getLoading)
     const updateLoading = useSelector(state => state.payments.updateLoading)
     const payments = useSelector(state => state.payments.data)
+    const isAddNotShowing = useSelector(state => state.payments.isAddNotShowing)
+    const totalCount = useSelector(state => state.payments.totalCount)
 
     const [filterModalOpened, setFilterModalOpened] = useState(false)
+    const [deleteModalOpened, setDeleteModalOpened] = useState(false)
+    const [notModalText, setNotModalText] = useState("")
     const [filesModalId, setFilesModalId] = useState(null)
-    const initialData = filters.reduce((acc, cur) => {
-        acc[cur.key] = ''
-        return acc
-    }, {})
-    const {formData, setFormData} = useFormValue(initialData)
+    const [activePage, setActivePage] = useState(1)
 
-
-    const curPayments = payments.filter(item => item.card === id)
+    const filteredData = payments.filter(item => item.card === id)
     const curCard = cards.find(item => item._id === id)
     const curFiles = payments.find(item => item._id === filesModalId)?.files
 
     useEffect(() => {
         if (!cards.length) dispatch(getCards())
-        if (!curPayments.length) dispatch(getPayments(id))
+        if (!filteredData.length) dispatch(getPayments(id))
+        if (isAddNotShowing) openNotModal("Списание Добовлено")
+        scrollTop()
     }, []);
+
+    useEffect(() => {
+        let timeOut = null
+        if (notModalText) {
+            timeOut = setTimeout(() => {
+                if (notModalText === notModalTexts.add) onHideAddNotPopup()
+                else closeNotModal()
+            }, 3000)
+        }
+        if (!notModalText && timeOut) {
+            clearTimeout(timeOut)
+        }
+    }, [notModalText]);
 
     const closeFilterModal = () => setFilterModalOpened(false)
     const openFilterModal = () => setFilterModalOpened(true)
+    const closeDeleteModal = () => setDeleteModalOpened(false)
+    const openDeleteModal = () => setDeleteModalOpened(true)
     const closeFilesModal = () => setFilesModalId(null)
     const openFilesModal = (id) => setFilesModalId(id)
+    const closeNotModal = () => setNotModalText("")
+    const openNotModal = (text) => setNotModalText(text)
 
-    const onSubmitPayment = (id) => {
-        dispatch(updatePayment(id, paymentStatuses.submitted))
+
+    const onHideAddNotPopup = () => {
+        dispatch(hideAddNotPopup())
+        closeNotModal()
     }
 
-    const onAcceptPayment = (id) => {
-        dispatch(updatePayment(id, paymentStatuses.accepted))
+    const onSaveFilters = () => {
+        openNotModal(notModalTexts.filter)
+        if (activePage !== 1) setActivePage(1)
     }
-    const filteredData = filterData(formData,curPayments)
 
     return (
         <>
@@ -134,12 +106,14 @@ function PaymentList({isAdmin}) {
                             {
                                 !isAdmin ?
                                     <SecondaryBtn
-                                        onClick={() => navigate(addPaymentPagePath+"/"+id)}
+                                        onClick={() => navigate(addPaymentPagePath + "/" + id)}
                                     >Добавить</SecondaryBtn> :
-                                    <div></div>
+                                    <SecondaryBtn
+                                        onClick={openDeleteModal}
+                                        className={styles["paymentList__deleteBtn"]}
+                                    >Удалить Списания</SecondaryBtn>
                             }
-
-                            <SecondaryBtn onClick={openFilterModal}>Filters</SecondaryBtn>
+                                <SecondaryBtn onClick={openFilterModal}>Фильтры</SecondaryBtn>
                         </div>
                         : null
                 }
@@ -147,98 +121,45 @@ function PaymentList({isAdmin}) {
                     curCard && filteredData.length ?
                         <div className={`${styles["paymentList__main"]} blackBox`}>
                             {
-                                filteredData.map(({
-                                                      _id,
-                                                      subject,
-                                                      purpose,
-                                                      date,
-                                                      amount,
-                                                      checkNum,
-                                                      comments,
-                                                      status,
-                                                  }) => {
-                                    let
-                                        submitBtnColor = "#5871F2",
-                                        acceptBtnColor = "#64B550",
-                                        submitBtnText = "Сдано",
-                                        acceptBtnText = "Принято";
-
-                                    const {notSubmitted, submitted, accepted} = paymentStatuses
-
-                                    switch (status) {
-                                        case notSubmitted: {
-                                            submitBtnColor = "#8F9CCB"
-                                            submitBtnText = isAdmin ? "Не сдано" : "Сдать"
-                                            break;
-                                        }
-                                        case submitted: {
-                                            acceptBtnColor = !isAdmin ? "#F85F5F" : "#8F9CCB"
-                                            acceptBtnText = !isAdmin ? "Не принято" : "Принять"
-                                            break;
-                                        }
-                                    }
-
-                                    return (
-                                        <div className={styles["paymentList__item"]} key={_id}>
-                                            <h4 className={styles["paymentList__mainText"]}><span
-                                                className="blueText">Дата: </span>
-                                                {formatDate(date)}</h4>
-                                            <h4 className={styles["paymentList__mainText"]}><span
-                                                className="blueText">Сумма: </span>{amount} UZS</h4>
-                                            <br/>
-                                            <p className={styles["paymentList__secText"]}><span
-                                                className="blueText">Предмет: </span>{subject}</p>
-                                            <p className={styles["paymentList__secText"]}><span
-                                                className="blueText">Цель: </span>{purpose}</p>
-                                            <p className={styles["paymentList__secText"]}><span
-                                                className="blueText">Номер чека: </span>{checkNum}</p>
-                                            {
-                                                comments ?
-                                                    <p className={styles["paymentList__secText"]}><span
-                                                        className="blueText">Коментарий: </span>{comments}</p>
-                                                    : null
-                                            }
-                                            <div className={styles["paymentList__itemBottomBlock"]}>
-                                                <button
-                                                    onClick={() => openFilesModal(_id)}
-                                                    className={styles["paymentList__filesBtn"]}
-                                                >Файлы списания
-                                                </button>
-                                                <div className={styles["paymentList__itemStatusBtns"]}>
-                                                    <SecondaryBtn
-                                                        onClick={() => onSubmitPayment(_id)}
-                                                        disabled={isAdmin || status !== paymentStatuses.notSubmitted}
-                                                        style={{backgroundColor: submitBtnColor}}
-                                                    >{submitBtnText}</SecondaryBtn>
-                                                    {
-                                                        status !== paymentStatuses.notSubmitted ?
-                                                            <SecondaryBtn
-                                                                onClick={() => onAcceptPayment(_id)}
-                                                                disabled={!isAdmin || status !== paymentStatuses.submitted}
-                                                                style={{backgroundColor: acceptBtnColor}}
-                                                            >{acceptBtnText}</SecondaryBtn>
-                                                            : null
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
+                                filteredData.map(item => (
+                                    <PaymentListItem
+                                        {...item}
+                                        key={item._id}
+                                        openFilesModal={openFilesModal}
+                                        openNotModal={openNotModal}
+                                        isAdmin={isAdmin}
+                                        notModalTexts={notModalTexts}
+                                    />))
                             }
-
                         </div>
                         :
                         <DataLoader loading={cardLoading || getLoading} isEmpty={!curCard || !filteredData.length}/>
                 }
-
+                {
+                    totalCount > paginationItemCount ?
+                        <PaymentListPagination
+                            totalCount={totalCount}
+                            activePage={activePage}
+                            setActivePage={setActivePage}
+                        />
+                        : null
+                }
             </div>
             <PaymentFilterModal
+                id={id}
+                onSaveFilters={onSaveFilters}
                 onClose={closeFilterModal}
                 show={filterModalOpened}
-                updateFilters={setFormData}
-                initialData={formData}
-                filters={filters}
             />
+            {
+                isAdmin ?
+                    <PaymentDeleteModal
+                        show={deleteModalOpened}
+                        onClose={closeDeleteModal}
+                        openNotModal={() => openNotModal(notModalTexts.delete)}
+                    />
+                    : null
+            }
             {
                 curFiles ?
                     <PaymentFilesModal
@@ -247,6 +168,11 @@ function PaymentList({isAdmin}) {
                     /> : null
             }
             <LoadingPopup show={updateLoading}/>
+            <NotPopup
+                show={!!(notModalText)}
+                onClose={onHideAddNotPopup}
+                text={notModalText}
+            />
         </>
     );
 

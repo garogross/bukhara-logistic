@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useFormValue} from "../../hooks/useFormValue";
 import {setCardNumText} from "../../utils/functions/card";
@@ -12,7 +12,7 @@ import LoadingPopup from "../layout/LoadingPopup/LoadingPopup";
 import DataLoader from "../layout/DataLoader/DataLoader";
 import Svg from "../layout/Svg/Svg";
 
-import {crossIcon} from "../../assets/svg";
+import {arrowDownIcon, crossIcon} from "../../assets/svg";
 import {paymentsPagePath} from "../../router/path";
 import styles from "./AddPaymentForm.module.scss"
 
@@ -38,7 +38,6 @@ function AddPaymentForm() {
     },setAddPaymentError,error)
 
     const curCard = cards.find(item => item._id === id)
-
     useEffect(() => {
         if (!cards.length) dispatch(getCards())
     }, []);
@@ -51,6 +50,7 @@ function AddPaymentForm() {
     }
 
     const onClickUploadFile = (e) => {
+        "onClickUploadFile"
         clearInputError('files')
         e.target.value = null
     }
@@ -80,6 +80,13 @@ function AddPaymentForm() {
 
     return (
         <div className={`${styles["addPaymentForm"]} topDistanceBlock`}>
+            <Link
+                className={styles["addPaymentForm__backBtn"]}
+                to={paymentsPagePath+"/"+id}
+            >
+                <Svg id={arrowDownIcon} className={styles["addPaymentForm__backIcon"]}/>
+                <span>Назад</span>
+            </Link>
             <h2 className={`${styles["addPaymentForm__title"]} titleTxt`}>Добавление Списаний</h2>
             <h6 className={`${styles["addPaymentForm__subtitle"]} subtitleTxt`}>{setCardNumText(curCard?.number)}</h6>
             {
@@ -118,12 +125,12 @@ function AddPaymentForm() {
                                         <div className={styles["addPaymentForm__fileItem"]} key={item.name}>
                                             <p className={`${styles["addPaymentForm__fileName"]} contentTxt`}>Загружен
                                                 файл - {item.name}</p>
-                                            <button
+                                            <div
                                                 onClick={() => onDeleteUploadedImage(item)}
                                                 className={styles["addPaymentForm__cancelFileBtn"]}>
                                                 <Svg className={styles["addPaymentForm__cancelFileIcon"]}
                                                      id={crossIcon}/>
-                                            </button>
+                                            </div>
                                         </div>
                                     ))
                                 }

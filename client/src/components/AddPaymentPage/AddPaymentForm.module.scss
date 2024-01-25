@@ -4,6 +4,20 @@
 .addPaymentForm {
   padding-bottom: 40px;
 
+  &__backBtn {
+    text-decoration: none;
+    @include setFont(16px,500,$color-polo-blue);
+    @include flexCol(flex-start);
+    gap: 6px;
+    align-self: flex-start;
+    width: fit-content;
+  }
+  &__backIcon {
+    transform: rotate(90deg);
+    @include svg(16px,transparent,16px,$color-polo-blue);
+    text-decoration: none;
+  }
+
   &__subtitle {
     margin-top: 10px;
     margin-bottom: 20px;

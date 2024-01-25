@@ -8,13 +8,15 @@ import {Link, useNavigate} from "react-router-dom";
 import SecondaryBtn from "../../layout/SecondaryBtn/SecondaryBtn";
 import Svg from "../../layout/Svg/Svg";
 import DataLoader from "../../layout/DataLoader/DataLoader";
-import AddCardPopup from "./AddEmployeePopup/AddCardPopup";
+import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import LoadingPopup from "../../layout/LoadingPopup/LoadingPopup";
-import AddEmployeePopup from "./AddCardPopup/AddEmployeePopup";
+import AddEmployeePopup from "./AddEmployeePopup/AddEmployeePopup";
 
 import {plusIcon} from "../../../assets/svg";
 import {adminPaymentsPagePath} from "../../../router/path";
 import styles from "./AdminEmployeesList.module.scss"
+import {userRoles} from "../../../constants";
+import {setUserFullName} from "../../../utils/functions/setUserFullName";
 
 
 function AdminEmployeesList() {
@@ -61,8 +63,8 @@ function AdminEmployeesList() {
         dispatch(deleteCard(id))
     }
 
-    const onClickItem = (e,cardId) => {
-        if(e.target.tagName === "BUTTON") return;
+    const onClickItem = (e, cardId) => {
+        if (e.target.tagName === "BUTTON") return;
         navigate(adminPaymentsPagePath + "/" + cardId)
     }
     return (
@@ -82,59 +84,69 @@ function AdminEmployeesList() {
                                               totalAmount,
                                               _id,
                                               fullName,
+                                              profession,
+                                              role
                                           }) => (
                                     <div key={_id} className={styles["adminEmployeesList__item"]}>
                                         <div className={styles["adminEmployeesList__itemHeader"]}>
-                                            <p className={`contentTxt`}>{fullName}</p>
+                                            <p className={`contentTxt`}>{setUserFullName(fullName,profession)}</p>
                                             <div className={styles["adminEmployeesList__ammountBlock"]}>
-                                                <p className={`contentTxt`}>Обшая
-                                                    Сумма
-                                                    списаний за месяц - <span
-                                                        className="blueText">{totalAmount}{'\u00a0'}UZS</span></p>
+                                                {
+                                                    role === userRoles.employee ?
+                                                        <p className={`contentTxt`}>
+                                                            Обшая Сумма списаний за месяц - <span
+                                                            className="blueText">{totalAmount}{'\u00a0'}UZS</span></p>
+                                                        : null
+                                                }
                                                 <button
                                                     onClick={() => onDeleteUser(_id)}
-                                                    className={styles["adminEmployeesList__deleteBtn"]}>Удалить
+                                                    className={styles["adminEmployeesList__deleteBtn"]}>Удалить сотрудника
                                                 </button>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className={styles["adminEmployeesList__cardsBlockHeader"]}>
-                                                <h6 className={styles["adminEmployeesList__cardsTitle"]}>Карты</h6>
-                                                <button
-                                                    className={styles["adminEmployeesList__addCardBtn"]}
-                                                    onClick={() => onOpenAddCardPopup(_id)}
-                                                >
-                                                    <Svg
-                                                        className={styles["adminEmployeesList__plusIcon"]}
-                                                        id={plusIcon}
-                                                    />
-                                                    <span className={styles["adminEmployeesList__addCardBtnText"]}>Добавить Карту</span>
-                                                </button>
-                                            </div>
-                                            <div className={styles["adminEmployeesList__cardsList"]}>
-                                                {
-                                                    cards.map(({_id: cardId, number, totalPayments}) => (
-                                                        <div style={{cursor: "pointer"}}
-                                                            onClick={e => onClickItem(e,cardId)}
-                                                            key={cardId}
-                                                             className={styles["adminEmployeesList__cardItem"]}>
-                                                            <p className={`contentTxt`}>{setCardNumText(number)}</p>
-                                                            <div
-                                                                className={styles["adminEmployeesList__cardAmountBlock"]}>
-                                                                <p className={`contentTxt`}>Сумма
-                                                                    списаний за месяц - <span
-                                                                        className="blueText">{totalPayments}{'\u00a0'}UZS</span>
-                                                                </p>
-                                                                <button
-                                                                    onClick={() => onDeleteCard(cardId)}
-                                                                    className={styles["adminEmployeesList__deleteBtn"]}>Удалить
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </div>
-                                        </div>
+                                        {
+                                            role === userRoles.employee ?
+                                                <div>
+                                                    <div className={styles["adminEmployeesList__cardsBlockHeader"]}>
+                                                        <h6 className={styles["adminEmployeesList__cardsTitle"]}>Карты</h6>
+                                                        <button
+                                                            className={styles["adminEmployeesList__addCardBtn"]}
+                                                            onClick={() => onOpenAddCardPopup(_id)}
+                                                        >
+                                                            <Svg
+                                                                className={styles["adminEmployeesList__plusIcon"]}
+                                                                id={plusIcon}
+                                                            />
+                                                            <span
+                                                                className={styles["adminEmployeesList__addCardBtnText"]}>Добавить Карту</span>
+                                                        </button>
+                                                    </div>
+                                                    <div className={styles["adminEmployeesList__cardsList"]}>
+                                                        {
+                                                            cards.map(({_id: cardId, number, totalPayments}) => (
+                                                                <div style={{cursor: "pointer"}}
+                                                                     onClick={e => onClickItem(e, cardId)}
+                                                                     key={cardId}
+                                                                     className={styles["adminEmployeesList__cardItem"]}>
+                                                                    <p className={`contentTxt`}>{setCardNumText(number)}</p>
+                                                                    <div
+                                                                        className={styles["adminEmployeesList__cardAmountBlock"]}>
+                                                                        <p className={`contentTxt`}>Сумма
+                                                                            списаний за месяц - <span
+                                                                                className="blueText">{totalPayments}{'\u00a0'}UZS</span>
+                                                                        </p>
+                                                                        <button
+                                                                            onClick={() => onDeleteCard(cardId)}
+                                                                            className={styles["adminEmployeesList__deleteBtn"]}>Удалить
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                                : null
+                                        }
                                     </div>
                                 ))
                             }

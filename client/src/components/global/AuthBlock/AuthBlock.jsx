@@ -28,9 +28,7 @@ const fields = [
     },
 ]
 
-function AuthBlock({
-                       isAdmin,
-                   }) {
+function AuthBlock({isAdmin}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const error = useSelector(state => state.auth.loginError)
@@ -63,7 +61,7 @@ function AuthBlock({
                 <div className={styles["authBlock__main"]}>
                     <div className={styles["authBlock__mainContainer"]}>
                         <h3 className={styles["authBlock__title"]}>
-                            Войти в <span className={'blueText'}>аккаунт {isAdmin ? 'Как Админ' : ""}
+                            Войти в <span className={'blueText'}>аккаунт
                         </span>
                         </h3>
                         <form

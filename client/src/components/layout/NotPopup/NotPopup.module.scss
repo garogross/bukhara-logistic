@@ -1,8 +1,8 @@
-@import "../../../../styles/vars";
-@import "../../../../styles/mixins";
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
 
-.arbitrageFilterNotPopup {
-  position: absolute;
+.notPopup {
+  position: fixed;
   left: 0;
   width: 100%;
   @include flexCol();
@@ -10,8 +10,8 @@
 
   &__container {
     max-width: 500px;
-    width: 100%;
-    padding: 20px 16px;
+    padding: 14px 20px;
+    border: 1px solid $color-main;
     background-color: $color-blue-bold;
     border-radius: 19px;
     @include flexCol();

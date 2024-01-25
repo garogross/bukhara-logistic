@@ -10,14 +10,65 @@ import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 import Select from "../../../layout/Select/Select";
 
 import styles from "./PaymentFilterModal.module.scss"
+import {useDispatch} from "react-redux";
+import {getPayments} from "../../../../redux/action/payments";
+import {setSelectValues} from "../../../../utils/functions/setSelectValues";
+import {paymentStatuses} from "../../../../constants";
 
-function PaymentFilterModal({show, onClose, filters, initialData,updateFilters}) {
+const filters = [
+    {
+        type: 'select',
+        selectValues: setSelectValues(paymentStatuses),
+        key: 'status',
+        name: 'Статус',
+    },
+    {
+        type: 'input',
+        key: 'subject-regex',
+        name: 'Предмет',
+    },
+    {
+        type: 'input',
+        key: 'purpose-regex',
+        name: 'Цель',
+    },
+    {
+        type: 'input',
+        key: 'date',
+        inputType: "date",
+        name: 'Дата',
+    },
+    {
+        type: 'input',
+        key: 'amount[gt]',
+        inputType: "number",
+        name: 'Мин. Сумма',
+    },
+    {
+        type: 'input',
+        key: 'amount[lt]',
+        inputType: "number",
+        name: 'Макс. Сумма',
+    },
+    {
+        type: 'input',
+        key: 'checkNum',
+        name: 'Номер чека',
+    },
+]
 
+
+function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
+    const dispatch = useDispatch()
+    const initialData = filters.reduce((acc, cur) => {
+        acc[cur.key] = ''
+        return acc
+    }, {})
     const {onChange, formData, setFormData} = useFormValue(initialData)
 
     const onSubmit = (e) => {
         e.preventDefault()
-        updateFilters(formData)
+        dispatch(getPayments(id,1,formData,onSaveFilters))
         onClose()
     }
 

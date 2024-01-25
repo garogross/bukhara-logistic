@@ -7,13 +7,12 @@ import {deleteFiles} from "../utils/files.js";
 const cardSchema = new mongoose.Schema({
     number: {
         type: String,
-        unique: [true, "Этот номер уже используется"],
         ...setRequiredProp('Number'),
         validate: {
             validator: function(v) {
-                return v.startsWith("cash") || v.length === 16;
+                return v.startsWith("cash") || v.length === 4;
             },
-            message: props => `Номер карты должен состоять из 16 цифр!`
+            message: props => `Номер карты должен состоять из 4 цифр!`
         }
     },
     owner: {

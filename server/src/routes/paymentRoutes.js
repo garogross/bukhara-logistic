@@ -1,7 +1,7 @@
 import express from "express";
 import {protect, restrictTo} from "../controllers/authController.js";
 import {
-    createPayment, downloadFile,
+    createPayment, deletePayments, downloadFile,
     getAllPayment, savePaymentFiles,
     updatePayment, uploadPaymentFiles
 } from "../controllers/paymentController.js";
@@ -25,4 +25,6 @@ paymentRouter.post(
     createPayment
 )
 
-paymentRouter.use(restrictTo(userRoles.employee))
+paymentRouter.use(restrictTo(userRoles.admin,userRoles.superAdmin))
+
+paymentRouter.delete("/:cardId",deletePayments)

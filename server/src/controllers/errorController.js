@@ -1,4 +1,5 @@
 import {AppError} from "../utils/appError.js";
+import {nodeEnvTypes} from "../constants.js";
 
 const sendErrDev = (error, res) => {
     const {status,message,stack,statusCode} = error
@@ -42,7 +43,7 @@ export const globalErrorHandler = (err, req, res,next) => {
 
     if (process.env.NODE_ENV === 'development') {
         sendErrDev(err, res)
-    } else if (process.env.NODE_ENV === 'production') {
+    } else if (process.env.NODE_ENV === nodeEnvTypes.production) {
         let error = {...err}
         if(error.name === 'CastError') error = handleCastErrorDb(error)
         if(error.code === 11000) error = handleDuplicateError(error)

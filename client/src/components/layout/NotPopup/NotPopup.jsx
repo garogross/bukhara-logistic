@@ -1,30 +1,32 @@
 import React from 'react';
-import Svg from "../../../layout/Svg/Svg";
-import {crossIcon} from "../../../../assets/svg";
-import styles from "./ArbitrageFilterNotPopup.module.scss"
-import NewPortalProvider from "../../../../providers/NewPortalProvider";
-import TransitionProvider from "../../../../providers/TransitionProvider";
+import styles from "./NotPopup.module.scss"
+import NewPortalProvider from "../../../providers/NewPortalProvider";
+import TransitionProvider from "../../../providers/TransitionProvider";
+import Svg from "../Svg/Svg";
+import {crossIcon} from "../../../assets/svg";
 
-function ArbitrageFilterNotPopup({show,onClose}) {
+function NotPopup({show,onClose,text}) {
     return (
+        <NewPortalProvider>
             <TransitionProvider
                 style={'top'}
                 inProp={show}
-                className={styles["arbitrageFilterNotPopup"]}
+                className={styles["notPopup"]}
             >
-                <div className={styles["arbitrageFilterNotPopup__container"]}>
-                    <p className={styles["arbitrageFilterNotPopup__text"]}>
-                        Фильтр с заданными параметрами применен
+                <div className={styles["notPopup__container"]}>
+                    <p className={styles["notPopup__text"]}>
+                        {text}
                     </p>
                     <button
-                        className={styles["arbitrageFilterNotPopup__btn"]}
+                        className={styles["notPopup__btn"]}
                         onClick={onClose}
                     >
-                        <Svg id={crossIcon} className={styles["arbitrageFilterNotPopup__crossIcon"]}/>
+                        <Svg id={crossIcon} className={styles["notPopup__crossIcon"]}/>
                     </button>
                 </div>
             </TransitionProvider>
+        </NewPortalProvider>
     );
 }
 
-export default ArbitrageFilterNotPopup;
+export default NotPopup;

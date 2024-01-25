@@ -9,7 +9,7 @@
   &__main {
     flex: 5;
     @include flexCol();
-    background-color: rgba(10, 12, 26, 0.83);
+    background-color: $color-black-box;
     flex-direction: column;
     padding: 20px 16px 20px;
     overflow-y: auto;

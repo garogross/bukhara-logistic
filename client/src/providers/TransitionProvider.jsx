@@ -33,7 +33,7 @@ const TransitionProvider = ({style,inProp,className,duration,height,children,top
         },
         top: {
             from: {top: '-50px'},
-            enter: {top: top || '10px'},
+            enter: {top: top || '70px'},
             leave: {top: '-50px'},
         },
         translateX: {

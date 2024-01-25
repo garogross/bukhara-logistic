@@ -7,10 +7,21 @@ export const DIRNAME = dirname(__filename);
 export const userRoles = {
     employee: "employee",
     admin: "admin",
+    superAdmin: "superAdmin",
 }
 
 export const paymentStatuses = {
-    notSubmitted: "Ne сдано",
+    notSubmitted: "Нe сдано",
     submitted: "Сдано",
     accepted: "Принято",
+}
+
+export const nodeEnvTypes = {
+    production: "production",
+    development: "development"
+}
+
+export const signupRestrictToParams = () => {
+    const {admin,superAdmin} = userRoles
+    return process.env.NODE_ENV === nodeEnvTypes.production ? Object.values(userRoles) : [admin,superAdmin]
 }

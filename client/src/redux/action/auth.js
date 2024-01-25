@@ -1,16 +1,25 @@
 import {
+    ADD_CARDS_ERROR,
+    ADD_CARDS_LOADING_START,
     LOGIN_ERROR,
     LOGIN_LOADING_START,
     LOGIN_SUCCESS,
-    LOGOUT_USER, RESET_CARD_STATE, RESET_PAYMENT_STATE, RESET_USER_STATE,
+    LOGOUT_USER,
+    RESET_CARD_STATE,
+    RESET_PAYMENT_STATE,
+    RESET_USER_STATE, UPDATE_PASSWORD_ERROR,
+    UPDATE_PASSWORD_LOADING_START,
+    UPDATE_PASSWORD_SUCCESS,
 } from "../types";
 import {
-    baseConfig,
-    fetchRequest, setError,
-    siginUrl,
+    baseConfig, createCardsUrl,
+    fetchRequest, setError, setFormError,
+    siginUrl, updatePasUrl,
 } from "./fetchTools";
 import {getLSItem, removeLSItem, setLSItem} from "../../utils/functions/localStorage";
 import {lsProps} from "../../utils/lsProps";
+import {userRoles} from "../../constants";
+import {saveNewCard} from "./cards";
 
 export const login = (formData, clb, isAdmin) => async (dispatch) => {
     dispatch({type: LOGIN_LOADING_START})
@@ -18,8 +27,8 @@ export const login = (formData, clb, isAdmin) => async (dispatch) => {
         const {token, user} = await fetchRequest(siginUrl, "POST", JSON.stringify(formData), baseConfig)
 
         if (!token || !user) setError('Не авторизован.')
-        if (isAdmin && user.role !== "admin") setError('Этот пользователь не является админом.')
-        if (!isAdmin && user.role === "admin") setError('Этот пользователь не является сотрудником.')
+        if (isAdmin && user.role === userRoles.employee) setError('Этот пользователь не является админом.')
+        if (!isAdmin && user.role !== userRoles.employee) setError('Этот пользователь не является сотрудником.')
 
         setLSItem(lsProps.token, token)
         setLSItem(lsProps.user, user)
@@ -34,10 +43,10 @@ export const login = (formData, clb, isAdmin) => async (dispatch) => {
 }
 
 export const checkIsLoggedIn = () => (dispatch) => {
-    const token = getLSItem(lsProps.token,true);
-    const user = getLSItem(lsProps.user,true);
+    const token = getLSItem(lsProps.token, true);
+    const user = getLSItem(lsProps.user, true);
 
-    if(token && user) {
+    if (token && user) {
         dispatch({type: LOGIN_SUCCESS, payload: {token, user}})
     }
 }
@@ -52,3 +61,17 @@ export const logOut = (clb) => (dispatch) => {
 
     if (clb) clb()
 }
+
+export const updatePassword = (formData, clb) => async (dispatch) => {
+    dispatch({type: UPDATE_PASSWORD_LOADING_START})
+    try {
+        const {token} = await fetchRequest(updatePasUrl, "PATCH", JSON.stringify(formData))
+        dispatch({type: UPDATE_PASSWORD_SUCCESS, payload: token})
+        setLSItem(lsProps.token, token)
+        clb()
+    } catch (payload) {
+        dispatch(setFormError(UPDATE_PASSWORD_ERROR, payload))
+    }
+}
+
+export const setUpdatePasError = (payload) => dispatch => dispatch(setFormError(UPDATE_PASSWORD_ERROR, payload))

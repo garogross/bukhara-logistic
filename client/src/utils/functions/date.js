@@ -6,9 +6,15 @@ export function formatDate(dateStr) {
     return `${day}.${month}.${year}`;
 }
 
-export const isThisMonth = (dateStr) => {
+export const isThisMonth = (dateStr,isGte) => {
     const date = new Date(dateStr)
     const today = new Date()
+    const dateYear = date.getFullYear()
+    const todayYear = today.getFullYear()
+    const dateMonth = date.getMonth()
+    const todayMonth = today.getMonth()
 
-    return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth()
+    return isGte ?
+        dateYear >= todayYear && dateMonth >= todayMonth :
+        dateYear === todayYear && dateMonth === todayMonth
 }

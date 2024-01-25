@@ -25,10 +25,10 @@ export const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        minlength: 5,
         select: false,
+        ...setRequiredProp('Password')
     },
-
+    profession: String
 })
 
 // hash password
@@ -59,6 +59,10 @@ userSchema.post('findOneAndDelete', async function () {
 
 userSchema.methods.correctPassword = async (candidatePassword, userPassword) => {
     return await bcrypt.compare(candidatePassword, userPassword)
+}
+
+userSchema.methods.comparePassword = async function (candidatePassword,userPassword) {
+    return await bcrypt.compare(candidatePassword,userPassword)
 }
 
 export const User = mongoose.model('User', userSchema)

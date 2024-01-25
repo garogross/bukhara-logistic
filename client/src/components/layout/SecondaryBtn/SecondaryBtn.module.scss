@@ -6,7 +6,7 @@
   border: none;
   background-color: $color-main;
   border-radius: 52px;
-  @include setFont(20px, 600);
+  @include setFont(16px, 400);
   padding: 10px 16px;
 
   &:disabled {

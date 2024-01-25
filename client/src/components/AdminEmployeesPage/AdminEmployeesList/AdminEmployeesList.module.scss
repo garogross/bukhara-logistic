@@ -59,9 +59,10 @@
   }
 
   &__deleteBtn {
+    white-space: nowrap;
     cursor: pointer;
     border: none;
-    background-color: $color-red-bold;
+    background-color: #FF0000;
     border-radius: 6px;
     padding: 6px 8px;
     @include setFont(14px, 700)

@@ -30,9 +30,9 @@ const createAndSendToken = (user, res, statusCode = 200) => {
 }
 
 export const signUp = catchAsync(async (req, res, next) => {
-    const {fullName, username, password, role} = req.body
+    const {fullName, username, password, role,profession} = req.body
 
-    const user = await User.create({fullName, username, password, role})
+    const user = await User.create({fullName, username, password, role,profession})
     const token = signToken(user._id)
     const {
         password: pass,
@@ -41,8 +41,8 @@ export const signUp = catchAsync(async (req, res, next) => {
     } = {...user.toObject()};
 
     let cash = null
-    if(userData.role === userRoles.employee) {
-        cash = await Card.create({number: `cash-${user._id}`,owner: user._id})
+    if (userData.role === userRoles.employee) {
+        cash = await Card.create({number: `cash-${user._id}`, owner: user._id})
     }
 
     res.send({
@@ -60,7 +60,11 @@ export const login = catchAsync(async (req, res, next) => {
         return next(new AppError('Пожалуйста, укажите имя пользователя или пароль', 400, {username: {}}))
     }
 
-    const user = await User.findOne({username}).select('+password')
+    const user = await User.findOne({
+    username: {
+        $regex: new RegExp(`^${username}$`, 'i')
+    }
+    }).select('+password')
 
     if (!user) {
         return next(new AppError('Неверный username', 401, {username: {}}))
@@ -77,18 +81,49 @@ export const login = catchAsync(async (req, res, next) => {
 
 
 export const getAllUsers = catchAsync(async (req, res) => {
-    const users = await User.find({
-        role: userRoles.employee,
-    }).select("fullName")
+
+    const statment = req.user.role === userRoles.admin ?
+        {role: userRoles.employee} :
+        {
+            role: {$ne: userRoles.superAdmin},
+        }
+
+    const users = await User.find(statment).select(["fullName", "role","profession"])
 
     const cards = await getCards()
 
     res.send({
         status: 'success',
-        data: {users,cards}
+        data: {users, cards}
     })
 })
 
 export const updateUserData = handlerFactory.updateOne()
 
 export const deleteUser = handlerFactory.deleteOne()
+
+export const changePassword = catchAsync(async (req,res,next) => {
+    const {currentPassword,newPassword} = req.body
+
+    if (!currentPassword) {
+        return next(new AppError('current password fields are required', 400,{currentPassword: "1"}))
+    }
+    if (!newPassword) {
+        return next(new AppError('new password fields are required', 400,{newPassword: "1"}))
+    }
+
+    const user = await User.findById(req.user.id).select("+password")
+    const correctPassword = await user.comparePassword(currentPassword,user.password)
+
+    if(!correctPassword) {
+        return next(new AppError("currentPassword is wrong.",400,{currentPassword: "1"}))
+    }
+
+    if(!user) {
+        return next(new AppError("You're not logged in.",401))
+    }
+
+    user.password = newPassword
+    await user.save()
+    createAndSendToken(user, res)
+})
