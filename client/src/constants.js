@@ -5,7 +5,7 @@ export const paymentStatuses = {
 }
 
 export const userRoles = {
-    employee: "employee",
+    employee: "сотрудник",
     admin: "admin",
     superAdmin: "superAdmin",
 }

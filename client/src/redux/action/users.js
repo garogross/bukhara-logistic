@@ -26,9 +26,10 @@ export const addUsers = (formData,clb) => async (dispatch,getState) => {
     dispatch({type: ADD_USERS_LOADING_START})
     try {
         const fetchData = await fetchRequest(signupUserUrl,"POST",JSON.stringify(formData))
-      const {fullName,_id,profession,...user} = fetchData.data
-        const payload = [{fullName,_id,profession},...getState().users.data]
+      const user = fetchData.data
+        const payload = [user,...getState().users.data]
         dispatch({type: ADD_USERS_SUCCESS,payload})
+        console.log({fetchData})
         dispatch(saveNewCard({...fetchData.cash,totalPayments: 0}))
         clb()
     }catch (payload) {

@@ -31,6 +31,7 @@ export const getCards = () => async (dispatch) => {
 
 export const saveNewCard = (item) => (dispatch,getState) => {
     const payload = [item,...getState().cards.data]
+    console.log({payload})
     dispatch({type: ADD_CARDS_SUCCESS,payload})
 }
 export const addCard = (formData,clb) => async (dispatch,getState) => {

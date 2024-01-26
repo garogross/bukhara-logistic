@@ -5,7 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 export const DIRNAME = dirname(__filename);
 
 export const userRoles = {
-    employee: "employee",
+    employee: "сотрудник",
     admin: "admin",
     superAdmin: "superAdmin",
 }
