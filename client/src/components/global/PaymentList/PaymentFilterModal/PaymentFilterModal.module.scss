@@ -67,6 +67,10 @@
   &__input {
     padding: 10px 16px!important;
 
+    &[type="date"] {
+      min-height: 47px!important;
+    }
+
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
