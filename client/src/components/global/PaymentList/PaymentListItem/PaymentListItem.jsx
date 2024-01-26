@@ -5,6 +5,7 @@ import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
 import {paymentStatuses} from "../../../../constants";
 import {updatePayment} from "../../../../redux/action/payments";
 import {useDispatch} from "react-redux";
+import {setCardAmount} from "../../../../utils/functions/card";
 
 function PaymentListItem({
                              _id,
@@ -67,7 +68,7 @@ function PaymentListItem({
                 className="blueText">Дата: </span>
                 {formatDate(date)}</h4>
             <h4 className={styles["paymentListItem__mainText"]}><span
-                className="blueText">Сумма: </span>{amount} UZS</h4>
+                className="blueText">Сумма: </span><span className="noWrap">{setCardAmount(amount)}{'\u00a0'}UZS</span></h4>
             <br/>
             <p className={styles["paymentListItem__secText"]}><span
                 className="blueText">Предмет: </span>{subject}</p>

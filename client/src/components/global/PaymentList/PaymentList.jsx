@@ -21,6 +21,7 @@ import NotPopup from "../../layout/NotPopup/NotPopup";
 import PaymentListPagination from "./PaymentListPagination/PaymentListPagination";
 import {scrollTop} from "../../../utils/functions/scrollTop";
 import PaymentDeleteModal from "./PaymentDeleteModal/PaymentDeleteModal";
+import BackBtn from "../../layout/BackBtn/BackBtn";
 
 
 const notModalTexts = {
@@ -98,6 +99,7 @@ function PaymentList({isAdmin}) {
     return (
         <>
             <div className={`${styles["paymentList"]} topDistanceBlock`}>
+                <BackBtn/>
                 <h2 className={`${styles["paymentList__title"]} titleTxt`}>Список Списаний</h2>
                 <h6 className={`${styles["paymentList__subtitle"]} subtitleTxt`}>{setCardNumText(curCard?.number)}</h6>
                 {

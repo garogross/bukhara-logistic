@@ -1,0 +1,20 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.backBtn {
+  @include setFont(16px,500,$color-polo-blue);
+  @include flexCol(flex-start);
+  gap: 6px;
+  align-self: flex-start;
+  width: fit-content;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  margin-bottom: 10px;
+
+  &__icon {
+    transform: rotate(90deg);
+    @include svg(16px,transparent,16px,$color-polo-blue);
+    text-decoration: none;
+  }
+}

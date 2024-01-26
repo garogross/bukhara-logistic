@@ -6,13 +6,16 @@ export const multerStorage = multer.diskStorage({
         cb(null, 'public/files');
     },
     filename: (req, file, cb) => {
+        const fileName = file.originalname
+        const type = fileName.slice(fileName.lastIndexOf("."))
         // Specify the file name
-        cb(null, Date.now() + '-' + file.originalname);
+        const uniqId = Math.round(Math.random()*1000)
+        cb(null, `${Date.now()}-${Math.random()}${type}`);
     },
     limits: {
         fileSize: 1000000,
     },
-    fields: [{name:'files',maxCount:20}]
+    fields: [{name: 'files', maxCount: 20}]
 });
 
 export const uploadFile = multer({

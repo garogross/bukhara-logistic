@@ -21,14 +21,10 @@ import {lsProps} from "../../utils/lsProps";
 import {userRoles} from "../../constants";
 import {saveNewCard} from "./cards";
 
-export const login = (formData, clb, isAdmin) => async (dispatch) => {
+export const login = (formData, clb) => async (dispatch) => {
     dispatch({type: LOGIN_LOADING_START})
     try {
         const {token, user} = await fetchRequest(siginUrl, "POST", JSON.stringify(formData), baseConfig)
-
-        if (!token || !user) setError('Не авторизован.')
-        if (isAdmin && user.role === userRoles.employee) setError('Этот пользователь не является админом.')
-        if (!isAdmin && user.role !== userRoles.employee) setError('Этот пользователь не является сотрудником.')
 
         setLSItem(lsProps.token, token)
         setLSItem(lsProps.user, user)

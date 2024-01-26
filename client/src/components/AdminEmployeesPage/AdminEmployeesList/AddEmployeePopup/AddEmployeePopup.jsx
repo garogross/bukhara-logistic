@@ -40,7 +40,7 @@ function AddEmployeePopup({onClose,show}) {
 
 
     const filteredAddEmployeeFields = !user || user.role !== userRoles.superAdmin ?
-        addEmployeeFields.filter(item => item.type === "select") :
+        addEmployeeFields.filter(item => item.type !== "select") :
         addEmployeeFields
 
     const onAddUser = (data,onClose) => {

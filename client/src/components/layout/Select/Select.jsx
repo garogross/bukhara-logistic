@@ -37,9 +37,9 @@ function Select({
         <div
             title={name || ''}
             ref={selectedRef}
-            className={`${styles["select"]} ${className ? className : ''} ${disabled ? styles["select_disabled"] : ''}`}>
+            className={`${styles["select"]} ${disabled ? styles["select_disabled"] : ''}`}>
             <div
-                className={`${styles["select__dropDownBtn"]}  mainInput ${isInvalid ? 'mainInput_invalid' : ''}`}
+                className={`${styles["select__dropDownBtn"]} ${className ? className : ''} mainInput ${isInvalid ? 'mainInput_invalid' : ''}`}
                 onClick={onToggleDropdowns}>
                 <div className={styles['select__dropDownBtnContent']}>
                     <span className={styles["select__selectDropdownBtnText"]}>{btnText}</span>

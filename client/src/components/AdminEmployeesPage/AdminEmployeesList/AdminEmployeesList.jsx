@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {deleteUser, getUsers} from "../../../redux/action/users";
-import {setCardNumText} from "../../../utils/functions/card";
+import {setCardAmount, setCardNumText} from "../../../utils/functions/card";
 import {deleteCard} from "../../../redux/action/cards";
 import {Link, useNavigate} from "react-router-dom";
 
@@ -94,8 +94,8 @@ function AdminEmployeesList() {
                                                 {
                                                     role === userRoles.employee ?
                                                         <p className={`contentTxt`}>
-                                                            Обшая Сумма списаний за месяц - <span
-                                                            className="blueText">{totalAmount}{'\u00a0'}UZS</span></p>
+                                                            Общая Сумма списаний за месяц - <span
+                                                            className="blueText noWrap">{setCardAmount(totalAmount)}{'\u00a0'}UZS</span></p>
                                                         : null
                                                 }
                                                 <button
@@ -133,7 +133,7 @@ function AdminEmployeesList() {
                                                                         className={styles["adminEmployeesList__cardAmountBlock"]}>
                                                                         <p className={`contentTxt`}>Сумма
                                                                             списаний за месяц - <span
-                                                                                className="blueText">{totalPayments}{'\u00a0'}UZS</span>
+                                                                                className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
                                                                         </p>
                                                                         <button
                                                                             onClick={() => onDeleteCard(cardId)}

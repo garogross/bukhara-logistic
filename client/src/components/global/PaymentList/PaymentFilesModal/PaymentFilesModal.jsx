@@ -7,6 +7,7 @@ import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 
 import {baseUrl, downloadFileUrl, proxy} from "../../../../redux/action/fetchTools";
 import styles from "./PaymentFilesModal.module.scss"
+import {isProduction} from "../../../../constants";
 
 const imageTypes = [
     "jpg",
@@ -24,6 +25,8 @@ function PaymentFilesModal({curFiles, onClose}) {
     const otherFiles = curFiles.filter(item => !imageTypes.some(type => item.endsWith(type)))
 
     const getFileName = (file) => file.replace("/files/", "")
+
+    const imagePath = (item) =>  `${isProduction ? proxy : ""}/api${item}`
 
     return (
         <>
@@ -46,7 +49,7 @@ function PaymentFilesModal({curFiles, onClose}) {
                                         download={getFileName(item)}
                                     >
                                     <img
-                                        src={item}
+                                        src={imagePath(item)}
                                         alt="file"
                                         className={styles["paymentFilesModal__img"]}
                                     />
@@ -62,7 +65,7 @@ function PaymentFilesModal({curFiles, onClose}) {
                                         download={getFileName(item)}
                                         className={styles["paymentFilesModal__fileText"]}
                                         key={item}
-                                    >{item.replace("/files/", "")}</a>
+                                    >{getFileName(item)}</a>
                                 ))
                             }
                         </div>

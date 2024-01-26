@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {getCards} from "../../../redux/action/cards";
-import {setCardNumText} from "../../../utils/functions/card";
+import {setCardAmount, setCardNumText} from "../../../utils/functions/card";
 
 import DataLoader from "../../layout/DataLoader/DataLoader";
 
@@ -44,7 +44,7 @@ function MainCardsList() {
                                     </p>
                                     <p className={styles["mainCardsList__text"]}>
                                         Сумма списаний за месяц - <span
-                                        className="blueText">{totalPayments}{'\u00a0'}UZS</span>
+                                        className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
                                     </p>
                                 </div>
                             ))

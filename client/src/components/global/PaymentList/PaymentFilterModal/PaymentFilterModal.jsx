@@ -112,6 +112,7 @@ function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
                                                 <Select
                                                     disableState={false}
                                                     valuesArr={selectValues}
+                                                    className={styles["filterModal__input"]}
                                                     selectedValueProp={selectValues.find(item => item.value === formData.status) || null}
                                                     onChange={(value) => setFormData(prevState => ({
                                                         ...prevState,

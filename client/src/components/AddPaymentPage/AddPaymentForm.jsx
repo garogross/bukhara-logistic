@@ -15,6 +15,7 @@ import Svg from "../layout/Svg/Svg";
 import {arrowDownIcon, crossIcon} from "../../assets/svg";
 import {paymentsPagePath} from "../../router/path";
 import styles from "./AddPaymentForm.module.scss"
+import BackBtn from "../layout/BackBtn/BackBtn";
 
 
 function AddPaymentForm() {
@@ -80,13 +81,7 @@ function AddPaymentForm() {
 
     return (
         <div className={`${styles["addPaymentForm"]} topDistanceBlock`}>
-            <Link
-                className={styles["addPaymentForm__backBtn"]}
-                to={paymentsPagePath+"/"+id}
-            >
-                <Svg id={arrowDownIcon} className={styles["addPaymentForm__backIcon"]}/>
-                <span>Назад</span>
-            </Link>
+            <BackBtn/>
             <h2 className={`${styles["addPaymentForm__title"]} titleTxt`}>Добавление Списаний</h2>
             <h6 className={`${styles["addPaymentForm__subtitle"]} subtitleTxt`}>{setCardNumText(curCard?.number)}</h6>
             {

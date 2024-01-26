@@ -11,3 +11,5 @@ export const userRoles = {
 }
 
 export const paginationItemCount = 15
+
+export const isProduction = process.env.NODE_ENV === "production"

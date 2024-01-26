@@ -6,7 +6,7 @@ import Svg from "../../layout/Svg/Svg";
 import SecondaryBtn from "../../layout/SecondaryBtn/SecondaryBtn";
 
 import {navLogoImage} from "../../../assets/images";
-import {adminLoginPagePath, adminMainPagePath, loginPagePath, mainPagePath} from "../../../router/path";
+import {adminMainPagePath, loginPagePath, mainPagePath} from "../../../router/path";
 import {logOutIcon} from "../../../assets/svg";
 import styles from "./TopBar.module.scss"
 import {setUserFullName} from "../../../utils/functions/setUserFullName";
@@ -42,10 +42,9 @@ function TopBar() {
 
     const isAdmin = pathname.includes('admin')
 
-    const loginPath = isAdmin ? adminLoginPagePath : loginPagePath
 
     const onLogOut = () => {
-        dispatch(logOut(() => navigate(loginPath)))
+        dispatch(logOut(() => navigate(loginPagePath)))
     }
 
 

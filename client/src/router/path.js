@@ -1,7 +1,6 @@
 import MainPage from "../pages/MainPage/MainPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import PrivateRoute from "./PrivateRoute";
-import AdminLoginPage from "../pages/Admin/AdminLoginPage/AdminLoginPage";
 import AddPaymentPage from "../pages/AddPaymentPage/AddPaymentPage";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import PaymentsPage from "../pages/PaymentsPage/PaymentsPage";
@@ -16,7 +15,6 @@ export const paymentsPagePath = '/payments'
 export const addPaymentPagePath = '/addPayment'
 
 // админ
-export const adminLoginPagePath = '/admin/login'
 export const adminMainPagePath = '/admin/'
 export const adminPaymentsPagePath = '/admin/payments'
 
@@ -62,10 +60,6 @@ export const routes = [
                 component: <PrivateRoute element={<AddPaymentPage/>}/>
             }
         ]
-    },
-    {
-        path: adminLoginPagePath,
-        component: <PrivateRoute element={<AdminLoginPage/>} noAuth={true} isAdmin={true}/>
     },
     {
         path: adminMainPagePath,

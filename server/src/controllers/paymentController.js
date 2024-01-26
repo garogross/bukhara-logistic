@@ -9,6 +9,11 @@ import {userRoles} from "../constants.js";
 import {ApiFeatures} from "../utils/apiFeatures.js";
 
 
+export const downloadFile = catchAsync(async (req,res) => {
+    if(!req.params.fileName) return new AppError("filename is required")
+    res.download("public/files/"+req.params.fileName,req.params.fileName)
+})
+
 const handleFactory = new HandlerFactory(Payment, 'payment')
 
 const getFilteredPayments = async (cardId,regQuery) => {
@@ -32,7 +37,7 @@ const getFilteredPayments = async (cardId,regQuery) => {
 
 export const uploadPaymentFiles = uploadFile.array("files[]")
 export const savePaymentFiles = catchAsync(async (req,res,next) => {
-    req.body.files = req.files.map(item => `/files/${item.filename}`)
+    req.body.files = req.files.map((item,index) => `/files/${item.filename}`)
     next()
 })
 
@@ -54,10 +59,7 @@ export const getAllPayment = catchAsync(async (req,res,next) => {
     })
 })
 
-export const downloadFile = catchAsync(async (req,res) => {
-    if(!req.params.fileName) return new AppError("filename is required")
-    res.download("public/files/"+req.params.fileName,req.params.fileName)
-})
+
 export const updatePayment = handleFactory.updateOne()
 
 export const deletePayments = catchAsync(async (req,res,next) => {
