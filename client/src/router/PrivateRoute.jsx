@@ -13,14 +13,13 @@ const PrivateRoute = ({element,noAuth,isAdmin}) => {
        !isAuthenticated :
        isAuthenticated  || (isAdmin && user.role === userRoles.employee) || (!isAdmin && user.role !== userRoles.employee)
    let navigateTo = loginPagePath
-
    if(!isAuthenticated) {
-      navigateTo = -1
+      navigateTo = user.role !== userRoles.employee ? adminMainPagePath : mainPagePath
    } else {
       if(noAuth) {
          navigateTo = isAdmin ? adminMainPagePath : mainPagePath
       }
-      if(isAdmin) navigateTo = `/admin${navigateTo}`
+      // if(isAdmin) navigateTo = `/admin${navigateTo}`
    }
    return (
        statement ? <Navigate to={navigateTo} replace={true} /> : element
