@@ -40,13 +40,13 @@ const filters = [
     },
     {
         type: 'input',
-        key: 'amount[gt]',
+        key: 'amount[gte]',
         inputType: "number",
         name: 'Мин. Сумма',
     },
     {
         type: 'input',
-        key: 'amount[lt]',
+        key: 'amount[lte]',
         inputType: "number",
         name: 'Макс. Сумма',
     },

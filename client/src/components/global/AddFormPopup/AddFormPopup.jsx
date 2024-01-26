@@ -22,18 +22,18 @@ function AddFormPopup({
                           loading,
                           error,
                           onSubmit,
-    setError
+                          setError
                       }) {
     const initialData = fields.reduce((acc, cur) => {
         acc[cur.key] = ""
         return acc;
     }, {})
-    const {formData, onChange,setFormData, onResetForm} = useFormValue(initialData,
+    const {formData, onChange, setFormData, onResetForm} = useFormValue(initialData,
         setError, error)
 
     const onClosePopup = () => {
-            onResetForm()
-            onClose()
+        onResetForm()
+        onClose()
     }
     const onSubmitForm = (e) => {
         e.preventDefault()
@@ -57,32 +57,47 @@ function AddFormPopup({
                         onSubmit={onSubmitForm}
                     >
                         {
-                            fields.map(({placeholder, key, isCard,type,selectValues,inputType}) => (
+                            fields.map(({
+                                            placeholder,
+                                            key,
+                                            isCard,
+                                            type,
+                                            selectValues,
+                                            inputType,
+                                            label
+                                        }) => (
                                 <Fragment key={key}>
-                                    {
-                                        type === 'select' ?
-                                            <Select
-                                                disableState={false}
-                                                valuesArr={selectValues}
-                                                selectedValueProp={selectValues.find(item => item.value === userRoles.employee) || null}
-                                                onChange={(value) => setFormData(prevState => ({
-                                                    ...prevState,
-                                                    [key]: value
-                                                }))}
-                                                name={'Пусто'}
-                                            /> :
-                                            <MainInput
-                                                data-text={key}
-                                                maxLength={isCard ? 4 : null}
-                                                isInvalid={error?.[key]}
-                                                disabled={loading}
-                                                placeholder={placeholder}
-                                                value={formData[key]}
-                                                name={key}
-                                                type={inputType || "text"}
-                                                onChange={onChange}
-                                            />
-                                    }
+                                    <label
+                                        htmlFor={key}
+                                        className={styles["addFormPopup__label"]}
+                                    >
+                                        {label ? <span>{label}</span> : ""}
+                                        {
+                                            type === 'select' ?
+                                                <Select
+                                                    disableState={false}
+                                                    valuesArr={selectValues}
+                                                    selectedValueProp={selectValues.find(item => item.value === userRoles.employee) || null}
+                                                    onChange={(value) => setFormData(prevState => ({
+                                                        ...prevState,
+                                                        [key]: value
+                                                    }))}
+                                                    name={'Пусто'}
+                                                /> :
+                                                <MainInput
+                                                    data-text={key}
+                                                    maxLength={isCard ? 4 : null}
+                                                    isInvalid={error?.[key]}
+                                                    disabled={loading}
+                                                    placeholder={placeholder}
+                                                    value={formData[key]}
+                                                    name={key}
+                                                    id={key}
+                                                    type={inputType || "text"}
+                                                    onChange={onChange}
+                                                />
+                                        }
+                                    </label>
                                 </Fragment>
                             ))
                         }

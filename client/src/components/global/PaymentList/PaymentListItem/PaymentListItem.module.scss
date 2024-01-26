@@ -8,6 +8,11 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  transition: $transition;
+
+  &:hover {
+    box-shadow: 0px 0px 0px 1px $color-main;
+  }
 
   &__mainText {
     @include setFont(24px, 400);

@@ -17,16 +17,17 @@ import {adminPaymentsPagePath} from "../../../router/path";
 import styles from "./AdminEmployeesList.module.scss"
 import {userRoles} from "../../../constants";
 import {setUserFullName} from "../../../utils/functions/setUserFullName";
+import AdminEmployeesListItem from "./AdminEmployeesListItem/AdminEmployeesListItem";
 
 
 function AdminEmployeesList() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     const users = useSelector(state => state.users.data)
     const loading = useSelector(state => state.users.getLoading)
     const deleteUserLoading = useSelector(state => state.users.deleteLoading)
     const deleteCardLoading = useSelector(state => state.cards.deleteLoading)
+    const addCardLoading = useSelector(state => state.cards.addLoading)
     const cards = useSelector(state => state.cards.data)
     const [addEmployeePopupOpened, setAddEmployeePopupOpened] = useState(false)
     const [addCardPopupOpenedId, setAddCardPopupOpenedId] = useState(null)
@@ -54,19 +55,6 @@ function AdminEmployeesList() {
     const onOpenAddCardPopup = (id) => setAddCardPopupOpenedId(id)
     const onCloseAddCardPopup = () => setAddCardPopupOpenedId(null)
 
-
-    const onDeleteUser = (id) => {
-        dispatch(deleteUser(id))
-    }
-
-    const onDeleteCard = (id) => {
-        dispatch(deleteCard(id))
-    }
-
-    const onClickItem = (e, cardId) => {
-        if (e.target.tagName === "BUTTON") return;
-        navigate(adminPaymentsPagePath + "/" + cardId)
-    }
     return (
         <>
             <div className={`${styles["adminEmployeesList"]} topDistanceBlock`}>
@@ -79,75 +67,12 @@ function AdminEmployeesList() {
                     !loading && data.length ?
                         <div className={`${styles["adminEmployeesList__main"]} blackBox`}>
                             {
-                                data.map(({
-                                              cards,
-                                              totalAmount,
-                                              _id,
-                                              fullName,
-                                              profession,
-                                              role
-                                          }) => (
-                                    <div key={_id} className={styles["adminEmployeesList__item"]}>
-                                        <div className={styles["adminEmployeesList__itemHeader"]}>
-                                            <p className={`contentTxt`}>{setUserFullName(fullName,profession)}</p>
-                                            <div className={styles["adminEmployeesList__ammountBlock"]}>
-                                                {
-                                                    role === userRoles.employee ?
-                                                        <p className={`contentTxt`}>
-                                                            Общая Сумма списаний за месяц - <span
-                                                            className="blueText noWrap">{setCardAmount(totalAmount)}{'\u00a0'}UZS</span></p>
-                                                        : null
-                                                }
-                                                <button
-                                                    onClick={() => onDeleteUser(_id)}
-                                                    className={styles["adminEmployeesList__deleteBtn"]}>Удалить сотрудника
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {
-                                            role === userRoles.employee ?
-                                                <div>
-                                                    <div className={styles["adminEmployeesList__cardsBlockHeader"]}>
-                                                        <h6 className={styles["adminEmployeesList__cardsTitle"]}>Карты</h6>
-                                                        <button
-                                                            className={styles["adminEmployeesList__addCardBtn"]}
-                                                            onClick={() => onOpenAddCardPopup(_id)}
-                                                        >
-                                                            <Svg
-                                                                className={styles["adminEmployeesList__plusIcon"]}
-                                                                id={plusIcon}
-                                                            />
-                                                            <span
-                                                                className={styles["adminEmployeesList__addCardBtnText"]}>Добавить Карту</span>
-                                                        </button>
-                                                    </div>
-                                                    <div className={styles["adminEmployeesList__cardsList"]}>
-                                                        {
-                                                            cards.map(({_id: cardId, number, totalPayments}) => (
-                                                                <div style={{cursor: "pointer"}}
-                                                                     onClick={e => onClickItem(e, cardId)}
-                                                                     key={cardId}
-                                                                     className={styles["adminEmployeesList__cardItem"]}>
-                                                                    <p className={`contentTxt`}>{setCardNumText(number)}</p>
-                                                                    <div
-                                                                        className={styles["adminEmployeesList__cardAmountBlock"]}>
-                                                                        <p className={`contentTxt`}>Сумма
-                                                                            списаний за месяц - <span
-                                                                                className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
-                                                                        </p>
-                                                                        <button
-                                                                            onClick={() => onDeleteCard(cardId)}
-                                                                            className={styles["adminEmployeesList__deleteBtn"]}>Удалить
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </div>
-                                                </div>
-                                                : null
-                                        }
-                                    </div>
+                                data.map((item) => (
+                                    <AdminEmployeesListItem
+                                        {...item}
+                                        key={item._id}
+                                        onOpenAddCardPopup={onOpenAddCardPopup}
+                                    />
                                 ))
                             }
 
@@ -155,7 +80,7 @@ function AdminEmployeesList() {
                         <DataLoader loading={loading} isEmpty={!data.length}/>
                 }
             </div>
-            <LoadingPopup show={deleteUserLoading || deleteCardLoading}/>
+            <LoadingPopup show={deleteUserLoading || deleteCardLoading || addCardLoading}/>
             <AddEmployeePopup
                 show={addEmployeePopupOpened}
                 onClose={onCloseAddEmployeePopup}

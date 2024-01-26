@@ -7,11 +7,13 @@ import {useParams} from "react-router-dom";
 const fields = [
     {
         placeholder: "От",
+        label: "Дата начала удаления (включительно)",
         key: "from",
         inputType: "date"
     },
     {
         placeholder: "До",
+        label: "Конец удаления (включительно)",
         key: "to",
         inputType: "date"
     },
