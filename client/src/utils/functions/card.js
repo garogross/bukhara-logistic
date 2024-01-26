@@ -5,6 +5,6 @@ export const setCardNumText = (num) => {
 }
 
 export const setCardAmount = (amount) => {
-    if(!amount) return ""
+    if(!amount) return "0"
     return  amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
