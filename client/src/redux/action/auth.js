@@ -30,7 +30,7 @@ export const login = (formData, clb) => async (dispatch) => {
         setLSItem(lsProps.user, user)
 
         dispatch({type: LOGIN_SUCCESS, payload: {token, user}})
-        clb()
+        clb(user.role === userRoles.admin)
 
     } catch (err) {
         console.error({err})

@@ -15,7 +15,7 @@ const PrivateRoute = ({element,noAuth,isAdmin}) => {
    let navigateTo = loginPagePath
 
    if(!isAuthenticated) {
-      navigateTo = loginPagePath
+      navigateTo = -1
    } else {
       if(noAuth) {
          navigateTo = isAdmin ? adminMainPagePath : mainPagePath

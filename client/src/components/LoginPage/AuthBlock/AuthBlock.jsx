@@ -28,7 +28,7 @@ const fields = [
     },
 ]
 
-function AuthBlock({isAdmin}) {
+function AuthBlock() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const error = useSelector(state => state.auth.loginError)
@@ -41,11 +41,11 @@ function AuthBlock({isAdmin}) {
 
     const onSubmitForm = (e) => {
         e.preventDefault()
-        const onSuccess = () => {
+        const onSuccess = (isAdmin) => {
             const navigateTo = isAdmin ? adminMainPagePath : mainPagePath
             navigate(navigateTo)
         }
-        dispatch(login(formData,onSuccess,isAdmin))
+        dispatch(login(formData,onSuccess))
     }
 
 
