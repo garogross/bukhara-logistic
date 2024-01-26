@@ -40,7 +40,6 @@ const handleJWTExpiredError = () => new AppError('Your token has expired,please 
 export const globalErrorHandler = (err, req, res,next) => {
     err.statusCode = err.statusCode || 500
     err.status = err.status || 'error'
-
     if (process.env.NODE_ENV === 'development') {
         sendErrDev(err, res)
     } else if (process.env.NODE_ENV === nodeEnvTypes.production) {
@@ -49,6 +48,7 @@ export const globalErrorHandler = (err, req, res,next) => {
         if(error.code === 11000) error = handleDuplicateError(error)
         if(error.name === 'JsonWebTokenError') error = handleJWTError()
         if(error.name === 'TokenExpiredError') error = handleJWTExpiredError()
+        else error = err
         sendErrProd(error, res)
 
     }

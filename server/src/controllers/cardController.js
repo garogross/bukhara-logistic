@@ -60,7 +60,16 @@ export const getCards = async (id) => {
 }
 
 export const validateCard = catchAsync(async (req,res,next) => {
-    if(!req.body.number || !!(!+req.body.number || req.body.number.length !== 4)) return next(new AppError("Не верный номер карты",400,{number: "invalid"}))
+    const {number,owner} = req.body
+    if(!number || (!number.toString().startsWith("cash") && (!+number || number.length !== 4))) return next(new AppError("Не верный номер карты",400,{number: "invalid"}))
+
+    if(number.toString().startsWith("cash")) {
+        const curCash = await Card.findOne({
+            owner,
+            number: new RegExp("cash", 'i')
+        })
+        if(curCash) return next(new AppError("Для этого пользователя уже есть наличку",400,{number: "invalid"}))
+    }
     next()
 })
 

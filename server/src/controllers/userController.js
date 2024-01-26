@@ -39,17 +39,10 @@ export const signUp = catchAsync(async (req, res, next) => {
         __v,
         ...userData
     } = {...user.toObject()};
-
-    let cash = null
-    if (userData.role === userRoles.employee) {
-        cash = await Card.create({number: `cash-${user._id}`, owner: user._id})
-    }
-
     res.send({
         status: 'success',
         token,
         data: userData,
-        cash
     })
 })
 
