@@ -31,7 +31,6 @@ export const getCards = () => async (dispatch) => {
 
 export const saveNewCard = (item) => (dispatch,getState) => {
     const payload = [item,...getState().cards.data]
-    console.log({payload})
     dispatch({type: ADD_CARDS_SUCCESS,payload})
 }
 export const addCard = (formData,clb) => async (dispatch,getState) => {
@@ -48,13 +47,14 @@ export const addCard = (formData,clb) => async (dispatch,getState) => {
 
 export const setAddCardError = (payload) => dispatch => dispatch(setFormError(ADD_CARDS_ERROR,payload))
 
-export const deleteCard = (id) => async (dispatch,getState) => {
+export const deleteCard = (id,clb) => async (dispatch,getState) => {
     dispatch({type: DELETE_CARDS_LOADING_START})
     try {
         await fetchRequest(getCardsUrl+id,"DELETE")
         const cards = getState().cards.data
         const payload = cards.filter(item => item._id !== id)
         dispatch({type: DELETE_CARDS_SUCCESS,payload})
+        clb()
     }catch (payload) {
         dispatch({type: DELETE_CARDS_ERROR,payload})
     }

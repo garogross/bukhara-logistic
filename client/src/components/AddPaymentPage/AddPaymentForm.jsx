@@ -135,6 +135,7 @@ function AddPaymentForm() {
                                     <p className={`${styles["addPaymentForm__labelText"]} contentTxt`}>Предмет (что
                                         куплено)*</p>
                                     <MainInput
+                                        className={'mainInput_small'}
                                         isInvalid={error?.subject}
                                         value={formData.subject}
                                         onChange={onChange}
@@ -149,7 +150,7 @@ function AddPaymentForm() {
                                         value={formData.purpose}
                                         onChange={onChange}
                                         name={'purpose'}
-                                        className={styles["addPaymentForm__input"]}
+                                        className={'mainInput_small'}
                                     />
                                 </div>
                                 <div className={styles["addPaymentForm__col"]}>
@@ -161,7 +162,7 @@ function AddPaymentForm() {
                                             value={formData.date}
                                             onChange={onChange}
                                             name={'date'}
-                                            className={styles["addPaymentForm__input"]}
+                                            className={'mainInput_small'}
                                         />
                                     </div>
                                     <div className={styles["addPaymentForm__field"]}>
@@ -172,7 +173,7 @@ function AddPaymentForm() {
                                             value={formData.amount}
                                             onChange={onChange}
                                             name={'amount'}
-                                            className={styles["addPaymentForm__input"]}
+                                            className={'mainInput_small'}
                                         />
                                     </div>
                                     <div className={styles["addPaymentForm__field"]}>
@@ -183,7 +184,7 @@ function AddPaymentForm() {
                                             value={formData.checkNum}
                                             onChange={onChange}
                                             name={'checkNum'}
-                                            className={styles["addPaymentForm__input"]}
+                                            className={'mainInput_small'}
                                         />
                                     </div>
                                 </div>
@@ -196,7 +197,7 @@ function AddPaymentForm() {
                                         onChange={onChange}
                                         name={'comments'}
                                         isTextArea={true}
-                                        className={`${styles["addPaymentForm__input"]} ${styles["addPaymentForm__textArea"]}`}
+                                        className={`mainInput_small ${styles["addPaymentForm__textArea"]}`}
                                     />
                                 </div>
                             </div>

@@ -62,6 +62,7 @@ function TopBar() {
                             <div className={styles['topBar__authBlock']}>
                                 <div className={styles["topBar__usernameBlock"]} ref={optionsRef}>
                                     <button
+                                        title={setUserFullName(user?.fullName, user?.profession)}
                                         onClick={openOptions}
                                         className={styles["topBar__usernameBtn"]}>{setUserFullName(user?.fullName, user?.profession)}</button>
 

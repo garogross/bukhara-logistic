@@ -18,6 +18,13 @@
     @include flexCol(space-between);
     padding: 18px 30px;
     gap: 8px;
+    transition: $transition;
+    border: 1px solid $color-blue-bold;
+
+    &:hover {
+      background-color: $color-blue-bg;
+      border-color: $color-main;
+    }
 
     @include mdScreenMedia {
       flex-direction: column;

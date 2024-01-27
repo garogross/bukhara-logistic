@@ -19,6 +19,8 @@
 
   &__container {
     @include flexCol(space-between);
+    gap: 10px;
+    width: 100%;
   }
 
   &__logoBtn {
@@ -37,16 +39,24 @@
   }
 
   &__authBlock {
-    @include flexCol();
+    max-width: calc(100% - 160px);
+    @include flexCol(flex-end);
     gap: 28px;
 
     @include smScreenMedia {
       gap: 18px;
+      max-width: calc(100% - 110px);
     }
   }
 
   &__usernameBlock {
     position: relative;
+    max-width: calc(100% - 100px);
+
+    @include smScreenMedia {
+      max-width: calc(100% - 50px);
+
+    }
   }
 
   &__usernameBtn {
@@ -55,6 +65,9 @@
     background: transparent;
     @include setFont(20px, 500);
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @include smScreenMedia {
       font-size: 16px;

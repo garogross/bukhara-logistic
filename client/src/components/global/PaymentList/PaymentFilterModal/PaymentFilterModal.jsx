@@ -112,7 +112,7 @@ function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
                                                 <Select
                                                     disableState={false}
                                                     valuesArr={selectValues}
-                                                    className={styles["filterModal__input"]}
+                                                    className={'mainInput_small'}
                                                     selectedValueProp={selectValues.find(item => item.value === formData.status) || null}
                                                     onChange={(value) => setFormData(prevState => ({
                                                         ...prevState,
@@ -122,7 +122,7 @@ function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
                                                 /> :
                                                 <MainInput
                                                     type={inputType || "text"}
-                                                    className={styles["filterModal__input"]}
+                                                    className={'mainInput_small'}
                                                     value={formData[key]}
                                                     name={key}
                                                     onChange={onChange}

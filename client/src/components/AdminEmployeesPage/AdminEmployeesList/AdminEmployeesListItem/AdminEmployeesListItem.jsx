@@ -18,7 +18,10 @@ function AdminEmployeesListItem({
                                     fullName,
                                     profession,
                                     role,
+
                                     onOpenAddCardPopup,
+                                    onOpenDeleteCardPopup,
+                                    onOpenDeleteEmployeePopup,
                                 }) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -30,14 +33,6 @@ function AdminEmployeesListItem({
         navigate(adminPaymentsPagePath + "/" + cardId)
     }
 
-    const onDeleteCard = (id) => {
-        dispatch(deleteCard(id))
-    }
-
-    const onDeleteUser = (id) => {
-        dispatch(deleteUser(id))
-    }
-
     const onAddCash = (id) => {
         dispatch(addCard({
             owner: id,
@@ -45,7 +40,7 @@ function AdminEmployeesListItem({
         }))
     }
 
-
+    const isCashExist = cards.some(item => item.number.toString().startsWith("cash"))
     return (
         <div key={_id} className={styles["adminEmployeesListItem"]}>
             <div className={styles["adminEmployeesListItem__header"]}>
@@ -54,17 +49,21 @@ function AdminEmployeesListItem({
                     {
                         isEmployee ?
                             <>
-                                <button
-                                    className={styles["adminEmployeesListItem__addCardBtn"]}
-                                    onClick={() => onAddCash(_id)}
-                                >
-                                    <Svg
-                                        className={styles["adminEmployeesListItem__plusIcon"]}
-                                        id={plusIcon}
-                                    />
-                                    <span
-                                        className={styles["adminEmployeesListItem__addCardBtnText"]}>Добавить Наличку</span>
-                                </button>
+                                {
+                                    !isCashExist ?
+                                        <button
+                                            className={styles["adminEmployeesListItem__addCardBtn"]}
+                                            onClick={() => onAddCash(_id)}
+                                        >
+                                            <Svg
+                                                className={styles["adminEmployeesListItem__plusIcon"]}
+                                                id={plusIcon}
+                                            />
+                                            <span
+                                                className={styles["adminEmployeesListItem__addCardBtnText"]}>Добавить Наличку</span>
+                                        </button>
+                                        : null
+                                }
                                 <button
                                     className={styles["adminEmployeesListItem__addCardBtn"]}
                                     onClick={() => onOpenAddCardPopup(_id)}
@@ -79,7 +78,7 @@ function AdminEmployeesListItem({
                             </> : null
                     }
                     <button
-                        onClick={() => onDeleteUser(_id)}
+                        onClick={() => onOpenDeleteEmployeePopup(_id)}
                         className={styles["adminEmployeesListItem__deleteBtn"]}>Удалить сотрудника
                     </button>
                 </div>
@@ -97,7 +96,7 @@ function AdminEmployeesListItem({
                             }
                         </div>
                         <div className={styles["adminEmployeesListItem__cardsList"]}>
-                        {
+                            {
                                 cards.map(({_id: cardId, number, totalPayments}) => (
                                     <div style={{cursor: "pointer"}}
                                          onClick={e => onClickItem(e, cardId)}
@@ -111,7 +110,7 @@ function AdminEmployeesListItem({
                                                     className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
                                             </p>
                                             <button
-                                                onClick={() => onDeleteCard(cardId)}
+                                                onClick={() => onOpenDeleteCardPopup(cardId)}
                                                 className={styles["adminEmployeesListItem__deleteBtn"]}>Удалить
                                             </button>
                                         </div>
