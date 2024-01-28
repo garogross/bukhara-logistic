@@ -12,9 +12,9 @@ export const multerStorage = multer.diskStorage({
         const uniqId = Math.round(Math.random()*1000)
         cb(null, `${Date.now()}-${uniqId}${type}`);
     },
-    // limits: {
-    //     fileSize: 1000000,
-    // },
+    limits: {
+        fileSize: 1024 * 1024 * 10,
+    },
     fields: [{name: 'files', maxCount: 20}]
 });
 
