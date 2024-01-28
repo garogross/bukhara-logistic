@@ -36,6 +36,7 @@ export const createCardsUrl = '/cards/create'
 export const getPaymentsUrl = '/payments/'
 export const createPaymentsUrl = '/payments/create/'
 export const downloadFileUrl = '/payments/download/'
+export const deletePaymentUrl = '/payments/delete/'
 
 // users
 export const getUsersUrl = '/users/'

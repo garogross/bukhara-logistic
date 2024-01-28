@@ -10,11 +10,11 @@ export const multerStorage = multer.diskStorage({
         const type = fileName.slice(fileName.lastIndexOf("."))
         // Specify the file name
         const uniqId = Math.round(Math.random()*1000)
-        cb(null, `${Date.now()}-${Math.random()}${type}`);
+        cb(null, `${Date.now()}-${uniqId}${type}`);
     },
-    limits: {
-        fileSize: 1000000,
-    },
+    // limits: {
+    //     fileSize: 1000000,
+    // },
     fields: [{name: 'files', maxCount: 20}]
 });
 

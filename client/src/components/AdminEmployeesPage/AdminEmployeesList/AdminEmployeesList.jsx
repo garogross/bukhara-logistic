@@ -18,7 +18,7 @@ import styles from "./AdminEmployeesList.module.scss"
 import {userRoles} from "../../../constants";
 import {setUserFullName} from "../../../utils/functions/setUserFullName";
 import AdminEmployeesListItem from "./AdminEmployeesListItem/AdminEmployeesListItem";
-import DeletePopup from "./DeletePopup/DeletePopup";
+import DeletePopup from "../../global/DeletePopup/DeletePopup";
 
 
 function AdminEmployeesList() {

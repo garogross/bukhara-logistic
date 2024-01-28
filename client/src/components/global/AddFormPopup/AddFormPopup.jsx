@@ -22,7 +22,8 @@ function AddFormPopup({
                           loading,
                           error,
                           onSubmit,
-                          setError
+                          setError,
+    btnText
                       }) {
     const initialData = fields.reduce((acc, cur) => {
         acc[cur.key] = ""
@@ -112,7 +113,7 @@ function AddFormPopup({
                             disabled={loading}
                             type={"submit"}
                             className={styles["addFormPopup__btn"]}
-                        >Сохранить</MainBtn>
+                        >{btnText || "Сохранить"}</MainBtn>
                     </form>
                 </TransitionProvider>
             </NewPortalProvider>

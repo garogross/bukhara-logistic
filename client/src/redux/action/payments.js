@@ -13,7 +13,15 @@ import {
     UPDATE_PAYMENT_LOADING_START,
     UPDATE_PAYMENT_SUCCESS
 } from "../types";
-import {authConfig, createPaymentsUrl, fetchRequest, getCardsUrl, getPaymentsUrl, setFormError} from "./fetchTools";
+import {
+    authConfig,
+    createPaymentsUrl,
+    deletePaymentUrl,
+    fetchRequest,
+    getCardsUrl,
+    getPaymentsUrl,
+    setFormError
+} from "./fetchTools";
 import {paymentStatuses} from "../../constants";
 import {isThisMonth} from "../../utils/functions/date";
 import {updateCardTotalPayment} from "./cards";
@@ -121,3 +129,24 @@ export const deletePayments = (formData, id, clb) => async (dispatch, getState) 
     }
 }
 export const setDeletePaymentError = (payload) => dispatch => dispatch(setFormError(DELETE_PAYMENTS_ERROR, payload))
+
+
+export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
+    dispatch({type: DELETE_PAYMENTS_LOADING_START})
+    try {
+        const {data: payload} = await fetchRequest(deletePaymentUrl + id, "DELETE")
+
+        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload})
+        // if (isThisMonth(formData.to, true)) {
+        //     const amount = payload.filter(item => isThisMonth(item.date)).reduce((acc, cur) => {
+        //         acc += cur.amount
+        //         return acc
+        //     }, 0)
+        //     dispatch(updateCardTotalPayment(id, amount))
+        // }
+        clb()
+    } catch (payload) {
+        console.error("err", payload.message)
+        dispatch(setFormError(DELETE_PAYMENTS_ERROR, payload))
+    }
+}

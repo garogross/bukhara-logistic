@@ -5,7 +5,7 @@ import {Payment} from "../models/paymentModel.js";
 import {AppError} from "../utils/appError.js";
 import {uploadFile} from "../utils/multer.js";
 import {catchAsync} from "../utils/catchAsync.js";
-import {userRoles} from "../constants.js";
+import {paymentStatuses, userRoles} from "../constants.js";
 import {ApiFeatures} from "../utils/apiFeatures.js";
 
 
@@ -13,6 +13,7 @@ export const downloadFile = catchAsync(async (req,res) => {
     if(!req.params.fileName) return new AppError("filename is required")
     res.download("public/files/"+req.params.fileName,req.params.fileName)
 })
+
 
 const handleFactory = new HandlerFactory(Payment, 'payment')
 
@@ -80,4 +81,16 @@ export const deletePayments = catchAsync(async (req,res,next) => {
         totalCount
     })
 
+})
+
+export const deleteOnePayment = catchAsync(async (req,res,next) => {
+    const id = req.params.id
+    const curPayment = await Payment.findOne({id})
+
+    if(!curPayment) {
+        return next(new AppError("Invalid Id"))
+    }
+    if(curPayment.status === paymentStatuses.accepted) {
+        return next(new AppError("This payment is already accepted."))
+    }
 })
