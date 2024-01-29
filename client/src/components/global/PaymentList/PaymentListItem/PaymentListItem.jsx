@@ -90,7 +90,7 @@ function PaymentListItem({
             <p className={styles["paymentListItem__secText"]}><span
                 className="blueText">Цель: </span>{purpose}</p>
             <p className={styles["paymentListItem__secText"]}><span
-                className="blueText">Номер чекаоперации: </span>{checkNum}</p>
+                className="blueText">Номер операции: </span>{checkNum}</p>
             {
                 comments ?
                     <p className={styles["paymentListItem__secText"]}><span
