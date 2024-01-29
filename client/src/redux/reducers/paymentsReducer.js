@@ -4,8 +4,8 @@ import {
     ADD_PAYMENT_SUCCESS, DELETE_PAYMENTS_ERROR, DELETE_PAYMENTS_LOADING_START, DELETE_PAYMENTS_SUCCESS,
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
-    GET_PAYMENTS_SUCCESS, HIDE_ADD_NOT_POPUP,
-    RESET_PAYMENT_STATE,
+    GET_PAYMENTS_SUCCESS, HIDE_ADD_NOT_POPUP, INIT_CUT_PAGE, INIT_PAYMENT_PARAMS, REMOVE_PAYMENT_FILTERS,
+    RESET_PAYMENT_STATE, SET_CUT_PAGE, SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
     UPDATE_PAYMENT_SUCCESS
@@ -24,6 +24,8 @@ const initialState = {
     daleteError: null,
     isAddNotShowing: false,
     totalCount: 0,
+    filters: {},
+    curPage: 1
 }
 
 export const paymentsReducer = (state = initialState, action) => {
@@ -76,8 +78,9 @@ export const paymentsReducer = (state = initialState, action) => {
         case ADD_PAYMENT_SUCCESS: {
             return {
                 ...state,
-                data: payload,
+                data: payload.data,
                 addLoading: false,
+                totalCount: payload.totalCount,
                 isAddNotShowing: true,
             }
         }
@@ -98,7 +101,8 @@ export const paymentsReducer = (state = initialState, action) => {
         case DELETE_PAYMENTS_SUCCESS: {
             return {
                 ...state,
-                data: payload,
+                data: payload.data,
+                totalCount: payload.totalCount,
                 deleteLoading: false,
             }
         }
@@ -122,7 +126,27 @@ export const paymentsReducer = (state = initialState, action) => {
                 isAddNotShowing: false
             }
         }
-        case RESET_PAYMENT_STATE: return initialState
+        case SET_PAYMENT_FILTERS: {
+            return {
+                ...state,
+                filters: payload
+            }
+        }
+        case INIT_PAYMENT_PARAMS: {
+            return {
+                ...state,
+                filters: {},
+                curPage: 1
+            }
+        }
+        case SET_CUT_PAGE: {
+            return {
+                ...state,
+                curPage: payload
+            }
+        }
+        case RESET_PAYMENT_STATE:
+            return initialState
         default:
             return state
     }

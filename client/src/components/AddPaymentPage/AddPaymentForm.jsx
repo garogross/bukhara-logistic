@@ -178,7 +178,7 @@ function AddPaymentForm() {
                                     </div>
                                     <div className={styles["addPaymentForm__field"]}>
                                         <p className={`${styles["addPaymentForm__labelText"]} contentTxt`}>Номер
-                                            чека*</p>
+                                            операции*</p>
                                         <MainInput
                                             isInvalid={error?.checkNum}
                                             value={formData.checkNum}

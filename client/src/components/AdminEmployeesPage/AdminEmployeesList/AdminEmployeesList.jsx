@@ -64,12 +64,12 @@ function AdminEmployeesList() {
     const onCloseDeleteCardPopup = () => setDeleteCardPopupOpenedId(null)
 
 
-    const onDeleteCard = (id,onClose) => {
-        dispatch(deleteCard(id,onClose))
+    const onDeleteCard = (id, onClose) => {
+        dispatch(deleteCard(id, onClose))
     }
 
-    const onDeleteUser = (id,onClose) => {
-        dispatch(deleteUser(id,onClose))
+    const onDeleteUser = (id, onClose) => {
+        dispatch(deleteUser(id, onClose))
     }
 
     return (

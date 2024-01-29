@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useFormValue} from "../../../hooks/useFormValue";
-import {getPayments, hideAddNotPopup} from "../../../redux/action/payments";
+import {getPayments, hideAddNotPopup, initPaymentParams} from "../../../redux/action/payments";
 import {setCardNumText} from "../../../utils/functions/card";
 import {getCards} from "../../../redux/action/cards";
 
@@ -22,6 +22,8 @@ import PaymentListPagination from "./PaymentListPagination/PaymentListPagination
 import {scrollTop} from "../../../utils/functions/scrollTop";
 import PaymentDeleteModal from "./PaymentDeleteModal/PaymentDeleteModal";
 import BackBtn from "../../layout/BackBtn/BackBtn";
+import DeletePopup from "../DeletePopup/DeletePopup";
+import PaymentDeleteSimpleModal from "./PaymentDeleteSimpleModal/PaymentDeleteSimpleModal";
 
 
 const notModalTexts = {
@@ -30,6 +32,7 @@ const notModalTexts = {
     submit: "Списание Сдано",
     accept: "Списание Принято",
     delete: "Списания удалены",
+    deleteSimple: "Списание удалено",
 }
 
 
@@ -48,9 +51,9 @@ function PaymentList({isAdmin}) {
 
     const [filterModalOpened, setFilterModalOpened] = useState(false)
     const [deleteModalOpened, setDeleteModalOpened] = useState(false)
+    const [deleteModalOpenedId, setDeleteModalOpenedId] = useState(null)
     const [notModalText, setNotModalText] = useState("")
     const [filesModalId, setFilesModalId] = useState(null)
-    const [activePage, setActivePage] = useState(1)
 
     const filteredData = payments.filter(item => item.card === id)
     const curCard = cards.find(item => item._id === id)
@@ -61,6 +64,10 @@ function PaymentList({isAdmin}) {
         if (!filteredData.length) dispatch(getPayments(id))
         if (isAddNotShowing) openNotModal("Списание Добовлено")
         scrollTop()
+
+        return () => {
+            dispatch(initPaymentParams())
+        }
     }, []);
 
     useEffect(() => {
@@ -80,6 +87,8 @@ function PaymentList({isAdmin}) {
     const openFilterModal = () => setFilterModalOpened(true)
     const closeDeleteModal = () => setDeleteModalOpened(false)
     const openDeleteModal = () => setDeleteModalOpened(true)
+    const closeDeleteSimpleModal = () => setDeleteModalOpenedId(null)
+    const openDeleteSimpleModal = (id) => setDeleteModalOpenedId(id)
     const closeFilesModal = () => setFilesModalId(null)
     const openFilesModal = (id) => setFilesModalId(id)
     const closeNotModal = () => setNotModalText("")
@@ -93,7 +102,6 @@ function PaymentList({isAdmin}) {
 
     const onSaveFilters = () => {
         openNotModal(notModalTexts.filter)
-        if (activePage !== 1) setActivePage(1)
     }
 
     return (
@@ -131,6 +139,7 @@ function PaymentList({isAdmin}) {
                                         openNotModal={openNotModal}
                                         isAdmin={isAdmin}
                                         notModalTexts={notModalTexts}
+                                        openDeleteSimpleModal={openDeleteSimpleModal}
                                     />))
                             }
                         </div>
@@ -141,8 +150,6 @@ function PaymentList({isAdmin}) {
                     totalCount > paginationItemCount ?
                         <PaymentListPagination
                             totalCount={totalCount}
-                            activePage={activePage}
-                            setActivePage={setActivePage}
                         />
                         : null
                 }
@@ -174,6 +181,11 @@ function PaymentList({isAdmin}) {
                 show={!!(notModalText)}
                 onClose={onHideAddNotPopup}
                 text={notModalText}
+            />
+            <PaymentDeleteSimpleModal
+                id={deleteModalOpenedId}
+                openNotModal={() => openNotModal(notModalTexts.deleteSimple)}
+                onClose={closeDeleteSimpleModal}
             />
         </>
     );
