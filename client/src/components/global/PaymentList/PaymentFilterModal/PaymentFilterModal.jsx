@@ -11,7 +11,7 @@ import Select from "../../../layout/Select/Select";
 
 import styles from "./PaymentFilterModal.module.scss"
 import {useDispatch} from "react-redux";
-import {getPayments} from "../../../../redux/action/payments";
+import {getPayments, initPaymentParams, setPaymentFilters} from "../../../../redux/action/payments";
 import {setSelectValues} from "../../../../utils/functions/setSelectValues";
 import {paymentStatuses} from "../../../../constants";
 
@@ -53,7 +53,7 @@ const filters = [
     {
         type: 'input',
         key: 'checkNum',
-        name: 'Номер чека',
+        name: 'Номер операции',
     },
 ]
 
@@ -68,7 +68,8 @@ function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        dispatch(getPayments(id,1,formData,onSaveFilters))
+        dispatch(setPaymentFilters(formData))
+        dispatch(getPayments(id,onSaveFilters))
         onClose()
     }
 

@@ -10,12 +10,14 @@ import {userRoles} from "../constants.js";
 
 const handleFactory = new HandlerFactory(Card, 'card')
 
-export const getCards = async (id) => {
+export const getCards = async (id,getOne) => {
+    const matchProp = getOne ? '_id' : "owner"
+    const match = {}
+    if(id) match[matchProp] = new mongoose.Types.ObjectId(id)
+
     const cards = await Card.aggregate([
         {
-            $match: id ? {
-                owner: new mongoose.Types.ObjectId(id)
-            } : {}
+            $match: match
         },
         {
             $lookup: {

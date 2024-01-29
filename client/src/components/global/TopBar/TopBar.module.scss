@@ -39,23 +39,20 @@
   }
 
   &__authBlock {
-    max-width: calc(100% - 160px);
     @include flexCol(flex-end);
     gap: 28px;
 
     @include smScreenMedia {
       gap: 18px;
-      max-width: calc(100% - 110px);
     }
   }
 
   &__usernameBlock {
     position: relative;
-    max-width: calc(100% - 100px);
+    max-width: calc(100vw - 350px);
 
     @include smScreenMedia {
-      max-width: calc(100% - 50px);
-
+      max-width: calc(100vw - 190px);
     }
   }
 

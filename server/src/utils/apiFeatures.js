@@ -4,6 +4,8 @@ export class ApiFeatures {
         this.queryString = queryString
     }
 
+
+
     filter(getQueryObj) {
         const queryCopy = {...this.queryString}
         const queryExcluded = ['sort', 'page', 'limit']
@@ -17,9 +19,6 @@ export class ApiFeatures {
                 queryObj[originalKey] = new RegExp(queryObj[key], 'i')
                 delete queryObj[key]
             }
-            // if(key.includes("date")) {
-            //     queryObj[key] = new Date(queryObj[key])
-            // }
         }
         if(getQueryObj) return queryObj
         this.query.find(queryObj)

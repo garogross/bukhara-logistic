@@ -8,7 +8,7 @@ import {
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
     GET_PAYMENTS_SUCCESS,
-    HIDE_ADD_NOT_POPUP,
+    HIDE_ADD_NOT_POPUP, INIT_PAYMENT_PARAMS, SET_CUT_PAGE, SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
     UPDATE_PAYMENT_SUCCESS
@@ -18,7 +18,6 @@ import {
     createPaymentsUrl,
     deletePaymentUrl,
     fetchRequest,
-    getCardsUrl,
     getPaymentsUrl,
     setFormError
 } from "./fetchTools";
@@ -27,21 +26,26 @@ import {isThisMonth} from "../../utils/functions/date";
 import {updateCardTotalPayment} from "./cards";
 
 
-export const getPayments = (id, page = 1, filters, clb) => async (dispatch) => {
+const getUrlWithFiltersQuery = (url) => (dispatch,getState) => {
+    const filters = getState().payments.filters
+    const page = getState().payments.curPage
+
+    let filtersQuery = ""
+    if (filters) {
+        for (let key in filters) {
+            if (!filters[key]) continue;
+            filtersQuery += `&${key}=${filters[key]}`
+        }
+    }
+
+    return `${url}?page=${page}${filtersQuery}`
+}
+
+export const getPayments = (id,clb) => async (dispatch) => {
     dispatch({type: GET_PAYMENTS_LOADING_START})
     try {
-        let filtersQuery = ""
-        if (filters) {
-            for (let key in filters) {
-                if (!filters[key]) continue;
-                // if(key === "date") {
-                //     const date = new Date(filters[key])
-                //     filters[key] = date
-                // }
-                filtersQuery += `&${key}=${filters[key]}`
-            }
-        }
-        const {data, totalCount} = await fetchRequest(`${getPaymentsUrl}${id}?page=${page}${filtersQuery}`)
+        const url = dispatch(getUrlWithFiltersQuery(`${getPaymentsUrl}${id}`))
+        const {data, totalCount} = await fetchRequest(url)
         dispatch({type: GET_PAYMENTS_SUCCESS, payload: {data, totalCount}})
         if (clb) clb()
     } catch (payload) {
@@ -75,27 +79,26 @@ export const updatePayment = (id, status, clb) => async (dispatch, getState) => 
     }
 }
 
-export const addPayment = (data, clb) => async (dispatch, getState) => {
+export const addPayment = (reqData, clb) => async (dispatch) => {
     dispatch({type: ADD_PAYMENT_LOADING_START})
     try {
         const formData = new FormData()
 
-        for (let key in data) {
+        for (let key in reqData) {
             if (key === "files") {
-                for (let i = 0; i < data.files.length; i++) {
-                    formData.append('files[]', data.files[i])
+                for (let i = 0; i < reqData.files.length; i++) {
+                    formData.append('files[]', reqData.files[i])
                 }
             } else {
-                formData.append(key, data[key]);
+                formData.append(key, reqData[key]);
             }
         }
 
 
-        const {data: newItem} = await fetchRequest(createPaymentsUrl, "POST", formData, authConfig(true))
-        const payload = [newItem, ...getState().payments.data]
-        dispatch({type: ADD_PAYMENT_SUCCESS, payload})
-        if (isThisMonth(newItem.date) && +newItem.amount > 0) {
-            dispatch(updateCardTotalPayment(newItem.card, newItem.amount, true))
+        const {data,totalCount,card} = await fetchRequest(createPaymentsUrl, "POST", formData, authConfig(true))
+        dispatch({type: ADD_PAYMENT_SUCCESS, payload: {data,totalCount}})
+        if (isThisMonth(formData.date) && +formData.amount > 0) {
+            dispatch(updateCardTotalPayment(card))
         }
         clb()
     } catch (payload) {
@@ -110,18 +113,15 @@ export const hideAddNotPopup = () => dispatch => {
 }
 
 
-export const deletePayments = (formData, id, clb) => async (dispatch, getState) => {
+export const deletePayments = (formData, id, clb) => async (dispatch) => {
     dispatch({type: DELETE_PAYMENTS_LOADING_START})
     try {
-        const {data: payload} = await fetchRequest(getPaymentsUrl + id, "DELETE", JSON.stringify(formData))
-        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload})
+        const {data,totalCount,card} = await fetchRequest(getPaymentsUrl + id, "DELETE", JSON.stringify(formData))
+        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
         if (isThisMonth(formData.to, true)) {
-            const amount = payload.filter(item => isThisMonth(item.date)).reduce((acc, cur) => {
-                acc += cur.amount
-                return acc
-            }, 0)
-            dispatch(updateCardTotalPayment(id, amount))
+            dispatch(updateCardTotalPayment(card))
         }
+        dispatch(initPaymentParams())
         clb()
     } catch (payload) {
         console.error("err", payload.message)
@@ -134,19 +134,22 @@ export const setDeletePaymentError = (payload) => dispatch => dispatch(setFormEr
 export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
     dispatch({type: DELETE_PAYMENTS_LOADING_START})
     try {
-        const {data: payload} = await fetchRequest(deletePaymentUrl + id, "DELETE")
+        const url = dispatch(getUrlWithFiltersQuery(`${deletePaymentUrl}${id}`))
 
-        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload})
-        // if (isThisMonth(formData.to, true)) {
-        //     const amount = payload.filter(item => isThisMonth(item.date)).reduce((acc, cur) => {
-        //         acc += cur.amount
-        //         return acc
-        //     }, 0)
-        //     dispatch(updateCardTotalPayment(id, amount))
-        // }
+        const {data,totalCount,card} = await fetchRequest(url, "DELETE")
+        const payments = getState().payments.data
+        const curPayment = payments.find(item => item._id === id)
+        if (isThisMonth(curPayment.date, true)) {
+            dispatch(updateCardTotalPayment(card))
+        }
+        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
         clb()
     } catch (payload) {
         console.error("err", payload.message)
         dispatch(setFormError(DELETE_PAYMENTS_ERROR, payload))
     }
 }
+
+export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS,payload})
+export const setPaymentCurPage = (payload) => dispatch => dispatch({type: SET_CUT_PAGE,payload})
+export const initPaymentParams = () => dispatch => dispatch({type: INIT_PAYMENT_PARAMS})

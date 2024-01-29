@@ -2,10 +2,12 @@ import React from 'react';
 import styles from "./PaymentListItem.module.scss";
 import {formatDate} from "../../../../utils/functions/date";
 import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
-import {paymentStatuses} from "../../../../constants";
-import {updatePayment} from "../../../../redux/action/payments";
-import {useDispatch} from "react-redux";
+import {paymentStatuses, userRoles} from "../../../../constants";
+import {deleteOnePayment, updatePayment} from "../../../../redux/action/payments";
+import {useDispatch, useSelector} from "react-redux";
 import {setCardAmount} from "../../../../utils/functions/card";
+import {deleteIcon} from "../../../../assets/svg";
+import Svg from "../../../layout/Svg/Svg";
 
 function PaymentListItem({
                              _id,
@@ -22,9 +24,11 @@ function PaymentListItem({
                              isAdmin,
                              openFilesModal,
                              openNotModal,
-                             notModalTexts
+                             notModalTexts,
+                             openDeleteSimpleModal
                          }) {
     const dispatch = useDispatch()
+    const user = useSelector(state => state.auth.user)
 
     let
         submitBtnColor = "#5871F2",
@@ -62,20 +66,31 @@ function PaymentListItem({
         ))
     }
 
+
     return (
         <div className={styles["paymentListItem"]} key={_id}>
+            {
+                user.role === userRoles.employee && status === paymentStatuses.accepted ?
+                    null :
+                    <button
+                        onClick={() => openDeleteSimpleModal(_id)}
+                        className={styles["paymentListItem__deleteBtn"]}>
+                        <Svg id={deleteIcon} className={styles["paymentListItem__deleteIcon"]}/>
+                    </button>
+            }
             <h4 className={styles["paymentListItem__mainText"]}><span
                 className="blueText">Дата: </span>
                 {formatDate(date)}</h4>
             <h4 className={styles["paymentListItem__mainText"]}><span
-                className="blueText">Сумма: </span><span className="noWrap">{setCardAmount(amount)}{'\u00a0'}UZS</span></h4>
+                className="blueText">Сумма: </span><span className="noWrap">{setCardAmount(amount)}{'\u00a0'}UZS</span>
+            </h4>
             <br/>
             <p className={styles["paymentListItem__secText"]}><span
                 className="blueText">Предмет: </span>{subject}</p>
             <p className={styles["paymentListItem__secText"]}><span
                 className="blueText">Цель: </span>{purpose}</p>
             <p className={styles["paymentListItem__secText"]}><span
-                className="blueText">Номер чека: </span>{checkNum}</p>
+                className="blueText">Номер чекаоперации: </span>{checkNum}</p>
             {
                 comments ?
                     <p className={styles["paymentListItem__secText"]}><span
@@ -86,7 +101,8 @@ function PaymentListItem({
                 <button
                     onClick={() => openFilesModal(_id)}
                     className={styles["paymentListItem__filesBtn"]}
-                >Документы на списание</button>
+                >Документы на списание
+                </button>
                 <div className={styles["paymentListItem__itemStatusBtns"]}>
                     <div className={styles["paymentListItem__itemStatusBtnBlock"]}>
                         <SecondaryBtn

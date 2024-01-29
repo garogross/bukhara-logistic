@@ -34,12 +34,15 @@ function PaymentDeleteModal({show,onClose,openNotModal}) {
     const onSubmit = (formData,onClose) => {
         setDeleteDates(formData)
         onClose()
-        // openNotModal()
-        // const onSuccess = () => {
-        // }
     }
 
-    const onDelete = (formData,onClose) =>  dispatch(deletePayments(formData,id,onClose))
+    const onDelete = (formData,onClose) => {
+        const onSuccess = () => {
+            onClose()
+            openNotModal()
+        }
+        dispatch(deletePayments(formData, id, onSuccess))
+    }
 
     return (
         <>

@@ -25,4 +25,11 @@
     <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="plus">
         <path d="M1 9H17M9 1V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
     </symbol>
+    <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 25" id="delete">
+        <path d="M8.5 12.25V18.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M13.5 12.25V18.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M1 6H21" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M3.5 9.75V19.75C3.5 21.8211 5.17894 23.5 7.25 23.5H14.75C16.8211 23.5 18.5 21.8211 18.5 19.75V9.75" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M7.25 3.5C7.25 2.11929 8.36929 1 9.75 1H12.25C13.6308 1 14.75 2.11929 14.75 3.5V6H7.25V3.5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
 </svg>

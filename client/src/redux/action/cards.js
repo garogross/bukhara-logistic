@@ -60,17 +60,13 @@ export const deleteCard = (id,clb) => async (dispatch,getState) => {
     }
 }
 
-export const updateCardTotalPayment = (id,amount,isSum) => (dispatch,getState) => {
+export const updateCardTotalPayment = (newItem) => (dispatch,getState) => {
     const payload = [...getState().cards.data]
 
-    const updatingIndex = payload.findIndex(item => item._id === id)
+    const updatingIndex = payload.findIndex(item => item._id === newItem._id)
 
     if(updatingIndex !== -1) {
-        payload[updatingIndex] = {
-            ...payload[updatingIndex],
-            totalPayments: isSum ?  +payload[updatingIndex].totalPayments + amount : amount
-        }
-
+        payload[updatingIndex] = newItem
         dispatch({type: GET_CARDS_SUCCESS,payload})
     }
 }
