@@ -24,12 +24,13 @@ const getFilteredPayments = async (cardId, regQuery,getCard) => {
         path: "acceptedBy",
         select: "fullName"
     })
+    regQuery.sort = '-date'
 
     const features = new ApiFeatures(query, {
         ...regQuery,
         card: cardId
     })
-    const filteredFeatures = features.paginate().filter()
+    const filteredFeatures = features.paginate().filter().sort()
     const filterObj = features.filter(true)
     const totalCount = await Payment.countDocuments(filterObj);
     const data = await filteredFeatures.query
