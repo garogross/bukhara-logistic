@@ -5,6 +5,7 @@ import {setRequiredProp} from "../utils/setRequiredProp.js";
 import {paymentStatuses} from "../constants.js";
 import bcrypt from "bcryptjs";
 import {AppError} from "../utils/appError.js";
+import {deleteFiles} from "../utils/files.js";
 
 const paymentSchema = new mongoose.Schema({
     files: {
@@ -75,6 +76,13 @@ paymentSchema.pre('findOneAndUpdate',  async function (next) {
         if (!this._update.acceptedBy) return next(new AppError("acceptedBy is required prop."))
         this._update.acceptedAt = new Date()
     }
+    next()
+})
+
+paymentSchema.pre('deleteOne',async function(next) {
+    const payment = await Payment.findById(this._conditions._id)
+    if(!payment || !payment.files.length) next()
+    deleteFiles(payment.files)
     next()
 })
 
