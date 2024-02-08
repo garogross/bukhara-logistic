@@ -5,7 +5,6 @@ import * as fs from "fs";
 export const deleteFiles = (files) => {
     files.forEach(item => {
         const filePath = path.join(DIRNAME.replace('/src',""), `public/${item}`);
-
         // Use fs.unlink to delete the file
         fs.unlink(filePath, (err) => {
             if (err) {

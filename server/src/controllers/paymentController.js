@@ -8,17 +8,18 @@ import {catchAsync} from "../utils/catchAsync.js";
 import {paymentStatuses, userRoles} from "../constants.js";
 import {ApiFeatures} from "../utils/apiFeatures.js";
 import {getCards} from "./cardController.js";
+import {resizeImage} from "../utils/sharp.js";
+import {deleteFiles} from "../utils/files.js";
 
+
+const handleFactory = new HandlerFactory(Payment, 'payment')
 
 export const downloadFile = catchAsync(async (req, res) => {
     if (!req.params.fileName) return new AppError("filename is required")
     res.download("public/files/" + req.params.fileName, req.params.fileName)
 })
 
-
-const handleFactory = new HandlerFactory(Payment, 'payment')
-
-const getFilteredPayments = async (cardId, regQuery,getCard) => {
+const getFilteredPayments = async (cardId, regQuery, getCard) => {
     const filterParams = {card: cardId}
     const query = Payment.find(filterParams).populate({
         path: "acceptedBy",
@@ -37,7 +38,7 @@ const getFilteredPayments = async (cardId, regQuery,getCard) => {
 
     const result = {totalCount, data}
     if (getCard) {
-        const card = await getCards(cardId,true)
+        const card = await getCards(cardId, true)
         result.card = card ? card[0] : null
     }
 
@@ -46,12 +47,43 @@ const getFilteredPayments = async (cardId, regQuery,getCard) => {
 
 export const uploadPaymentFiles = uploadFile.array("files[]")
 export const savePaymentFiles = catchAsync(async (req, res, next) => {
-    req.body.files = req.files.map((item, index) => `/files/${item.filename}`)
+    if (!req.files?.length) {
+        req.body.files = []
+        return next()
+    }
+    req.body.files = await Promise.all(req.files.map(async (item) => {
+        const filePath = `/files/${item.filename}`
+        if (item.mimetype.startsWith('image/')) {
+            await resizeImage(item, `public/files/resized-${item.filename}`)
+            deleteFiles([filePath])
+            return `/files/resized-${item.filename}`
+        } else {
+            return filePath
+        }
+    }))
+    next()
+})
+
+export const updatePaymentFiles = catchAsync(async (req, res,next) => {
+    if (!req.body.oldFiles) return next()
+    const {oldFiles} = req.body
+    const paramId = req.params.id
+    console.log("req.params.id", req.params.id)
+    const payment = await Payment.findById(paramId)
+    console.log("req.params.id2", paramId)
+    if (!payment) return next(new AppError('Invalid id param', 404))
+
+    const deletedFiles = payment.files.filter(item => !oldFiles.includes(item))
+
+    deleteFiles(deletedFiles)
+    const parsedOldFiles = JSON.parse(req.body.oldFiles)
+    req.body.files = [...req.body.files, ...parsedOldFiles]
+    delete req.body.oldFiles;
     next()
 })
 
 
-export const createPayment = catchAsync(async (req,res,next) => {
+export const createPayment = catchAsync(async (req, res, next) => {
     await Payment.create(req.body)
     req.params.cardId = req.body.card
     req.params.getCard = true
@@ -65,7 +97,7 @@ export const getAllPayment = catchAsync(async (req, res, next) => {
         }
     }
     const getCard = req.params.getCard
-    const {totalCount, data,card} = await getFilteredPayments(req.params.cardId, req.query,getCard)
+    const {totalCount, data, card} = await getFilteredPayments(req.params.cardId, req.query, getCard)
     res.send({
         card: card || null,
         status: "success",

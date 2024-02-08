@@ -13,7 +13,7 @@ export const multerStorage = multer.diskStorage({
         cb(null, `${Date.now()}-${uniqId}${type}`);
     },
     limits: {
-        fileSize: 1024 * 1024 * 20,
+        fileSize: 1024 * 1024 * 100,
     },
     fields: [{name: 'files', maxCount: 20}]
 });
