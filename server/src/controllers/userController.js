@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 
 import {User} from "../models/userModel.js";
-import {Card} from "../models/cardModel.js";
 import {HandlerFactory} from "./HandlerFactory.js";
 
 import {AppError} from "../utils/appError.js";

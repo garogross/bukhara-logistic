@@ -8,16 +8,16 @@ process.on('uncaughtException', (err) => {
     process.exit(1)
 })
 
-const isProduction = process.env.NODE_ENV
+const isProduction = process.env.NODE_ENV === "production"
 
-const db = !isProduction ? process.env.DATABASE_LOCAL : process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD)
+const db = isProduction ? process.env.DATABASE_LOCAL : process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD)
 
-mongoose.connect(db, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then((con) => {
-    console.log('db connected')
-}).catch(err => console.log(err))
+    mongoose.connect(db, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }).then((con) => {
+        console.log('db connected')
+    }).catch(err => console.log(err))
 
 const port = process.env.PORT || 5000
 

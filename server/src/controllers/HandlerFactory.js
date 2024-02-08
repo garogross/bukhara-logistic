@@ -24,7 +24,7 @@ export class HandlerFactory {
         const {Model,docName} = this
         return catchAsync(async function (req, res,next) {
             const resData = req.body
-            if(req.file) resData.photo = req.file.filename
+            console.log({resData})
             const doc = await Model.findByIdAndUpdate(req.params.id || req.user.id, resData, {new: true, runValidators: true})
 
             if (!doc) {
