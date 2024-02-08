@@ -3,11 +3,13 @@ import styles from "./PaymentListItem.module.scss";
 import {formatDate} from "../../../../utils/functions/date";
 import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
 import {paymentStatuses, userRoles} from "../../../../constants";
-import {deleteOnePayment, updatePayment} from "../../../../redux/action/payments";
+import {deleteOnePayment, updatePayment, updatePaymentStatus} from "../../../../redux/action/payments";
 import {useDispatch, useSelector} from "react-redux";
 import {setCardAmount} from "../../../../utils/functions/card";
-import {deleteIcon} from "../../../../assets/svg";
+import {deleteIcon, editIcon} from "../../../../assets/svg";
 import Svg from "../../../layout/Svg/Svg";
+import {useNavigate} from "react-router-dom";
+import {editPaymentPagePath} from "../../../../router/path";
 
 function PaymentListItem({
                              _id,
@@ -25,9 +27,11 @@ function PaymentListItem({
                              openFilesModal,
                              openNotModal,
                              notModalTexts,
-                             openDeleteSimpleModal
+                             openDeleteSimpleModal,
+                             card
                          }) {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const user = useSelector(state => state.auth.user)
 
     let
@@ -51,33 +55,47 @@ function PaymentListItem({
     }
 
     const onSubmitPayment = (id) => {
-        dispatch(updatePayment(
+        dispatch(updatePaymentStatus(
             id,
             paymentStatuses.submitted,
             () => openNotModal(notModalTexts.submit))
         )
     }
 
+
     const onAcceptPayment = (id) => {
-        dispatch(updatePayment(
+        dispatch(updatePaymentStatus(
             id,
             paymentStatuses.accepted,
             () => openNotModal(notModalTexts.accept)
         ))
     }
 
+    const editPaymentPath = `${editPaymentPagePath}/${_id}?card=${card}`
+
 
     return (
         <div className={styles["paymentListItem"]} key={_id}>
-            {
-                user.role === userRoles.employee && status === paymentStatuses.accepted ?
-                    null :
-                    <button
-                        onClick={() => openDeleteSimpleModal(_id)}
-                        className={styles["paymentListItem__deleteBtn"]}>
-                        <Svg id={deleteIcon} className={styles["paymentListItem__deleteIcon"]}/>
-                    </button>
-            }
+            <div className={styles["paymentListItem__actions"]}>
+                {
+                    user.role === userRoles.employee && status !== paymentStatuses.accepted ?
+                        <button
+                            onClick={() => navigate(editPaymentPath)}
+                            className={styles["paymentListItem__editBtn"]}>
+                            <Svg id={editIcon} className={styles["paymentListItem__editIcon"]}/>
+                        </button> : null
+                }
+                {
+                    user.role === userRoles.employee && status === paymentStatuses.accepted ?
+                        null :
+                        <button
+                            onClick={() => openDeleteSimpleModal(_id)}
+                            className={styles["paymentListItem__deleteBtn"]}>
+                            <Svg id={deleteIcon} className={styles["paymentListItem__deleteIcon"]}/>
+                        </button>
+                }
+            </div>
+
             <h4 className={styles["paymentListItem__mainText"]}><span
                 className="blueText">Дата: </span>
                 {formatDate(date)}</h4>

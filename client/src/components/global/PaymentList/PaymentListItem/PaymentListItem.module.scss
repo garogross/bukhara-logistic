@@ -15,10 +15,14 @@
     box-shadow: 0px 0px 0px 1px $color-main;
   }
 
-  &__deleteBtn {
+  &__actions {
     position: absolute;
     right: 20px;
     top: 20px;
+    @include flexCol();
+    gap: 8px;
+  }
+  &__deleteBtn {
     border: none;
     cursor: pointer;
     border-radius: 4px;
@@ -28,6 +32,18 @@
   }
 
   &__deleteIcon {
+    @include svg(26px,transparent)
+  }
+  &__editBtn {
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 6px 8px;
+    @include flexCol();
+    background-color: $color-main;
+  }
+
+  &__editIcon {
     @include svg(26px,transparent)
   }
 

@@ -8,9 +8,15 @@ import {
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
     GET_PAYMENTS_SUCCESS,
-    HIDE_ADD_NOT_POPUP, INIT_PAYMENT_PARAMS, SET_CUT_PAGE, SET_PAYMENT_FILTERS,
+    HIDE_ADD_NOT_POPUP,
+    INIT_PAYMENT_PARAMS,
+    SET_CUT_PAGE,
+    SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
+    UPDATE_PAYMENT_STATUS_ERROR,
+    UPDATE_PAYMENT_STATUS_LOADING_START,
+    UPDATE_PAYMENT_STATUS_SUCCESS,
     UPDATE_PAYMENT_SUCCESS
 } from "../types";
 import {
@@ -19,7 +25,7 @@ import {
     deletePaymentUrl,
     fetchRequest,
     getPaymentsUrl,
-    setFormError
+    setFormError, updatePaymentStatusUrl
 } from "./fetchTools";
 import {paymentStatuses} from "../../constants";
 import {isThisMonth} from "../../utils/functions/date";
@@ -53,8 +59,8 @@ export const getPayments = (id,clb) => async (dispatch) => {
         dispatch({type: GET_PAYMENTS_ERROR, payload})
     }
 }
-export const updatePayment = (id, status, clb) => async (dispatch, getState) => {
-    dispatch({type: UPDATE_PAYMENT_LOADING_START})
+export const updatePaymentStatus = (id, status, clb) => async (dispatch, getState) => {
+    dispatch({type: UPDATE_PAYMENT_STATUS_LOADING_START})
     try {
         const reqData = {status}
         let acceptedBy = null
@@ -63,7 +69,7 @@ export const updatePayment = (id, status, clb) => async (dispatch, getState) => 
             reqData.acceptedBy = _id
             acceptedBy = {_id, fullName}
         }
-        const fetchData = await fetchRequest(getPaymentsUrl + id, "PATCH", JSON.stringify(reqData))
+        const fetchData = await fetchRequest(updatePaymentStatusUrl + id, "PATCH", JSON.stringify(reqData))
 
         const payload = [...getState().payments.data]
         const updatingItemIndex = payload.findIndex(item => item._id === id)
@@ -71,11 +77,11 @@ export const updatePayment = (id, status, clb) => async (dispatch, getState) => 
             {...fetchData.data, acceptedBy} :
             fetchData.data
 
-        dispatch({type: UPDATE_PAYMENT_SUCCESS, payload})
+        dispatch({type: UPDATE_PAYMENT_STATUS_SUCCESS, payload})
         clb()
     } catch (payload) {
         console.error("err", payload)
-        dispatch({type: UPDATE_PAYMENT_ERROR, payload})
+        dispatch({type: UPDATE_PAYMENT_STATUS_ERROR, payload})
     }
 }
 
@@ -104,6 +110,49 @@ export const addPayment = (reqData, clb) => async (dispatch) => {
     } catch (payload) {
         console.error("err", payload.message)
         dispatch(setFormError(ADD_PAYMENT_ERROR, payload))
+    }
+}
+
+export const updatePayment = (reqData,id, clb) => async (dispatch,getState) => {
+    dispatch({type: UPDATE_PAYMENT_LOADING_START})
+    try {
+        reqData.oldFiles = JSON.stringify(reqData.files.filter(item => typeof item === 'string'))
+        reqData.files = reqData.files.filter(item => typeof item !== 'string')
+        const formData = new FormData()
+
+        for (let key in reqData) {
+            if (key === "files") {
+                for (let i = 0; i < reqData.files.length; i++) {
+                    formData.append('files[]', reqData.files[i])
+                }
+            } else {
+                formData.append(key, reqData[key]);
+            }
+        }
+
+
+        const {data} = await fetchRequest(`${getPaymentsUrl}${id}`, "PATCH", formData, authConfig(true))
+
+        const payments = getState().payments.data
+
+        const updatingIndex = payments.findIndex(item => item._id === id)
+
+        if(updatingIndex !== -1) {
+            const payload = [...payments]
+            payload[updatingIndex] = data
+
+            dispatch({type: UPDATE_PAYMENT_SUCCESS, payload})
+
+        }
+        if (data.amount !== formData.amount || isThisMonth(data.date)) {
+            const cards = getState().cards.data
+            const card = cards.find(item => item._id === data.card)
+            if(card) dispatch(updateCardTotalPayment(card))
+        }
+        clb()
+    } catch (payload) {
+        console.error("err", payload.message)
+        dispatch(setFormError(UPDATE_PAYMENT_ERROR, payload))
     }
 }
 export const setAddPaymentError = (payload) => dispatch => dispatch(setFormError(ADD_PAYMENT_ERROR, payload))
