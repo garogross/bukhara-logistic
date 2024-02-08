@@ -8,11 +8,13 @@ import {Navigate} from "react-router-dom";
 import React from "react";
 import AdminEmployeesPage from "../pages/Admin/AdminEmployeesPage/AdminEmployeesPage";
 import AdminPaymentsPage from "../pages/Admin/AdminPaymentsPage/AdminPaymentsPage";
+import EditPaymentPage from "../pages/EditPaymentPage/EditPaymentPage";
 
 export const mainPagePath = '/'
 export const loginPagePath = '/login'
 export const paymentsPagePath = '/payments'
 export const addPaymentPagePath = '/addPayment'
+export const editPaymentPagePath = '/editPayment'
 
 // админ
 export const adminMainPagePath = '/admin/'
@@ -58,6 +60,23 @@ export const routes = [
             {
                 path: ":id",
                 component: <PrivateRoute element={<AddPaymentPage/>}/>
+            }
+        ]
+    },
+    {
+        path: editPaymentPagePath,
+        component: <PrivateRoute
+            element={
+                <Navigate
+                    to={mainPagePath}
+                    replace={true}
+                />
+            }
+        />,
+        children: [
+            {
+                path: ":id",
+                component: <PrivateRoute element={<EditPaymentPage/>}/>
             }
         ]
     },

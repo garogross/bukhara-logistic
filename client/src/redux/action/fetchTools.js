@@ -35,6 +35,7 @@ export const createCardsUrl = '/cards/create'
 // payments
 export const getPaymentsUrl = '/payments/'
 export const createPaymentsUrl = '/payments/create/'
+export const updatePaymentStatusUrl = '/payments/updateStatus/'
 export const downloadFileUrl = '/payments/download/'
 export const deletePaymentUrl = '/payments/delete/'
 

@@ -44,7 +44,7 @@ function PaymentList({isAdmin}) {
     const cards = useSelector(state => state.cards.data)
     const cardLoading = useSelector(state => state.cards.getLoading)
     const getLoading = useSelector(state => state.payments.getLoading)
-    const updateLoading = useSelector(state => state.payments.updateLoading)
+    const updateLoading = useSelector(state => state.payments.updateStatusLoading)
     const payments = useSelector(state => state.payments.data)
     const isAddNotShowing = useSelector(state => state.payments.isAddNotShowing)
     const totalCount = useSelector(state => state.payments.totalCount)

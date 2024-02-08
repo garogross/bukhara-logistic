@@ -8,6 +8,8 @@
     @include flexCol();
     gap: 20px;
     flex-wrap: wrap;
+    overflow: auto;
+    max-height: calc(100vh - 200px);
   }
 
   &__images {
@@ -22,6 +24,7 @@
     object-fit: contain;
     border-radius: 8px;
     background-color: $color-black;
+    cursor: pointer;
   }
 
   &__files {

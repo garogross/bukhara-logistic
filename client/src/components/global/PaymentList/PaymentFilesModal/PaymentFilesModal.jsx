@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import NewPortalProvider from "../../../../providers/NewPortalProvider";
 import Backdrop from "../../../layout/Backdrop/Backdrop";
@@ -7,53 +7,52 @@ import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 
 import {baseUrl, downloadFileUrl, proxy} from "../../../../redux/action/fetchTools";
 import styles from "./PaymentFilesModal.module.scss"
-import {isProduction} from "../../../../constants";
+import {imageTypes, isProduction} from "../../../../constants";
+import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
+import PaymentImageSlider from "../PaymentImageSlider/PaymentImageSlider";
 
-const imageTypes = [
-    "jpg",
-    "png",
-    "webp",
-    "jpeg",
-    "gif",
-    "svg",
-]
+
 
 function PaymentFilesModal({curFiles, onClose}) {
+    const [isSliderOpened,setIsSliderOpened] = useState(null)
     const show = !!(curFiles)
 
     const imageFiles = curFiles.filter(item => imageTypes.some(type => item.endsWith(type)))
     const otherFiles = curFiles.filter(item => !imageTypes.some(type => item.endsWith(type)))
 
-    const getFileName = (file) => file.replace("/files/", "")
+    const openSlider = (index) => setIsSliderOpened(index)
+    const closeSlider = () => setIsSliderOpened(null)
 
-    const imagePath = (item) =>  `${isProduction ? proxy : ""}/api${item}`
+    const onClickBackdrop = () => {
+        isSliderOpened ? closeSlider() : onClose()
+    }
 
     return (
         <>
-            <Backdrop onClose={onClose} inProp={show}/>
+            <Backdrop onClose={onClickBackdrop} inProp={show}/>
             <NewPortalProvider>
                 <TransitionProvider
                     className={`${styles['paymentFilesModal']} popupBox`}
                     style={'opacity'}
-                    inProp={show}
+                    inProp={show && !isSliderOpened}
                 >
                     <CrossBtn onClick={onClose}/>
                     <h4 className={`popupTitle`}>Файлы списания</h4>
                     <div className={styles["paymentFilesModal__main"]}>
                         <div className={styles["paymentFilesModal__images"]}>
                             {
-                                imageFiles.map(item => (
-                                    <a
+                                imageFiles.map((item,index) => (
+                                    <button
                                         key={item}
-                                        href={`${proxy}${baseUrl}${downloadFileUrl}${getFileName(item)}`}
-                                        download={getFileName(item)}
+                                        onClick={() => openSlider(index)}
+                                        className={styles["paymentFilesModal__btn"]}
                                     >
-                                    <img
-                                        src={imagePath(item)}
-                                        alt="file"
-                                        className={styles["paymentFilesModal__img"]}
-                                    />
-                                    </a>
+                                        <img
+                                            src={imagePath(item)}
+                                            alt="file"
+                                            className={styles["paymentFilesModal__img"]}
+                                        />
+                                    </button>
                                 ))
                             }
                         </div>
@@ -61,7 +60,7 @@ function PaymentFilesModal({curFiles, onClose}) {
                             {
                                 otherFiles.map(item => (
                                     <a
-                                        href={`${proxy}${baseUrl}${downloadFileUrl}${getFileName(item)}`}
+                                        href={downloadFilePath(item)}
                                         download={getFileName(item)}
                                         className={styles["paymentFilesModal__fileText"]}
                                         key={item}
@@ -71,6 +70,11 @@ function PaymentFilesModal({curFiles, onClose}) {
                         </div>
                     </div>
                 </TransitionProvider>
+                <PaymentImageSlider
+                    curFiles={imageFiles}
+                    showIndex={isSliderOpened}
+                    onClose={closeSlider}
+                />
             </NewPortalProvider>
         </>
     );

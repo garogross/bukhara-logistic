@@ -5,10 +5,10 @@ import {
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
     GET_PAYMENTS_SUCCESS, HIDE_ADD_NOT_POPUP, INIT_CUT_PAGE, INIT_PAYMENT_PARAMS, REMOVE_PAYMENT_FILTERS,
-    RESET_PAYMENT_STATE, SET_CUT_PAGE, SET_PAYMENT_FILTERS,
-    UPDATE_PAYMENT_ERROR,
-    UPDATE_PAYMENT_LOADING_START,
-    UPDATE_PAYMENT_SUCCESS
+    RESET_PAYMENT_STATE, SET_CUT_PAGE, SET_PAYMENT_FILTERS, UPDATE_PAYMENT_ERROR, UPDATE_PAYMENT_LOADING_START,
+    UPDATE_PAYMENT_STATUS_ERROR,
+    UPDATE_PAYMENT_STATUS_LOADING_START,
+    UPDATE_PAYMENT_STATUS_SUCCESS, UPDATE_PAYMENT_SUCCESS
 } from "../types";
 
 
@@ -16,6 +16,8 @@ const initialState = {
     data: [],
     getLoading: false,
     getError: null,
+    updateStatusLoading: false,
+    updateStatusError: null,
     updateLoading: false,
     updateError: null,
     addLoading: false,
@@ -52,6 +54,27 @@ export const paymentsReducer = (state = initialState, action) => {
                 ...state,
                 getError: payload,
                 getLoading: false
+            }
+        }
+        case UPDATE_PAYMENT_STATUS_SUCCESS: {
+            return {
+                ...state,
+                data: payload,
+                updateStatusLoading: false
+            }
+        }
+        case UPDATE_PAYMENT_STATUS_LOADING_START: {
+            return {
+                ...state,
+                updateStatusLoading: true,
+                updateStatusError: null,
+            }
+        }
+        case UPDATE_PAYMENT_STATUS_ERROR: {
+            return {
+                ...state,
+                updateStatusError: payload,
+                updateStatusLoading: false
             }
         }
         case UPDATE_PAYMENT_SUCCESS: {

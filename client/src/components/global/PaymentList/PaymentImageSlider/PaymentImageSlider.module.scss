@@ -1,0 +1,54 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+
+.imageSlider {
+  display: block;
+
+  :global(.slick-slider) {
+    height: calc(100vh - 180px);
+  }
+
+  :global(.slick-list),:global(.slick-track) {
+    display: flex;
+    height: 100%;
+  }
+  :global(.slick-slide>div) {
+    height: 100%;
+  }
+
+
+  &__item {
+    width: 100%;
+    height: 100%;
+    @include flexCol()
+  }
+
+  &__img {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    transition: $transition;
+
+    &_zoomed {
+      transform: scale(1.5);
+      @include mdScreenMedia {
+        transform: scale(2);
+      }
+    }
+  }
+
+  &__downloadBtn {
+    display: block;
+    width: fit-content;
+    margin: 10px auto 0;
+    text-decoration: none;
+  }
+
+  &__crossBtn {
+    z-index: 5;
+  }
+}
