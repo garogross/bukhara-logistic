@@ -61,7 +61,7 @@ export const savePaymentFiles = catchAsync(async (req, res, next) => {
             return filePath
         }
     }))
-    next()
+    return next()
 })
 
 export const updatePaymentFiles = catchAsync(async (req, res,next) => {
@@ -79,7 +79,7 @@ export const updatePaymentFiles = catchAsync(async (req, res,next) => {
     const parsedOldFiles = JSON.parse(req.body.oldFiles)
     req.body.files = [...req.body.files, ...parsedOldFiles]
     delete req.body.oldFiles;
-    next()
+    return next()
 })
 
 
@@ -87,7 +87,7 @@ export const createPayment = catchAsync(async (req, res, next) => {
     await Payment.create(req.body)
     req.params.cardId = req.body.card
     req.params.getCard = true
-    next()
+    return next()
 })
 export const getAllPayment = catchAsync(async (req, res, next) => {
     if (req.user.role === userRoles.employee) {
@@ -110,6 +110,7 @@ export const getAllPayment = catchAsync(async (req, res, next) => {
 
 export const updatePayment = handleFactory.updateOne()
 
+
 export const deletePayments = catchAsync(async (req, res, next) => {
     const {from, to} = req.body
     const {cardId} = req.params
@@ -121,7 +122,6 @@ export const deletePayments = catchAsync(async (req, res, next) => {
         date: {$gte: new Date(from), $lte: new Date(to)}
     })
     req.params.getCard = true
-    next()
 })
 
 export const deleteOnePayment = catchAsync(async (req, res, next) => {
@@ -137,5 +137,5 @@ export const deleteOnePayment = catchAsync(async (req, res, next) => {
     await Payment.deleteOne({_id})
     req.params.cardId = curPayment.card
     req.params.getCard = true
-    next()
+    return  next()
 })

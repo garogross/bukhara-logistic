@@ -24,7 +24,6 @@ export class HandlerFactory {
         const {Model,docName} = this
         return catchAsync(async function (req, res,next) {
             const resData = req.body
-            console.log({resData})
             const doc = await Model.findByIdAndUpdate(req.params.id || req.user.id, resData, {new: true, runValidators: true})
 
             if (!doc) {

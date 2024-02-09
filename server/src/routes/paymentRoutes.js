@@ -16,6 +16,11 @@ paymentRouter.use(protect)
 // private routes
 
 paymentRouter.patch(
+    '/updateStatus/:id',
+    updatePayment
+)
+
+paymentRouter.patch(
     '/:id',
     uploadPaymentFiles,
     savePaymentFiles,
@@ -23,10 +28,6 @@ paymentRouter.patch(
     updatePayment
 )
 paymentRouter.get('/:cardId', getAllPayment)
-paymentRouter.patch(
-    'updateStatus/:id',
-    updatePayment
-)
 
 paymentRouter.post(
     '/create',
@@ -43,8 +44,3 @@ paymentRouter.delete(
 )
 
 paymentRouter.use(restrictTo(userRoles.admin, userRoles.superAdmin))
-// paymentRouter.delete(
-//     "/:cardId",
-//     deletePayments,
-//     getAllPayment
-// )
