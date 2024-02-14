@@ -78,7 +78,7 @@ function PaymentFilterModal({show, onClose, onSaveFilters,id}) {
             <Backdrop inProp={show} onClose={onClose} highZIndex={true}/>
             <NewPortalProvider>
                 <TransitionProvider
-                    className={`${styles["filterModal"]} popupBox`}
+                    className={`${styles["filterModal"]}`}
                     inProp={show}
                     style={'right'}
                 >
