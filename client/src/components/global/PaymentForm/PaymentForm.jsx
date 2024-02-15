@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import EXIF from 'exif-js';
 import {useFormValue} from "../../../hooks/useFormValue";
 import {setCardNumText} from "../../../utils/functions/card";
 
@@ -13,7 +12,7 @@ import Svg from "../../layout/Svg/Svg";
 import {crossIcon} from "../../../assets/svg";
 import styles from "./PaymentForm.module.scss"
 import BackBtn from "../../layout/BackBtn/BackBtn";
-import {getFileName} from "../../../utils/functions/files";
+import {getFileName, onUploadFile} from "../../../utils/functions/files";
 
 
 function PaymentForm({
@@ -26,7 +25,7 @@ function PaymentForm({
                          curItem,
                          getLoading
                      }) {
-    const [isStateLoaded,setIsStateLoaded] = useState(false)
+    const [isStateLoaded, setIsStateLoaded] = useState(false)
     const {formData, onChange, setFormData, clearInputError} = useFormValue(initialState || {
         files: [],
         subject: "",
@@ -38,8 +37,7 @@ function PaymentForm({
     }, setError, error)
 
     useEffect(() => {
-        console.log({initialState})
-        if(initialState && !isStateLoaded) {
+        if (initialState && !isStateLoaded) {
             setFormData(initialState)
             setIsStateLoaded(true)
         }
@@ -72,14 +70,13 @@ function PaymentForm({
         }))
     }
 
-    const onUploadFile = (e) => {
-        const filteredFiles = filterFiles(e.target.files)
+
+    const addFiles = (file) => {
         setFormData(prevState => ({
             ...prevState,
-            files: [...filteredFiles, ...e.target.files]
+            files: [...prevState.files, file]
         }))
     }
-
 
     return (
         <div className={`${styles["paymentForm"]} topDistanceBlock`}>
@@ -110,7 +107,7 @@ function PaymentForm({
                                     type="file"
                                     multiple
                                     className={styles["paymentForm__fileUploadInput"]}
-                                    onChange={e => onUploadFile(e)}
+                                    onChange={e => onUploadFile(e,addFiles)}
                                     onClick={onClickUploadFile}
                                 />
                                 <span>Загрузить файл</span>
@@ -120,6 +117,7 @@ function PaymentForm({
                                 {
                                     formData?.files?.map((item) => {
                                         const fileName = item?.name || getFileName(item)
+
                                         return (
                                             <div className={styles["paymentForm__fileItem"]} key={fileName}>
                                                 <p className={`${styles["paymentForm__fileName"]} contentTxt`}>Загружен

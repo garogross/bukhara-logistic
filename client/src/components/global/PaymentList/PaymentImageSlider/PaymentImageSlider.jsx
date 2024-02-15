@@ -33,7 +33,6 @@ function PaymentImageSlider({showIndex, curFiles, onClose}) {
     const toggleZoom = () => {
         if(!isDragging) setIsZoomed(prevState => !prevState)
     }
-    console.log({isDragging})
 
     const changeActiveIndex = (index) => {
         setIsDragging(false)
