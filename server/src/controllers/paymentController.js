@@ -68,9 +68,7 @@ export const updatePaymentFiles = catchAsync(async (req, res,next) => {
     if (!req.body.oldFiles) return next()
     const {oldFiles} = req.body
     const paramId = req.params.id
-    console.log("req.params.id", req.params.id)
     const payment = await Payment.findById(paramId)
-    console.log("req.params.id2", paramId)
     if (!payment) return next(new AppError('Invalid id param', 404))
 
     const deletedFiles = payment.files.filter(item => !oldFiles.includes(item))
