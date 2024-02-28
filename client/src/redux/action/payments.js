@@ -9,7 +9,7 @@ import {
     GET_PAYMENTS_LOADING_START,
     GET_PAYMENTS_SUCCESS,
     HIDE_ADD_NOT_POPUP,
-    INIT_PAYMENT_PARAMS,
+    INIT_PAYMENT_PARAMS, SET_CUR_YEAR,
     SET_CUT_PAGE,
     SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
@@ -28,13 +28,12 @@ import {
     setFormError, updatePaymentStatusUrl
 } from "./fetchTools";
 import {paymentStatuses} from "../../constants";
-import {isThisMonth} from "../../utils/functions/date";
-import {updateCardTotalPayment} from "./cards";
 
 
 const getUrlWithFiltersQuery = (url) => (dispatch,getState) => {
     const filters = getState().payments.filters
     const page = getState().payments.curPage
+    const year = getState().payments.curYear
 
     let filtersQuery = ""
     if (filters) {
@@ -44,7 +43,8 @@ const getUrlWithFiltersQuery = (url) => (dispatch,getState) => {
         }
     }
 
-    return `${url}?page=${page}${filtersQuery}`
+
+    return `${url}?page=${page}&year=${year}&${filtersQuery}`
 }
 
 export const getPayments = (id,clb) => async (dispatch) => {
@@ -100,12 +100,9 @@ export const addPayment = (reqData, clb) => async (dispatch) => {
             }
         }
 
-
-        const {data,totalCount,card} = await fetchRequest(createPaymentsUrl, "POST", formData, authConfig(true))
+    const url = dispatch(getUrlWithFiltersQuery(createPaymentsUrl))
+        const {data,totalCount} = await fetchRequest(url, "POST", formData, authConfig(true))
         dispatch({type: ADD_PAYMENT_SUCCESS, payload: {data,totalCount}})
-        if (isThisMonth(formData.date) && +formData.amount > 0) {
-            dispatch(updateCardTotalPayment(card))
-        }
         clb()
     } catch (payload) {
         console.error("err", payload.message)
@@ -142,12 +139,6 @@ export const updatePayment = (reqData,id, clb) => async (dispatch,getState) => {
             payload[updatingIndex] = data
 
             dispatch({type: UPDATE_PAYMENT_SUCCESS, payload})
-
-        }
-        if (data.amount !== formData.amount || isThisMonth(data.date)) {
-            const cards = getState().cards.data
-            const card = cards.find(item => item._id === data.card)
-            if(card) dispatch(updateCardTotalPayment(card))
         }
         clb()
     } catch (payload) {
@@ -165,11 +156,8 @@ export const hideAddNotPopup = () => dispatch => {
 export const deletePayments = (formData, id, clb) => async (dispatch) => {
     dispatch({type: DELETE_PAYMENTS_LOADING_START})
     try {
-        const {data,totalCount,card} = await fetchRequest(getPaymentsUrl + id, "DELETE", JSON.stringify(formData))
+        const {data,totalCount} = await fetchRequest(getPaymentsUrl + id, "DELETE", JSON.stringify(formData))
         dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
-        if (isThisMonth(formData.to, true)) {
-            dispatch(updateCardTotalPayment(card))
-        }
         dispatch(initPaymentParams())
         clb()
     } catch (payload) {
@@ -185,12 +173,7 @@ export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
     try {
         const url = dispatch(getUrlWithFiltersQuery(`${deletePaymentUrl}${id}`))
 
-        const {data,totalCount,card} = await fetchRequest(url, "DELETE")
-        const payments = getState().payments.data
-        const curPayment = payments.find(item => item._id === id)
-        if (isThisMonth(curPayment.date, true)) {
-            dispatch(updateCardTotalPayment(card))
-        }
+        const {data,totalCount} = await fetchRequest(url, "DELETE")
         dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
         clb()
     } catch (payload) {
@@ -201,4 +184,5 @@ export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
 
 export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS,payload})
 export const setPaymentCurPage = (payload) => dispatch => dispatch({type: SET_CUT_PAGE,payload})
+export const setCurYear = (payload) => dispatch => dispatch({type: SET_CUR_YEAR,payload})
 export const initPaymentParams = () => dispatch => dispatch({type: INIT_PAYMENT_PARAMS})

@@ -2,12 +2,21 @@
 @import "../../../styles/mixins";
 
 .mainCardsList {
-  @include flexCol();
+  width: 100%;
+  @include flexCol(stretch,stretch);
   flex-direction: column;
   gap: 20px;
 
-  @include smScreenMedia {
-    gap: 14px;
+
+
+  &__container {
+    @include flexCol();
+    flex-direction: column;
+    gap: 20px;
+
+    @include smScreenMedia {
+      gap: 14px;
+    }
   }
 
   &__item {

@@ -45,18 +45,28 @@
     margin: 0 auto;
   }
 
-  &__deleteBtn {
+  &__itemBtn {
     white-space: nowrap;
     cursor: pointer;
     border: none;
-    background-color: #ff4040;
+    background-color: $color-main;
     border-radius: 6px;
     padding: 6px 8px;
     @include setFont(14px, 700)
   }
 
+  &__hideBtn {
+      background-color: $color-polo-blue;
+  }
+
+  &__deleteBtn {
+    background-color: $color-red;
+  }
+
   &__cardsBlockHeader {
     @include flexCol(space-between);
+    flex-direction: column;
+    gap: 6px;
     padding-top: 8px;
     padding-bottom: 10px;
   }

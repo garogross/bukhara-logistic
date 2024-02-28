@@ -6,13 +6,13 @@ export class ApiFeatures {
 
 
 
-    filter(getQueryObj) {
+    filter(getQueryObj,filterBy) {
         const queryCopy = {...this.queryString}
         const queryExcluded = ['sort', 'page', 'limit']
         queryExcluded.forEach(item => delete queryCopy[item])
 
         const queryStr = JSON.stringify(queryCopy)
-        const queryObj = JSON.parse(queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`))
+        let queryObj = JSON.parse(queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`))
         for(let key in queryObj) {
             if(key.endsWith('-regex')) {
                 const originalKey = key.replace("-regex","")
@@ -20,6 +20,7 @@ export class ApiFeatures {
                 delete queryObj[key]
             }
         }
+        if(filterBy) queryObj = {...queryObj,...filterBy}
         if(getQueryObj) return queryObj
         this.query.find(queryObj)
 

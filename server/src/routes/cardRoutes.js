@@ -1,11 +1,6 @@
 import express from "express";
 import {protect, restrictTo} from "../controllers/authController.js";
-import {
-    createCard,
-    deleteCard,
-    getAllCard,
-    validateCard
-} from "../controllers/cardController.js";
+import {createCard, deleteCard, getAllCard, updateCard, validateCard} from "../controllers/cardController.js";
 
 import {userRoles} from "../constants.js";
 
@@ -15,7 +10,10 @@ cardRouter.use(protect)
 cardRouter.get('/', getAllCard)
 // private routes
 
-cardRouter.use(restrictTo(userRoles.admin,userRoles.superAdmin))
+cardRouter.use(restrictTo(userRoles.admin, userRoles.superAdmin))
 // admin restricted routes
-cardRouter.post('/create',validateCard, createCard)
-cardRouter.delete("/:id",deleteCard)
+cardRouter.post('/create', validateCard, createCard)
+cardRouter
+    .route("/:id")
+    .delete(deleteCard)
+    .patch(updateCard)

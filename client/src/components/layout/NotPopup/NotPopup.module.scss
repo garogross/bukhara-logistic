@@ -6,6 +6,7 @@
   left: 0;
   width: 100%;
   @include flexCol();
+  z-index: 666;
 
 
   &__container {
