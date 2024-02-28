@@ -1,8 +1,16 @@
 import {
     ADD_CARDS_ERROR,
     ADD_CARDS_LOADING_START,
-    ADD_CARDS_SUCCESS, DELETE_CARDS_ERROR, DELETE_CARDS_LOADING_START, DELETE_CARDS_SUCCESS,
-    GET_CARDS_ERROR, GET_CARDS_LOADING_START, GET_CARDS_SUCCESS, RESET_CARD_STATE, RESET_USER_STATE
+    ADD_CARDS_SUCCESS,
+    DELETE_CARDS_ERROR,
+    DELETE_CARDS_LOADING_START,
+    DELETE_CARDS_SUCCESS,
+    GET_CARDS_ERROR,
+    GET_CARDS_LOADING_START,
+    GET_CARDS_SUCCESS,
+    RESET_CARD_STATE,
+    UPDATE_CARD_STATUS_ERROR, UPDATE_CARD_STATUS_LOADING_START,
+    UPDATE_CARD_STATUS_SUCCESS
 } from "../types";
 
 
@@ -14,6 +22,8 @@ const initialState = {
     addError: null,
     deleteLoading: false,
     deleteError: null,
+    updateStatusLoading: false,
+    updateStatusError: null,
 }
 
 export const cardsReducer = (state = initialState, action) => {
@@ -83,6 +93,29 @@ export const cardsReducer = (state = initialState, action) => {
                 deleteLoading: false
             }
         }
+
+        case UPDATE_CARD_STATUS_SUCCESS: {
+            return {
+                ...state,
+                data: payload,
+                updateStatusLoading: false
+            }
+        }
+        case UPDATE_CARD_STATUS_LOADING_START: {
+            return {
+                ...state,
+                updateStatusLoading: true,
+                updateStatusError: null,
+            }
+        }
+        case UPDATE_CARD_STATUS_ERROR: {
+            return {
+                ...state,
+                updateStatusError: payload,
+                updateStatusLoading: false
+            }
+        }
+
         case RESET_CARD_STATE: return initialState
         default:
             return state

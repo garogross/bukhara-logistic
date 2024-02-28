@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Slider from "react-slick";
 import TransitionProvider from "../../../../providers/TransitionProvider";
-import Backdrop from "../../../layout/Backdrop/Backdrop";
+
 import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
 
 import styles from "./PaymentImageSlider.module.scss"

@@ -1,6 +1,4 @@
 import {
-    ADD_CARDS_ERROR,
-    ADD_CARDS_LOADING_START,
     LOGIN_ERROR,
     LOGIN_LOADING_START,
     LOGIN_SUCCESS,
@@ -12,14 +10,13 @@ import {
     UPDATE_PASSWORD_SUCCESS,
 } from "../types";
 import {
-    baseConfig, createCardsUrl,
-    fetchRequest, setError, setFormError,
+    baseConfig,
+    fetchRequest, setFormError,
     siginUrl, updatePasUrl,
 } from "./fetchTools";
 import {getLSItem, removeLSItem, setLSItem} from "../../utils/functions/localStorage";
 import {lsProps} from "../../utils/lsProps";
 import {userRoles} from "../../constants";
-import {saveNewCard} from "./cards";
 
 export const login = (formData, clb) => async (dispatch) => {
     dispatch({type: LOGIN_LOADING_START})

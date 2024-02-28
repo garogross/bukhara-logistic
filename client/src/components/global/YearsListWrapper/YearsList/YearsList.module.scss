@@ -1,0 +1,42 @@
+@import "../../../../styles/vars";
+@import "../../../../styles/mixins";
+
+
+.yearsList {
+  background-color: $color-black;
+  border-radius: 10px;
+  padding: 8px;
+  @include flexCol();
+  gap: 10px;
+  flex-direction: column;
+  position: sticky;
+  top: 70px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @include smScreenMedia {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  &__item {
+    background-color: $color-blue-rhino;
+    padding: 4px;
+    border-radius: 4px;
+    @include setFont(16px, 500);
+    cursor: pointer;
+    border: none;
+
+    &:disabled {
+      cursor: default;
+      background-color: $color-polo-blue;
+    }
+
+    &_active {
+      background-color: $color-main;
+    }
+  }
+}

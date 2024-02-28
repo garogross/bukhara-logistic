@@ -5,9 +5,8 @@ import Backdrop from "../../../layout/Backdrop/Backdrop";
 import TransitionProvider from "../../../../providers/TransitionProvider";
 import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 
-import {baseUrl, downloadFileUrl, proxy} from "../../../../redux/action/fetchTools";
 import styles from "./PaymentFilesModal.module.scss"
-import {imageTypes, isProduction} from "../../../../constants";
+import {imageTypes} from "../../../../constants";
 import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
 import PaymentImageSlider from "../PaymentImageSlider/PaymentImageSlider";
 

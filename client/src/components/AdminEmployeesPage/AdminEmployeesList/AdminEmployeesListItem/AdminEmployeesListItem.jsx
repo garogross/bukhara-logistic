@@ -1,19 +1,19 @@
 import React from 'react';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setUserFullName} from "../../../../utils/functions/setUserFullName";
-import {userRoles} from "../../../../constants";
+import {todayYear, userRoles} from "../../../../constants";
 import {setCardAmount, setCardNumText} from "../../../../utils/functions/card";
 import Svg from "../../../layout/Svg/Svg";
 import {plusIcon} from "../../../../assets/svg";
 import {adminPaymentsPagePath} from "../../../../router/path";
 import {useNavigate} from "react-router-dom";
-import {addCard, deleteCard} from "../../../../redux/action/cards";
-import {deleteUser} from "../../../../redux/action/users";
+import {addCard, updateCardStatus} from "../../../../redux/action/cards";
 import styles from "./AdminEmployeesListItem.module.scss";
 
 function AdminEmployeesListItem({
                                     cards,
-                                    totalAmount,
+                                    totalMonthlyPayments,
+                                    totalYearlyPayments,
                                     _id,
                                     fullName,
                                     profession,
@@ -25,6 +25,8 @@ function AdminEmployeesListItem({
                                 }) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const curYear = useSelector(state => state.payments.curYear)
 
     const isEmployee = role === userRoles.employee
 
@@ -79,7 +81,7 @@ function AdminEmployeesListItem({
                     }
                     <button
                         onClick={() => onOpenDeleteEmployeePopup(_id)}
-                        className={styles["adminEmployeesListItem__deleteBtn"]}>Удалить сотрудника
+                        className={`${styles["adminEmployeesListItem__itemBtn"]} ${styles["adminEmployeesListItem__deleteBtn"]}`}>Удалить сотрудника
                     </button>
                 </div>
             </div>
@@ -89,15 +91,25 @@ function AdminEmployeesListItem({
                         <div className={styles["adminEmployeesListItem__cardsBlockHeader"]}>
                             {
                                 isEmployee ?
-                                    <p className={`${styles["adminEmployeesListItem__amountText"]} contentTxt`}>
-                                        Общая Сумма списаний за месяц - <span
-                                        className="blueText noWrap">{setCardAmount(totalAmount)}{'\u00a0'}UZS</span></p>
+                                    <>
+                                        <p className={`${styles["adminEmployeesListItem__amountText"]} contentTxt`}>
+                                            Сумма списаний за год - <span
+                                            className="blueText noWrap">{setCardAmount(totalYearlyPayments)}{'\u00a0'}UZS</span>
+                                        </p>
+                                        {curYear === todayYear ?
+                                            <p className={`${styles["adminEmployeesListItem__amountText"]} contentTxt`}>
+                                                Сумма списаний за месяц - <span
+                                                className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
+                                            </p>
+                                            : null
+                                        }
+                                    </>
                                     : null
                             }
                         </div>
                         <div className={styles["adminEmployeesListItem__cardsList"]}>
                             {
-                                cards.map(({_id: cardId, number, totalPayments}) => (
+                                cards.map(({_id: cardId, number, totalMonthlyPayments, isHidden}) => (
                                     <div style={{cursor: "pointer"}}
                                          onClick={e => onClickItem(e, cardId)}
                                          key={cardId}
@@ -107,11 +119,20 @@ function AdminEmployeesListItem({
                                             className={styles["adminEmployeesListItem__cardAmountBlock"]}>
                                             <p className={`contentTxt`}>Сумма
                                                 списаний за месяц - <span
-                                                    className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
+                                                    className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
                                             </p>
                                             <button
+                                                onClick={() => dispatch(updateCardStatus(cardId,!isHidden))}
+                                                className={
+                                                    `${styles["adminEmployeesListItem__itemBtn"]} ` +
+                                                    `${isHidden ? styles["adminEmployeesListItem__hideBtn"] : ""}`
+                                                }>
+                                                {isHidden ? 'Показать' : 'Скрыть'}
+                                            </button>
+                                            <button
                                                 onClick={() => onOpenDeleteCardPopup(cardId)}
-                                                className={styles["adminEmployeesListItem__deleteBtn"]}>Удалить
+                                                className={`${styles["adminEmployeesListItem__itemBtn"]} ${styles["adminEmployeesListItem__deleteBtn"]}`}>
+                                                Удалить
                                             </button>
                                         </div>
                                     </div>

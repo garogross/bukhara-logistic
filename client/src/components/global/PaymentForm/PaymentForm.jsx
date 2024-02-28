@@ -35,7 +35,6 @@ function PaymentForm({
         checkNum: "",
         comments: ""
     }, setError, error)
-    const [setOrentation] = useState("")
 
     useEffect(() => {
         if (initialState && !isStateLoaded) {
@@ -73,8 +72,7 @@ function PaymentForm({
 
 
     const addFiles = (file) => {
-        console.log({file})
-        if(formData.files.find(item => item.name === file.name)) return;
+        // if(formData.files.find(item => item.name === file.name)) return;
         setFormData(prevState => ({
             ...prevState,
             files: [...prevState.files, file]
