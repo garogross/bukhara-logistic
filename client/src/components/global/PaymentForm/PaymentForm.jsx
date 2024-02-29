@@ -78,6 +78,7 @@ function PaymentForm({
             files: [...prevState.files, file]
         }))
     }
+
     return (
         <div className={`${styles["paymentForm"]} topDistanceBlock`}>
             <BackBtn/>
@@ -107,7 +108,7 @@ function PaymentForm({
                                     type="file"
                                     multiple
                                     className={styles["paymentForm__fileUploadInput"]}
-                                    onChange={e => onUploadFile(e, addFiles)}
+                                    onChange={e => onUploadFile(e,addFiles)}
                                     onClick={onClickUploadFile}
                                 />
                                 <span>Загрузить файл</span>
