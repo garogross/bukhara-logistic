@@ -20,27 +20,13 @@
     background-color: $color-red;
   }
 
-  &__wrapper {
-    @include flexCol(flex-start, stretch);
-    gap: 14px;
-    position: relative;
-
-    @include smScreenMedia {
-      flex-direction: column-reverse;
-    }
-  }
 
   &__main {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
-    align-items: flex-start;
 
-    @include xlScreenMedia {
-      grid-template-columns: repeat(2,1fr);
-    }
-
-    @include lgScreenMedia {
+    @include smScreenMedia {
       grid-template-columns: 1fr;
     }
   }

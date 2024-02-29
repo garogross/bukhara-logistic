@@ -27,41 +27,18 @@ const getFilteredPayments = async (cardId, regQuery, getCard) => {
     })
     regQuery.sort = '-date'
 
-
-    let year = new Date().getFullYear()
-
-    if (regQuery.year) {
-        year = regQuery.year
-        delete regQuery.year
-    }
-
-    const yearStartDate = new Date(`${year}-01-01`)
-    const yearEndDate = new Date(`${year}-12-31`)
-
-    const filterBy = {
-        date: {
-            $gte: yearStartDate,
-            $lte: yearEndDate
-        }
-    }
-
     const features = new ApiFeatures(query, {
         ...regQuery,
         card: cardId
     })
-
-
-    const filteredFeatures = features
-        .paginate()
-        .filter(false, filterBy)
-        .sort()
-    const filterObj = features.filter(true, filterBy)
+    const filteredFeatures = features.paginate().filter().sort()
+    const filterObj = features.filter(true)
     const totalCount = await Payment.countDocuments(filterObj);
     const data = await filteredFeatures.query
 
     const result = {totalCount, data}
     if (getCard) {
-        const card = await getCards(regQuery.year,cardId, true)
+        const card = await getCards(cardId, true)
         result.card = card ? card[0] : null
     }
 
@@ -87,7 +64,7 @@ export const savePaymentFiles = catchAsync(async (req, res, next) => {
     return next()
 })
 
-export const updatePaymentFiles = catchAsync(async (req, res, next) => {
+export const updatePaymentFiles = catchAsync(async (req, res,next) => {
     if (!req.body.oldFiles) return next()
     const {oldFiles} = req.body
     const paramId = req.params.id
@@ -158,5 +135,5 @@ export const deleteOnePayment = catchAsync(async (req, res, next) => {
     await Payment.deleteOne({_id})
     req.params.cardId = curPayment.card
     req.params.getCard = true
-    return next()
+    return  next()
 })
