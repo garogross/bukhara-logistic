@@ -7,8 +7,6 @@ import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functi
 import styles from "./PaymentImageSlider.module.scss"
 import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
-import NewPortalProvider from "../../../../providers/NewPortalProvider";
-import Backdrop from "../../../layout/Backdrop/Backdrop";
 
 const settings = {
     dots: false,
@@ -33,7 +31,7 @@ function PaymentImageSlider({showIndex, curFiles, onClose}) {
     }, [showIndex]);
 
     const toggleZoom = () => {
-        if (!isDragging) setIsZoomed(prevState => !prevState)
+        if(!isDragging) setIsZoomed(prevState => !prevState)
     }
 
     const changeActiveIndex = (index) => {
@@ -51,51 +49,48 @@ function PaymentImageSlider({showIndex, curFiles, onClose}) {
 
     return (
         <>
-            <Backdrop onClose={onClose}/>
-            <NewPortalProvider>
-                <TransitionProvider
-                    className={`${styles["imageSlider"]} popupBox`}
-                    inProp={show}
-                    style={'opacity'}
+            <TransitionProvider
+                className={`${styles["imageSlider"]} popupBox`}
+                inProp={show}
+                style={'opacity'}
+            >
+                <CrossBtn onClick={onClose} btnClassName={styles["imageSlider__crossBtn"]}/>
+                <Slider
+                    {...sliderSettings}
+
+
                 >
-                    <CrossBtn onClick={onClose} btnClassName={styles["imageSlider__crossBtn"]}/>
-                    <Slider
-                        {...sliderSettings}
-
-
-                    >
-                        {
-                            files.map((item, index) => (
-                                <div
-                                    key={item}
-                                    className={styles["imageSlider__item"]}>
-
-                                    <img
-                                        onClick={toggleZoom}
-                                        src={imagePath(item)}
-                                        alt={item}
-                                        className={
-                                            `${styles["imageSlider__img"]} ` +
-                                            `${isZoomed && index === activeIndex ? styles["imageSlider__img_zoomed"] : ""}`}
-                                    />
-                                </div>
-                            ))
-                        }
-                    </Slider>
-
                     {
-                        curFiles[activeIndex] ?
-                            <a
-                                download={getFileName(curFiles[activeIndex])}
-                                href={downloadFilePath(curFiles[activeIndex])}
-                                className={styles["imageSlider__downloadBtn"]}
-                            >
-                                <SecondaryBtn
-                                >Download</SecondaryBtn>
-                            </a> : null
+                        files.map((item, index) => (
+                            <div
+                                key={item}
+                                className={styles["imageSlider__item"]}>
+
+                                <img
+                                    onClick={toggleZoom}
+                                    src={imagePath(item)}
+                                    alt={item}
+                                    className={
+                                        `${styles["imageSlider__img"]} ` +
+                                        `${isZoomed && index === activeIndex ? styles["imageSlider__img_zoomed"] : ""}`}
+                                />
+                            </div>
+                        ))
                     }
-                </TransitionProvider>
-            </NewPortalProvider>
+                </Slider>
+
+                {
+                    curFiles[activeIndex] ?
+                    <a
+                    download={getFileName(curFiles[activeIndex])}
+                    href={downloadFilePath(curFiles[activeIndex])}
+                    className={styles["imageSlider__downloadBtn"]}
+                >
+                    <SecondaryBtn
+                    >Download</SecondaryBtn>
+                </a> : null
+                }
+            </TransitionProvider>
         </>
     );
 }
