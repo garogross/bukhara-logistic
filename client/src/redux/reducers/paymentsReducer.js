@@ -1,27 +1,15 @@
 import {
     ADD_PAYMENT_ERROR,
     ADD_PAYMENT_LOADING_START,
-    ADD_PAYMENT_SUCCESS,
-    DELETE_PAYMENTS_ERROR,
-    DELETE_PAYMENTS_LOADING_START,
-    DELETE_PAYMENTS_SUCCESS,
+    ADD_PAYMENT_SUCCESS, DELETE_PAYMENTS_ERROR, DELETE_PAYMENTS_LOADING_START, DELETE_PAYMENTS_SUCCESS,
     GET_PAYMENTS_ERROR,
     GET_PAYMENTS_LOADING_START,
-    GET_PAYMENTS_SUCCESS,
-    HIDE_ADD_NOT_POPUP,
-    INIT_PAYMENT_PARAMS,
-    RESET_PAYMENT_STATE,
-    SET_CUR_YEAR,
-    SET_CUT_PAGE,
-    SET_PAYMENT_FILTERS,
-    UPDATE_PAYMENT_ERROR,
-    UPDATE_PAYMENT_LOADING_START,
+    GET_PAYMENTS_SUCCESS, HIDE_ADD_NOT_POPUP, INIT_CUT_PAGE, INIT_PAYMENT_PARAMS, REMOVE_PAYMENT_FILTERS,
+    RESET_PAYMENT_STATE, SET_CUT_PAGE, SET_PAYMENT_FILTERS, UPDATE_PAYMENT_ERROR, UPDATE_PAYMENT_LOADING_START,
     UPDATE_PAYMENT_STATUS_ERROR,
     UPDATE_PAYMENT_STATUS_LOADING_START,
-    UPDATE_PAYMENT_STATUS_SUCCESS,
-    UPDATE_PAYMENT_SUCCESS
+    UPDATE_PAYMENT_STATUS_SUCCESS, UPDATE_PAYMENT_SUCCESS
 } from "../types";
-import {todayYear} from "../../constants";
 
 
 const initialState = {
@@ -39,8 +27,7 @@ const initialState = {
     isAddNotShowing: false,
     totalCount: 0,
     filters: {},
-    curPage: 1,
-    curYear: todayYear
+    curPage: 1
 }
 
 export const paymentsReducer = (state = initialState, action) => {
@@ -94,7 +81,7 @@ export const paymentsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 data: payload,
-                updateLoading: false,
+                updateLoading: false
             }
         }
         case UPDATE_PAYMENT_LOADING_START: {
@@ -179,12 +166,6 @@ export const paymentsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 curPage: payload
-            }
-        }
-        case SET_CUR_YEAR: {
-            return {
-                ...state,
-                curYear: payload
             }
         }
         case RESET_PAYMENT_STATE:

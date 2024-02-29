@@ -10,7 +10,7 @@ import styles from "./DataLoader.module.scss";
 function DataLoader({loading,isEmpty}) {
     return (
         <TransitionProvider
-            inProp={isEmpty}
+            inProp={loading || isEmpty}
             style={'opacity'}
             // height={'300px'}
             className={`${styles["dataLoader"]} blackBox`}

@@ -2,21 +2,25 @@ import {
     ADD_CARDS_ERROR,
     ADD_CARDS_LOADING_START,
     ADD_CARDS_SUCCESS,
-    DELETE_CARDS_ERROR,
+    ADD_USERS_ERROR,
+    ADD_USERS_LOADING_START,
+    ADD_USERS_SUCCESS, DELETE_CARDS_ERROR,
     DELETE_CARDS_LOADING_START,
     DELETE_CARDS_SUCCESS,
+    DELETE_USER_ERROR,
+    DELETE_USER_LOADING_START,
+    DELETE_USER_SUCCESS,
     GET_CARDS_ERROR,
     GET_CARDS_LOADING_START,
-    GET_CARDS_SUCCESS, UPDATE_CARD_STATUS_ERROR, UPDATE_CARD_STATUS_LOADING_START, UPDATE_CARD_STATUS_SUCCESS
+    GET_CARDS_SUCCESS
 } from "../types";
-import {createCardsUrl, fetchRequest, getCardsUrl, setFormError} from "./fetchTools";
+import {createCardsUrl, fetchRequest, getCardsUrl, getUsersUrl, setFormError, signupUserUrl} from "./fetchTools";
 
 
-export const getCards = () => async (dispatch,getState) => {
+export const getCards = () => async (dispatch) => {
     dispatch({type: GET_CARDS_LOADING_START})
-    const curYear = getState().payments.curYear
     try {
-        const fetchData = await fetchRequest(`${getCardsUrl}?year=${curYear}`)
+        const fetchData = await fetchRequest(getCardsUrl)
 
         dispatch({type: GET_CARDS_SUCCESS,payload: fetchData.data})
 
@@ -64,24 +68,5 @@ export const updateCardTotalPayment = (newItem) => (dispatch,getState) => {
     if(updatingIndex !== -1) {
         payload[updatingIndex] = newItem
         dispatch({type: GET_CARDS_SUCCESS,payload})
-    }
-}
-
-export const updateCardStatus = (id,isHidden) => async (dispatch,getState) => {
-    dispatch({type: UPDATE_CARD_STATUS_LOADING_START})
-    try {
-        await fetchRequest(getCardsUrl+id,"PATCH",JSON.stringify({isHidden}))
-        const cards = getState().cards.data
-        const payload = [...cards]
-        const updatingIndex = cards.findIndex(item => item._id === id)
-        if(updatingIndex >= 0) {
-            payload[updatingIndex] = {
-                ...payload[updatingIndex],
-                isHidden
-            }
-        }
-        dispatch({type: UPDATE_CARD_STATUS_SUCCESS,payload})
-    }catch (payload) {
-        dispatch({type: UPDATE_CARD_STATUS_ERROR,payload})
     }
 }

@@ -35,6 +35,7 @@ function PaymentForm({
         checkNum: "",
         comments: ""
     }, setError, error)
+    const [setOrentation] = useState("")
 
     useEffect(() => {
         if (initialState && !isStateLoaded) {
@@ -72,13 +73,13 @@ function PaymentForm({
 
 
     const addFiles = (file) => {
-        // if(formData.files.find(item => item.name === file.name)) return;
+        console.log({file})
+        if(formData.files.find(item => item.name === file.name)) return;
         setFormData(prevState => ({
             ...prevState,
             files: [...prevState.files, file]
         }))
     }
-
     return (
         <div className={`${styles["paymentForm"]} topDistanceBlock`}>
             <BackBtn/>
@@ -108,7 +109,7 @@ function PaymentForm({
                                     type="file"
                                     multiple
                                     className={styles["paymentForm__fileUploadInput"]}
-                                    onChange={e => onUploadFile(e,addFiles)}
+                                    onChange={e => onUploadFile(e, addFiles)}
                                     onClick={onClickUploadFile}
                                 />
                                 <span>Загрузить файл</span>

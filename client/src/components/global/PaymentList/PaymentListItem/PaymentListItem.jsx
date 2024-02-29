@@ -3,7 +3,7 @@ import styles from "./PaymentListItem.module.scss";
 import {formatDate} from "../../../../utils/functions/date";
 import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
 import {paymentStatuses, userRoles} from "../../../../constants";
-import {updatePaymentStatus} from "../../../../redux/action/payments";
+import {deleteOnePayment, updatePayment, updatePaymentStatus} from "../../../../redux/action/payments";
 import {useDispatch, useSelector} from "react-redux";
 import {setCardAmount} from "../../../../utils/functions/card";
 import {deleteIcon, editIcon} from "../../../../assets/svg";

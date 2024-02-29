@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Pagination from "react-js-pagination";
 
 import styles from "./PaymentListPagination.module.scss"

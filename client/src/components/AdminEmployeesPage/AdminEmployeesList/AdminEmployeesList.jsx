@@ -1,17 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {deleteUser, getUsers} from "../../../redux/action/users";
+import {setCardAmount, setCardNumText} from "../../../utils/functions/card";
 import {deleteCard} from "../../../redux/action/cards";
+import {Link, useNavigate} from "react-router-dom";
 
 import SecondaryBtn from "../../layout/SecondaryBtn/SecondaryBtn";
+import Svg from "../../layout/Svg/Svg";
 import DataLoader from "../../layout/DataLoader/DataLoader";
 import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import LoadingPopup from "../../layout/LoadingPopup/LoadingPopup";
 import AddEmployeePopup from "./AddEmployeePopup/AddEmployeePopup";
+
+import {plusIcon} from "../../../assets/svg";
+import {adminPaymentsPagePath} from "../../../router/path";
 import styles from "./AdminEmployeesList.module.scss"
+import {userRoles} from "../../../constants";
+import {setUserFullName} from "../../../utils/functions/setUserFullName";
 import AdminEmployeesListItem from "./AdminEmployeesListItem/AdminEmployeesListItem";
 import DeletePopup from "../../global/DeletePopup/DeletePopup";
-import YearsListWrapper from "../../global/YearsListWrapper/YearsListWrapper";
 
 
 function AdminEmployeesList() {
@@ -23,7 +30,6 @@ function AdminEmployeesList() {
     const deleteCardLoading = useSelector(state => state.cards.deleteLoading)
     const addCardLoading = useSelector(state => state.cards.addLoading)
     const cards = useSelector(state => state.cards.data)
-    const updateStatusLoading = useSelector(state => state.cards.updateStatusLoading)
 
     const [addEmployeePopupOpened, setAddEmployeePopupOpened] = useState(false)
     const [addCardPopupOpenedId, setAddCardPopupOpenedId] = useState(null)
@@ -32,25 +38,20 @@ function AdminEmployeesList() {
 
     const data = users.map(user => {
         const userCards = cards.filter(item => item.owner === user._id)
-        const totalMonthlyPayments = userCards.reduce((acc, cur) => {
-            acc += cur.totalMonthlyPayments
-            return acc;
-        }, 0)
-        const totalYearlyPayments = userCards.reduce((acc, cur) => {
-            acc += cur.totalYearlyPayments
+        const totalAmount = userCards.reduce((acc, cur) => {
+            acc += cur.totalPayments
             return acc;
         }, 0)
         return {
             ...user,
             cards: userCards,
-            totalMonthlyPayments,
-            totalYearlyPayments,
+            totalAmount
         }
     })
 
 
     useEffect(() => {
-        dispatch(getUsers())
+        if (!users.length) dispatch(getUsers())
     }, []);
 
     const onOpenAddEmployeePopup = () => setAddEmployeePopupOpened(true)
@@ -79,32 +80,26 @@ function AdminEmployeesList() {
                     className={styles["adminEmployeesList__addEmployeeBtn"]}
                     onClick={onOpenAddEmployeePopup}
                 >Добавить Сотрудника</SecondaryBtn>
-                <YearsListWrapper
-                    loading={loading}
-                    onChange={() => dispatch(getUsers())}
+                {
+                    !loading && data.length ?
+                        <div className={`${styles["adminEmployeesList__main"]} blackBox`}>
+                            {
+                                data.map((item) => (
+                                    <AdminEmployeesListItem
+                                        {...item}
+                                        key={item._id}
+                                        onOpenAddCardPopup={onOpenAddCardPopup}
+                                        onOpenDeleteCardPopup={onOpenDeleteCardPopup}
+                                        onOpenDeleteEmployeePopup={onOpenDeleteEmployeePopup}
+                                    />
+                                ))
+                            }
 
-                >
-                    {
-                        data.length ?
-                            <div className={`${styles["adminEmployeesList__main"]} blackBox`}>
-                                {
-                                    data.map((item) => (
-                                        <AdminEmployeesListItem
-                                            {...item}
-                                            key={item._id}
-                                            onOpenAddCardPopup={onOpenAddCardPopup}
-                                            onOpenDeleteCardPopup={onOpenDeleteCardPopup}
-                                            onOpenDeleteEmployeePopup={onOpenDeleteEmployeePopup}
-                                        />
-                                    ))
-                                }
-
-                            </div> :
-                            <DataLoader loading={loading} isEmpty={!data.length}/>
-                    }
-                </YearsListWrapper>
+                        </div> :
+                        <DataLoader loading={loading} isEmpty={!data.length}/>
+                }
             </div>
-            <LoadingPopup show={addCardLoading || updateStatusLoading}/>
+            <LoadingPopup show={addCardLoading}/>
             <AddEmployeePopup
                 show={addEmployeePopupOpened}
                 onClose={onCloseAddEmployeePopup}

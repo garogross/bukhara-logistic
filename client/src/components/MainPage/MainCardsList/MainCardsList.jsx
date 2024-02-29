@@ -8,8 +8,7 @@ import DataLoader from "../../layout/DataLoader/DataLoader";
 
 import {paymentsPagePath} from "../../../router/path";
 import styles from "./MainCardsList.module.scss"
-import YearsListWrapper from "../../global/YearsListWrapper/YearsListWrapper";
-import {todayYear} from "../../../constants";
+
 
 
 function MainCardsList() {
@@ -18,11 +17,10 @@ function MainCardsList() {
     const navigate = useNavigate()
     const data = useSelector(state => state.cards.data)
     const loading = useSelector(state => state.cards.getLoading)
-    const curYear = useSelector(state => state.payments.curYear)
 
 
     useEffect(() => {
-        dispatch(getCards())
+        if(!data.length) dispatch(getCards())
     }, []);
 
     const onClickItem = (id) => {
@@ -30,46 +28,33 @@ function MainCardsList() {
     }
 
     return (
-        <YearsListWrapper loading={loading} onChange={() => dispatch(getCards())}>
-            <div className={styles["mainCardsList"]}>
-                {
-                    data.length ?
-                        <div className={`${styles["mainCardsList__container"]} blackBox`}>
-                            {
-                                data.map(({number, totalMonthlyPayments, totalYearlyPayments, _id}, index) => (
-                                    <div
-                                        key={index}
-                                        className={styles["mainCardsList__item"]}
-                                        onClick={() => onClickItem(_id)}
-                                    >
-                                        <p className={styles["mainCardsList__text"]}>
-                                            {setCardNumText(number)}
-                                        </p>
-                                        <div>
-                                            <p className={styles["mainCardsList__text"]}>
-                                                Сумма списаний за год - <span
-                                                className="blueText noWrap">{setCardAmount(totalYearlyPayments)}{'\u00a0'}UZS</span>
-                                            </p>
-                                            {
-                                                curYear === todayYear ?
+        <>
+            {
+                data.length ?
+                    <div className={`${styles["mainCardsList"]} blackBox`}>
+                        {
+                            data.map(({number, totalPayments, _id}, index) => (
+                                <div
+                                    key={index}
+                                    className={styles["mainCardsList__item"]}
+                                    onClick={() => onClickItem(_id)}
+                                >
+                                    <p className={styles["mainCardsList__text"]}>
+                                        {setCardNumText(number)}
+                                    </p>
+                                    <p className={styles["mainCardsList__text"]}>
+                                        Сумма списаний за месяц - <span
+                                        className="blueText noWrap">{setCardAmount(totalPayments)}{'\u00a0'}UZS</span>
+                                    </p>
+                                </div>
+                            ))
+                        }
 
-                                                    <p className={styles["mainCardsList__text"]}>
-                                                        Сумма списаний за месяц - <span
-                                                        className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
-                                                    </p>
-                                                    : null
-                                            }
-                                        </div>
-                                    </div>
-                                ))
-                            }
-
-                        </div> :
-                        null
-                }
-                <DataLoader loading={loading} isEmpty={!data.length}/>
-            </div>
-        </YearsListWrapper>
+                    </div> :
+                    null
+            }
+            <DataLoader loading={loading} isEmpty={!data.length}/>
+        </>
     );
 }
 

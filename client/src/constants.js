@@ -22,5 +22,3 @@ export const imageTypes = [
     "gif",
     "svg",
 ]
-
-export const todayYear = new Date().getFullYear()

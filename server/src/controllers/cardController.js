@@ -10,25 +10,10 @@ import {userRoles} from "../constants.js";
 
 const handleFactory = new HandlerFactory(Card, 'card')
 
-export const getCards = async (year,id,getOne) => {
-    const curYear = year || new Date().getFullYear()
-    const startOfYear = new Date(curYear, 0, 1);
-    const endOfYear = new Date(curYear, 11, 31);
-    const endOfMonth = new Date();
-    const startOfMonth = new Date(endOfMonth);
-    startOfMonth.setMonth(startOfMonth.getMonth() - 1)
-
+export const getCards = async (id,getOne) => {
     const matchProp = getOne ? '_id' : "owner"
-    let match = {}
+    const match = {}
     if(id) match[matchProp] = new mongoose.Types.ObjectId(id)
-
-    if(id && !getOne) match = {
-        ...match,
-        $or: [
-            { isHidden: { $exists: false } },
-            { isHidden: false }
-        ]
-    }
 
     const cards = await Card.aggregate([
         {
@@ -47,36 +32,14 @@ export const getCards = async (year,id,getOne) => {
                 _id: 1,
                 number: 1,
                 owner: 1,
-                isHidden: { $ifNull: ['$isHidden', false] },
-                payments: 1, // Keep all payments for further processing
-            }
-        },
-        {
-            $project: {
-                _id: 1,
-                number: 1,
-                owner: 1,
-                isHidden: 1,
-                monthlyPayments: {
+                payments: {
                     $filter: {
                         input: '$payments',
                         as: 'payment',
                         cond: {
                             $and: [
-                                { $gte: ['$$payment.date', startOfMonth] },
-                                { $lt: ['$$payment.date', endOfMonth] }
-                            ]
-                        }
-                    }
-                },
-                yearlyPayments: {
-                    $filter: {
-                        input: '$payments',
-                        as: 'payment',
-                        cond: {
-                            $and: [
-                                { $gte: ['$$payment.date', startOfYear] },
-                                { $lt: ['$$payment.date', endOfYear] }
+                                { $gte: ['$$payment.date', new Date(new Date().getFullYear(), new Date().getMonth(), 1)] },
+                                { $lt: ['$$payment.date', new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1)] }
                             ]
                         }
                     }
@@ -88,12 +51,8 @@ export const getCards = async (year,id,getOne) => {
                 _id: 1,
                 number: 1,
                 owner: 1,
-                isHidden: 1,
-                totalMonthlyPayments: {
-                    $sum: '$monthlyPayments.amount'
-                },
-                totalYearlyPayments: {
-                    $sum: '$yearlyPayments.amount'
+                totalPayments: {
+                    $sum: '$payments.amount'
                 }
             }
         }
@@ -119,7 +78,7 @@ export const validateCard = catchAsync(async (req,res,next) => {
 export const createCard = handleFactory.create()
 export const getAllCard = catchAsync(async (req,res) => {
     const id = req.user.role === userRoles.employee ? req.user.id : null
-    const cards = await getCards(req.query.year,id,false)
+    const cards = await getCards(id)
 
     res.send({
         status: "success",
@@ -128,4 +87,3 @@ export const getAllCard = catchAsync(async (req,res) => {
     })
 })
 export const deleteCard = handleFactory.deleteOne()
-export const updateCard = handleFactory.updateOne()

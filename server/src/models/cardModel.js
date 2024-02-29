@@ -19,10 +19,6 @@ const cardSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
         ...setRequiredProp('Owner')
-    },
-    isHidden: {
-        type: Boolean,
-        default: false
     }
 },{
     toJSON: {virtuals: true},
