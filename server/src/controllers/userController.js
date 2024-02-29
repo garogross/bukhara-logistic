@@ -82,7 +82,7 @@ export const getAllUsers = catchAsync(async (req, res) => {
 
     const users = await User.find(statment).select(["fullName", "role","profession"])
 
-    const cards = await getCards()
+    const cards = await getCards(req.query.year)
 
     res.send({
         status: 'success',

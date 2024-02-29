@@ -5,14 +5,15 @@ import {
     GET_USERS_ERROR,
     GET_USERS_LOADING_START, GET_USERS_SUCCESS
 } from "../types";
-import {fetchRequest, getCardsUrl, getUsersUrl, setFormError, signupUserUrl} from "./fetchTools";
+import {fetchRequest, getUsersUrl, setFormError, signupUserUrl} from "./fetchTools";
 import {saveNewCard} from "./cards";
 
 
-export const getUsers = () => async (dispatch) => {
+export const getUsers = () => async (dispatch,getState) => {
     dispatch({type: GET_USERS_LOADING_START})
+    const curYear = getState().payments.curYear
     try {
-        const fetchData = await fetchRequest(getUsersUrl)
+        const fetchData = await fetchRequest(`${getUsersUrl}?year=${curYear}`)
         const {users,cards} = fetchData.data
         dispatch({type: GET_USERS_SUCCESS,payload: users})
         dispatch({type: GET_CARDS_SUCCESS,payload: cards})
