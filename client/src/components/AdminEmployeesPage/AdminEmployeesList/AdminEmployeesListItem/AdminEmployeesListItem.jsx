@@ -81,7 +81,8 @@ function AdminEmployeesListItem({
                     }
                     <button
                         onClick={() => onOpenDeleteEmployeePopup(_id)}
-                        className={`${styles["adminEmployeesListItem__itemBtn"]} ${styles["adminEmployeesListItem__deleteBtn"]}`}>Удалить сотрудника
+                        className={`${styles["adminEmployeesListItem__itemBtn"]} ${styles["adminEmployeesListItem__deleteBtn"]}`}>Удалить
+                        сотрудника
                     </button>
                 </div>
             </div>
@@ -117,12 +118,16 @@ function AdminEmployeesListItem({
                                         <p className={`contentTxt`}>{setCardNumText(number)}</p>
                                         <div
                                             className={styles["adminEmployeesListItem__cardAmountBlock"]}>
-                                            <p className={`contentTxt`}>Сумма
-                                                списаний за месяц - <span
-                                                    className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
-                                            </p>
+                                            {
+                                                curYear === todayYear ?
+                                                    <p className={`contentTxt`}>Сумма
+                                                        списаний за месяц - <span
+                                                            className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
+                                                    </p>
+                                                    : null
+                                            }
                                             <button
-                                                onClick={() => dispatch(updateCardStatus(cardId,!isHidden))}
+                                                onClick={() => dispatch(updateCardStatus(cardId, !isHidden))}
                                                 className={
                                                     `${styles["adminEmployeesListItem__itemBtn"]} ` +
                                                     `${isHidden ? styles["adminEmployeesListItem__hideBtn"] : ""}`
