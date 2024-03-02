@@ -28,6 +28,7 @@ function AdminEmployeesListItem({
 
     const curYear = useSelector(state => state.payments.curYear)
 
+    const isTodaysYear = curYear === todayYear
     const isEmployee = role === userRoles.employee
 
     const onClickItem = (e, cardId) => {
@@ -97,7 +98,7 @@ function AdminEmployeesListItem({
                                             Сумма списаний за год - <span
                                             className="blueText noWrap">{setCardAmount(totalYearlyPayments)}{'\u00a0'}UZS</span>
                                         </p>
-                                        {curYear === todayYear ?
+                                        {isTodaysYear ?
                                             <p className={`${styles["adminEmployeesListItem__amountText"]} contentTxt`}>
                                                 Сумма списаний за месяц - <span
                                                 className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
@@ -110,7 +111,7 @@ function AdminEmployeesListItem({
                         </div>
                         <div className={styles["adminEmployeesListItem__cardsList"]}>
                             {
-                                cards.map(({_id: cardId, number, totalMonthlyPayments, isHidden}) => (
+                                cards.map(({_id: cardId, number, totalMonthlyPayments, totalYearlyPayments,isHidden}) => (
                                     <div style={{cursor: "pointer"}}
                                          onClick={e => onClickItem(e, cardId)}
                                          key={cardId}
@@ -118,14 +119,13 @@ function AdminEmployeesListItem({
                                         <p className={`contentTxt`}>{setCardNumText(number)}</p>
                                         <div
                                             className={styles["adminEmployeesListItem__cardAmountBlock"]}>
-                                            {
-                                                curYear === todayYear ?
-                                                    <p className={`contentTxt`}>Сумма
-                                                        списаний за месяц - <span
-                                                            className="blueText noWrap">{setCardAmount(totalMonthlyPayments)}{'\u00a0'}UZS</span>
+
+                                                    <p className={`contentTxt`}>
+                                                        Сумма списаний за {isTodaysYear ? 'месяц' : 'год'} - <span
+                                                            className="blueText noWrap">
+                                                            {setCardAmount(isTodaysYear ? totalMonthlyPayments : totalYearlyPayments)}{'\u00a0'}UZS
+                                                        </span>
                                                     </p>
-                                                    : null
-                                            }
                                             <button
                                                 onClick={() => dispatch(updateCardStatus(cardId, !isHidden))}
                                                 className={

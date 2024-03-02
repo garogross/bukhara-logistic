@@ -1,13 +1,14 @@
 import React from 'react';
+import Svg from "../../../layout/Svg/Svg";
+import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
+
 import styles from "./PaymentListItem.module.scss";
 import {formatDate} from "../../../../utils/functions/date";
-import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
 import {paymentStatuses, userRoles} from "../../../../constants";
 import {updatePaymentStatus} from "../../../../redux/action/payments";
 import {useDispatch, useSelector} from "react-redux";
 import {setCardAmount} from "../../../../utils/functions/card";
 import {deleteIcon, editIcon} from "../../../../assets/svg";
-import Svg from "../../../layout/Svg/Svg";
 import {useNavigate} from "react-router-dom";
 import {editPaymentPagePath} from "../../../../router/path";
 
@@ -28,7 +29,8 @@ function PaymentListItem({
                              openNotModal,
                              notModalTexts,
                              openDeleteSimpleModal,
-                             card
+                             card,
+                             monthIndex
                          }) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -57,6 +59,7 @@ function PaymentListItem({
     const onSubmitPayment = (id) => {
         dispatch(updatePaymentStatus(
             id,
+            monthIndex,
             paymentStatuses.submitted,
             () => openNotModal(notModalTexts.submit))
         )
@@ -66,6 +69,7 @@ function PaymentListItem({
     const onAcceptPayment = (id) => {
         dispatch(updatePaymentStatus(
             id,
+            monthIndex,
             paymentStatuses.accepted,
             () => openNotModal(notModalTexts.accept)
         ))

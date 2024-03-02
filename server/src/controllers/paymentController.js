@@ -29,14 +29,16 @@ const getFilteredPayments = async (cardId, regQuery, getCard) => {
 
 
     let year = new Date().getFullYear()
+    const  month = regQuery.month.toString().padStart(2,'0')
 
+    delete regQuery.month
     if (regQuery.year) {
         year = regQuery.year
         delete regQuery.year
     }
 
-    const yearStartDate = new Date(`${year}-01-01`)
-    const yearEndDate = new Date(`${year}-12-31`)
+    const yearStartDate = new Date(`${year}-${month}-01`)
+    const yearEndDate = new Date(`${year}-${month}-31`)
 
     const filterBy = {
         date: {
@@ -104,13 +106,15 @@ export const updatePaymentFiles = catchAsync(async (req, res, next) => {
 })
 
 
-export const createPayment = catchAsync(async (req, res, next) => {
-    await Payment.create(req.body)
-    req.params.cardId = req.body.card
-    req.params.getCard = true
-    return next()
-})
+export const createPayment = handleFactory.create()
 export const getAllPayment = catchAsync(async (req, res, next) => {
+    if(!+req.query.month) {
+        res.send({
+            status: "success",
+            data: [],
+        })
+    }
+
     if (req.user.role === userRoles.employee) {
         const userCards = await Card.find({owner: req.user._id})
         if (!userCards.find(item => item.id === req.params.cardId.toString())) {
@@ -142,7 +146,7 @@ export const deletePayments = catchAsync(async (req, res, next) => {
         card: cardId,
         date: {$gte: new Date(from), $lte: new Date(to)}
     })
-    req.params.getCard = true
+    next()
 })
 
 export const deleteOnePayment = catchAsync(async (req, res, next) => {
@@ -157,6 +161,6 @@ export const deleteOnePayment = catchAsync(async (req, res, next) => {
     }
     await Payment.deleteOne({_id})
     req.params.cardId = curPayment.card
-    req.params.getCard = true
     return next()
 })
+

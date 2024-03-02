@@ -2,22 +2,9 @@ import React from 'react';
 import Pagination from "react-js-pagination";
 
 import styles from "./PaymentListPagination.module.scss"
-import {useDispatch, useSelector} from "react-redux";
-import {getPayments, setPaymentCurPage} from "../../../../redux/action/payments";
-import {useParams} from "react-router-dom";
-import {scrollTop} from "../../../../utils/functions/scrollTop";
 import {paginationItemCount} from "../../../../constants";
 
-function PaymentListPagination({totalCount}) {
-    const dispatch = useDispatch()
-    const {id} = useParams()
-    const curPage = useSelector(state => state.payments.curPage)
-
-
-    const onPageChange = (page) => {
-        dispatch(setPaymentCurPage(page))
-        dispatch(getPayments(id,scrollTop))
-    }
+function PaymentListPagination({totalCount,curPage,onChange}) {
 
     return (
         <div className={styles['paymentListPagination']}>
@@ -26,7 +13,7 @@ function PaymentListPagination({totalCount}) {
                 itemsCountPerPage={paginationItemCount}
                 totalItemsCount={totalCount}
                 pageRangeDisplayed={6}
-                onChange={onPageChange}
+                onChange={onChange}
 
                 itemClassFirst={`${styles['paymentListPagination__item_arrow']} ${styles['paymentListPagination__item_first']}`}
                 itemClassLast={`${styles['paymentListPagination__item_arrow']} ${styles['paymentListPagination__item_last']}`}

@@ -34,7 +34,8 @@
     display: grid;
     grid-template-columns: repeat(3,1fr);
     gap: 20px;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 1px;
 
     @include xlScreenMedia {
       grid-template-columns: repeat(2,1fr);

@@ -39,6 +39,17 @@
 
   &__contentTextWrapper {
     overflow: hidden;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: $transition;
+
+    &_active {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__contentTextInner {
+    overflow: hidden;
   }
 
   &__contentText {

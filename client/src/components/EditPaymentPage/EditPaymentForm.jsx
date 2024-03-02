@@ -20,8 +20,7 @@ function EditPaymentForm() {
 
     const loading = useSelector(state => state.payments.updateLoading)
     const error = useSelector(state => state.payments.updateError)
-    const curItem = payments.find(item => item._id === id)
-
+    const curItem = payments.flatMap(item => item.data).find(item => item._id === id)
 
     let initialState = null
 

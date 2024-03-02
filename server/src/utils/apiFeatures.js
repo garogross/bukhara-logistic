@@ -1,3 +1,5 @@
+import {paginationItemCount} from "../constants.js";
+
 export class ApiFeatures {
     constructor(query, queryString) {
         this.query = query.select("-__v")
@@ -37,7 +39,7 @@ export class ApiFeatures {
 
     paginate () {
         const page = +this.queryString.page || 1
-        const limit = +this.queryString.limit || 15
+        const limit = +this.queryString.limit || paginationItemCount
         const skip = (page - 1) * limit
         this.query.skip(skip).limit(limit)
 

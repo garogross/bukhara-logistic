@@ -9,20 +9,20 @@ import SecondaryBtn from "../../layout/SecondaryBtn/SecondaryBtn";
 import PaymentFilterModal from "./PaymentFilterModal/PaymentFilterModal";
 import PaymentFilesModal from "./PaymentFilesModal/PaymentFilesModal";
 import LoadingPopup from "../../layout/LoadingPopup/LoadingPopup";
-import DataLoader from "../../layout/DataLoader/DataLoader";
-
-import {paginationItemCount} from "../../../constants";
-import {addPaymentPagePath} from "../../../router/path";
-import styles from "./PaymentList.module.scss"
 import PaymentListItem from "./PaymentListItem/PaymentListItem";
 import NotPopup from "../../layout/NotPopup/NotPopup";
 import PaymentListPagination from "./PaymentListPagination/PaymentListPagination";
-import {scrollTop} from "../../../utils/functions/scrollTop";
 import PaymentDeleteModal from "./PaymentDeleteModal/PaymentDeleteModal";
 import BackBtn from "../../layout/BackBtn/BackBtn";
 import PaymentDeleteSimpleModal from "./PaymentDeleteSimpleModal/PaymentDeleteSimpleModal";
 import Accordion from "../../layout/Accordion/Accordion";
 import YearsListWrapper from "../YearsListWrapper/YearsListWrapper";
+import DataLoader from "../../layout/DataLoader/DataLoader";
+
+import {months, paginationItemCount} from "../../../constants";
+import {addPaymentPagePath} from "../../../router/path";
+import styles from "./PaymentList.module.scss"
+import {scrollTop} from "../../../utils/functions/scrollTop";
 
 
 const notModalTexts = {
@@ -33,21 +33,6 @@ const notModalTexts = {
     delete: "Списания удалены",
     deleteSimple: "Списание удалено",
 }
-
-const months = [
-    'Январь',
-    'Февраль',
-    'Март',
-    'Апрель',
-    'Май',
-    'Июнь',
-    'Июль',
-    'Август',
-    'Сентябрь',
-    'Октябрь',
-    'Ноябрь',
-    'Декабрь'
-];
 
 
 function PaymentList({isAdmin}) {
@@ -61,33 +46,20 @@ function PaymentList({isAdmin}) {
     const updateLoading = useSelector(state => state.payments.updateStatusLoading)
     const payments = useSelector(state => state.payments.data)
     const isAddNotShowing = useSelector(state => state.payments.isAddNotShowing)
-    const totalCount = useSelector(state => state.payments.totalCount)
 
     const [filterModalOpened, setFilterModalOpened] = useState(false)
     const [deleteModalOpened, setDeleteModalOpened] = useState(false)
     const [deleteModalOpenedId, setDeleteModalOpenedId] = useState(null)
     const [notModalText, setNotModalText] = useState("")
     const [filesModalId, setFilesModalId] = useState(null)
+    const [accordionsOpenedIndex, setAccordionsOpenedIndex] = useState(-1)
 
-    const filteredData = payments.filter(item => item.card === id)
     const curCard = cards.find(item => item._id === id)
     const curFiles = payments.find(item => item._id === filesModalId)?.files
 
-    const dateSortedData = months.map((item, index) => {
-        const data = filteredData.filter(payment => new Date(payment.date).getMonth() === index)
-
-        if (!data.length) return undefined;
-        else return {
-            title: item,
-            data
-        }
-
-    })
-        .filter(item => item)
 
     useEffect(() => {
         if (!cards.length) dispatch(getCards())
-        if (!filteredData.length) dispatch(getPayments(id))
         if (isAddNotShowing) openNotModal("Списание Добовлено")
         scrollTop()
 
@@ -109,6 +81,9 @@ function PaymentList({isAdmin}) {
         }
     }, [notModalText]);
 
+    const onGetData = (index,page = 1,clb) => {
+        dispatch(getPayments(id,index,page,clb))
+    }
     const closeFilterModal = () => setFilterModalOpened(false)
     const openFilterModal = () => setFilterModalOpened(true)
     const closeDeleteModal = () => setDeleteModalOpened(false)
@@ -119,19 +94,27 @@ function PaymentList({isAdmin}) {
     const openFilesModal = (id) => setFilesModalId(id)
     const closeNotModal = () => setNotModalText("")
     const openNotModal = (text) => setNotModalText(text)
-
+    const onToggleAccordion = (index) => {
+        if(index !== accordionsOpenedIndex)  {
+            onGetData(index)
+        }
+            setAccordionsOpenedIndex(prevState => prevState === index ? -1 : index)
+    }
 
     const onHideAddNotPopup = () => {
         dispatch(hideAddNotPopup())
         closeNotModal()
     }
 
+
+
     const onSaveFilters = () => {
-        openNotModal(notModalTexts.filter)
+        const clb = () => openNotModal(notModalTexts.filter)
+        onGetData(accordionsOpenedIndex,1,clb)
     }
 
     const onChangeYear = () => {
-        dispatch(getPayments(id))
+        onGetData(accordionsOpenedIndex)
     }
 
     return (
@@ -158,45 +141,59 @@ function PaymentList({isAdmin}) {
                         : null
                 }
                 <YearsListWrapper loading={getLoading} onChange={onChangeYear}>
-                    {
-                        curCard && dateSortedData.length ?
-                            <div className={`blackBox`}>
-                                {
-                                    dateSortedData.map(({title, data}, index) => (
-                                        <Accordion
-                                            key={title}
-                                            title={title}
-                                            index={index}
-                                        >
-                                            <div className={styles["paymentList__main"]}>
-                                                {
-                                                    data.map(item => (
-                                                        <PaymentListItem
-                                                            {...item}
-                                                            key={item._id}
-                                                            openFilesModal={openFilesModal}
-                                                            openNotModal={openNotModal}
-                                                            isAdmin={isAdmin}
-                                                            notModalTexts={notModalTexts}
-                                                            openDeleteSimpleModal={openDeleteSimpleModal}
-                                                        />))
-                                                }
-                                            </div>
-                                        </Accordion>
-                                    ))
+                    <div className={`blackBox`}>
+                        {
+                            months.map((item, index) => {
+                                const {data: curData,totalCount,page} = payments[index]
+
+                                const onPageChange = (page = 1) => {
+                                    onGetData(index,page)
                                 }
-                            </div>
-                            :
-                            <DataLoader loading={cardLoading || getLoading} isEmpty={!curCard || !filteredData.length}/>
-                    }
+
+                                return (
+                                    <Accordion
+                                        key={item}
+                                        title={item}
+                                        isActive={index === accordionsOpenedIndex}
+                                        onToggle={() => onToggleAccordion(index)}
+                                    >
+                                        <>
+                                            {
+                                                curCard && curData.length ?
+                                                    <div className={styles["paymentList__main"]}>
+                                                        {
+                                                            curData.map(item => (
+                                                                <PaymentListItem
+                                                                    monthIndex={index}
+                                                                    {...item}
+                                                                    key={item._id}
+                                                                    openFilesModal={openFilesModal}
+                                                                    openNotModal={openNotModal}
+                                                                    isAdmin={isAdmin}
+                                                                    notModalTexts={notModalTexts}
+                                                                    openDeleteSimpleModal={openDeleteSimpleModal}
+                                                                />))
+                                                        }
+                                                    </div>
+                                                    : null
+                                            }
+                                            <DataLoader loading={cardLoading || getLoading === index+1} isEmpty={!curCard || !curData.length}/>
+                                            {
+                                                totalCount > paginationItemCount ?
+                                                    <PaymentListPagination
+                                                        totalCount={totalCount}
+                                                        curPage={page}
+                                                        onChange={onPageChange}
+                                                    />
+                                                    : null
+                                            }
+                                        </>
+                                    </Accordion>
+                                )
+                            })
+                        }
+                    </div>
                 </YearsListWrapper>
-                {
-                    totalCount > paginationItemCount ?
-                        <PaymentListPagination
-                            totalCount={totalCount}
-                        />
-                        : null
-                }
             </div>
             <PaymentFilterModal
                 id={id}
@@ -209,6 +206,7 @@ function PaymentList({isAdmin}) {
                     <PaymentDeleteModal
                         show={deleteModalOpened}
                         onClose={closeDeleteModal}
+                        monthIndex={accordionsOpenedIndex}
                         openNotModal={() => openNotModal(notModalTexts.delete)}
                     />
                     : null
@@ -230,6 +228,7 @@ function PaymentList({isAdmin}) {
                 id={deleteModalOpenedId}
                 openNotModal={() => openNotModal(notModalTexts.deleteSimple)}
                 onClose={closeDeleteSimpleModal}
+                monthIndex={accordionsOpenedIndex}
             />
         </>
     );

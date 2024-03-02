@@ -12,7 +12,6 @@ import {
     INIT_PAYMENT_PARAMS,
     RESET_PAYMENT_STATE,
     SET_CUR_YEAR,
-    SET_CUT_PAGE,
     SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
@@ -21,12 +20,17 @@ import {
     UPDATE_PAYMENT_STATUS_SUCCESS,
     UPDATE_PAYMENT_SUCCESS
 } from "../types";
-import {todayYear} from "../../constants";
+import {months, todayYear} from "../../constants";
 
+const data = months.map(item => ({
+    data: [],
+    page: 1,
+    totalCount: 0
+}))
 
 const initialState = {
-    data: [],
-    getLoading: false,
+    data,
+    getLoading: 0,
     getError: null,
     updateStatusLoading: false,
     updateStatusError: null,
@@ -37,9 +41,7 @@ const initialState = {
     daleteLoading: false,
     daleteError: null,
     isAddNotShowing: false,
-    totalCount: 0,
     filters: {},
-    curPage: 1,
     curYear: todayYear
 }
 
@@ -50,15 +52,14 @@ export const paymentsReducer = (state = initialState, action) => {
         case GET_PAYMENTS_SUCCESS: {
             return {
                 ...state,
-                data: payload.data,
-                getLoading: false,
-                totalCount: payload.totalCount === undefined ? state.totalCount : payload.totalCount
+                data: payload,
+                getLoading: 0,
             }
         }
         case GET_PAYMENTS_LOADING_START: {
             return {
                 ...state,
-                getLoading: true,
+                getLoading: payload + 1,
                 getError: null,
             }
         }
@@ -66,13 +67,12 @@ export const paymentsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 getError: payload,
-                getLoading: false
+                getLoading: 0
             }
         }
         case UPDATE_PAYMENT_STATUS_SUCCESS: {
             return {
                 ...state,
-                data: payload,
                 updateStatusLoading: false
             }
         }
@@ -93,7 +93,6 @@ export const paymentsReducer = (state = initialState, action) => {
         case UPDATE_PAYMENT_SUCCESS: {
             return {
                 ...state,
-                data: payload,
                 updateLoading: false,
             }
         }
@@ -114,10 +113,9 @@ export const paymentsReducer = (state = initialState, action) => {
         case ADD_PAYMENT_SUCCESS: {
             return {
                 ...state,
-                data: payload.data,
                 addLoading: false,
-                totalCount: payload.totalCount,
                 isAddNotShowing: true,
+                data,
             }
         }
         case ADD_PAYMENT_LOADING_START: {
@@ -137,8 +135,7 @@ export const paymentsReducer = (state = initialState, action) => {
         case DELETE_PAYMENTS_SUCCESS: {
             return {
                 ...state,
-                data: payload.data,
-                totalCount: payload.totalCount,
+                data: payload || data,
                 deleteLoading: false,
             }
         }
@@ -172,13 +169,6 @@ export const paymentsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 filters: {},
-                curPage: 1
-            }
-        }
-        case SET_CUT_PAGE: {
-            return {
-                ...state,
-                curPage: payload
             }
         }
         case SET_CUR_YEAR: {

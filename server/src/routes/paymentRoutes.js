@@ -34,7 +34,6 @@ paymentRouter.post(
     uploadPaymentFiles,
     savePaymentFiles,
     createPayment,
-    getAllPayment
 )
 
 paymentRouter.delete(
@@ -42,5 +41,7 @@ paymentRouter.delete(
     deleteOnePayment,
     getAllPayment
 )
+
+paymentRouter.delete("/:cardId",deletePayments,getAllPayment)
 
 paymentRouter.use(restrictTo(userRoles.admin, userRoles.superAdmin))

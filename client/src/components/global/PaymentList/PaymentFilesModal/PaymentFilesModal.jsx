@@ -3,12 +3,12 @@ import React, {useState} from 'react';
 import NewPortalProvider from "../../../../providers/NewPortalProvider";
 import Backdrop from "../../../layout/Backdrop/Backdrop";
 import TransitionProvider from "../../../../providers/TransitionProvider";
+import PaymentImageSlider from "../PaymentImageSlider/PaymentImageSlider";
 import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
 
 import styles from "./PaymentFilesModal.module.scss"
 import {imageTypes} from "../../../../constants";
 import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
-import PaymentImageSlider from "../PaymentImageSlider/PaymentImageSlider";
 
 
 

@@ -25,3 +25,5 @@ export const signupRestrictToParams = () => {
     const {admin,superAdmin} = userRoles
     return process.env.NODE_ENV !== nodeEnvTypes.production ? Object.values(userRoles) : [admin,superAdmin]
 }
+
+export const paginationItemCount = 15

@@ -20,7 +20,7 @@ const fields = [
     },
 ]
 
-function PaymentDeleteModal({show,onClose,openNotModal}) {
+function PaymentDeleteModal({show,onClose,openNotModal,monthIndex}) {
     const dispatch = useDispatch()
     const {id} = useParams()
 
@@ -41,7 +41,7 @@ function PaymentDeleteModal({show,onClose,openNotModal}) {
             onClose()
             openNotModal()
         }
-        dispatch(deletePayments(formData, id, onSuccess))
+        dispatch(deletePayments(formData, id,monthIndex, onSuccess))
     }
 
     return (

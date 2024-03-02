@@ -9,8 +9,8 @@ import {
     GET_PAYMENTS_LOADING_START,
     GET_PAYMENTS_SUCCESS,
     HIDE_ADD_NOT_POPUP,
-    INIT_PAYMENT_PARAMS, SET_CUR_YEAR,
-    SET_CUT_PAGE,
+    INIT_PAYMENT_PARAMS,
+    SET_CUR_YEAR,
     SET_PAYMENT_FILTERS,
     UPDATE_PAYMENT_ERROR,
     UPDATE_PAYMENT_LOADING_START,
@@ -25,14 +25,14 @@ import {
     deletePaymentUrl,
     fetchRequest,
     getPaymentsUrl,
-    setFormError, updatePaymentStatusUrl
+    setFormError,
+    updatePaymentStatusUrl
 } from "./fetchTools";
 import {paymentStatuses} from "../../constants";
 
 
-const getUrlWithFiltersQuery = (url) => (dispatch,getState) => {
+const getUrlWithFiltersQuery = (url, monthIndex, page = 1) => (dispatch, getState) => {
     const filters = getState().payments.filters
-    const page = getState().payments.curPage
     const year = getState().payments.curYear
 
     let filtersQuery = ""
@@ -44,22 +44,37 @@ const getUrlWithFiltersQuery = (url) => (dispatch,getState) => {
     }
 
 
-    return `${url}?page=${page}&year=${year}&${filtersQuery}`
+    return `${url}?page=${page}&year=${year}&month=${monthIndex + 1}&${filtersQuery}`
 }
 
-export const getPayments = (id,clb) => async (dispatch) => {
-    dispatch({type: GET_PAYMENTS_LOADING_START})
+export const savePayments = (data, index, totalCount, page, successType) => (dispatch, getState) => {
+    if (index === -1) {
+        dispatch({type: successType})
+        return;
+    }
+    const payments = getState().payments.data
+    const payload = [...payments]
+    payload[index] = {
+        data,
+        totalCount,
+        page
+    }
+    dispatch({type: successType, payload})
+}
+
+export const getPayments = (id, index, page = 1, clb) => async (dispatch, getState) => {
+    dispatch({type: GET_PAYMENTS_LOADING_START, payload: index})
     try {
-        const url = dispatch(getUrlWithFiltersQuery(`${getPaymentsUrl}${id}`))
+        const url = dispatch(getUrlWithFiltersQuery(`${getPaymentsUrl}${id}`, index, page))
         const {data, totalCount} = await fetchRequest(url)
-        dispatch({type: GET_PAYMENTS_SUCCESS, payload: {data, totalCount}})
+        dispatch(savePayments(data, index, totalCount, page, GET_PAYMENTS_SUCCESS))
         if (clb) clb()
     } catch (payload) {
         console.error("err", payload)
         dispatch({type: GET_PAYMENTS_ERROR, payload})
     }
 }
-export const updatePaymentStatus = (id, status, clb) => async (dispatch, getState) => {
+export const updatePaymentStatus = (id, monthIndex, status, clb) => async (dispatch, getState) => {
     dispatch({type: UPDATE_PAYMENT_STATUS_LOADING_START})
     try {
         const reqData = {status}
@@ -72,10 +87,15 @@ export const updatePaymentStatus = (id, status, clb) => async (dispatch, getStat
         const fetchData = await fetchRequest(updatePaymentStatusUrl + id, "PATCH", JSON.stringify(reqData))
 
         const payload = [...getState().payments.data]
-        const updatingItemIndex = payload.findIndex(item => item._id === id)
-        payload[updatingItemIndex] = acceptedBy ?
+        const updatingItemIndex = payload[monthIndex].data.findIndex(item => item._id === id)
+        const monthData = payload[monthIndex].data
+        monthData[updatingItemIndex] = acceptedBy ?
             {...fetchData.data, acceptedBy} :
             fetchData.data
+        payload[monthIndex] = {
+            ...payload[monthIndex],
+            data: monthData
+        }
 
         dispatch({type: UPDATE_PAYMENT_STATUS_SUCCESS, payload})
         clb()
@@ -100,9 +120,8 @@ export const addPayment = (reqData, clb) => async (dispatch) => {
             }
         }
 
-    const url = dispatch(getUrlWithFiltersQuery(createPaymentsUrl))
-        const {data,totalCount} = await fetchRequest(url, "POST", formData, authConfig(true))
-        dispatch({type: ADD_PAYMENT_SUCCESS, payload: {data,totalCount}})
+        await fetchRequest(createPaymentsUrl, "POST", formData, authConfig(true))
+        dispatch({type: ADD_PAYMENT_SUCCESS})
         clb()
     } catch (payload) {
         console.error("err", payload.message)
@@ -110,7 +129,7 @@ export const addPayment = (reqData, clb) => async (dispatch) => {
     }
 }
 
-export const updatePayment = (reqData,id, clb) => async (dispatch,getState) => {
+export const updatePayment = (reqData, id, clb) => async (dispatch, getState) => {
     dispatch({type: UPDATE_PAYMENT_LOADING_START})
     try {
         reqData.oldFiles = JSON.stringify(reqData.files.filter(item => typeof item === 'string'))
@@ -127,19 +146,9 @@ export const updatePayment = (reqData,id, clb) => async (dispatch,getState) => {
             }
         }
 
+        await fetchRequest(`${getPaymentsUrl}${id}`, "PATCH", formData, authConfig(true))
 
-        const {data} = await fetchRequest(`${getPaymentsUrl}${id}`, "PATCH", formData, authConfig(true))
-
-        const payments = getState().payments.data
-
-        const updatingIndex = payments.findIndex(item => item._id === id)
-
-        if(updatingIndex !== -1) {
-            const payload = [...payments]
-            payload[updatingIndex] = data
-
-            dispatch({type: UPDATE_PAYMENT_SUCCESS, payload})
-        }
+        dispatch({type: UPDATE_PAYMENT_SUCCESS})
         clb()
     } catch (payload) {
         console.error("err", payload.message)
@@ -153,11 +162,13 @@ export const hideAddNotPopup = () => dispatch => {
 }
 
 
-export const deletePayments = (formData, id, clb) => async (dispatch) => {
+export const deletePayments = (formData, id, monthIndex, clb) => async (dispatch) => {
     dispatch({type: DELETE_PAYMENTS_LOADING_START})
     try {
-        const {data,totalCount} = await fetchRequest(getPaymentsUrl + id, "DELETE", JSON.stringify(formData))
-        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
+        const url = dispatch(getUrlWithFiltersQuery(getPaymentsUrl + id, monthIndex))
+        const {data, totalCount} = await fetchRequest(url, "DELETE", JSON.stringify(formData))
+        dispatch(savePayments(data, monthIndex, totalCount, 1, DELETE_PAYMENTS_SUCCESS))
+
         dispatch(initPaymentParams())
         clb()
     } catch (payload) {
@@ -168,13 +179,13 @@ export const deletePayments = (formData, id, clb) => async (dispatch) => {
 export const setDeletePaymentError = (payload) => dispatch => dispatch(setFormError(DELETE_PAYMENTS_ERROR, payload))
 
 
-export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
+export const deleteOnePayment = (id, monthIndex, page, clb) => async (dispatch) => {
     dispatch({type: DELETE_PAYMENTS_LOADING_START})
     try {
-        const url = dispatch(getUrlWithFiltersQuery(`${deletePaymentUrl}${id}`))
+        const url = dispatch(getUrlWithFiltersQuery(`${deletePaymentUrl}${id}`, monthIndex, page))
 
-        const {data,totalCount} = await fetchRequest(url, "DELETE")
-        dispatch({type: DELETE_PAYMENTS_SUCCESS, payload: {data,totalCount}})
+        const {data, totalCount} = await fetchRequest(url, "DELETE")
+        dispatch(savePayments(data, monthIndex, totalCount, page, DELETE_PAYMENTS_SUCCESS))
         clb()
     } catch (payload) {
         console.error("err", payload.message)
@@ -182,7 +193,7 @@ export const deleteOnePayment = (id, clb) => async (dispatch, getState) => {
     }
 }
 
-export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS,payload})
-export const setPaymentCurPage = (payload) => dispatch => dispatch({type: SET_CUT_PAGE,payload})
-export const setCurYear = (payload) => dispatch => dispatch({type: SET_CUR_YEAR,payload})
+
+export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS, payload})
+export const setCurYear = (payload) => dispatch => dispatch({type: SET_CUR_YEAR, payload})
 export const initPaymentParams = () => dispatch => dispatch({type: INIT_PAYMENT_PARAMS})

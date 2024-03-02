@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import Slider from "react-slick";
 import TransitionProvider from "../../../../providers/TransitionProvider";
 
-import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
-
-import styles from "./PaymentImageSlider.module.scss"
 import CrossBtn from "../../../layout/CrossBtn/CrossBtn";
-import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
 import NewPortalProvider from "../../../../providers/NewPortalProvider";
 import Backdrop from "../../../layout/Backdrop/Backdrop";
+import SecondaryBtn from "../../../layout/SecondaryBtn/SecondaryBtn";
+
+import {downloadFilePath, getFileName, imagePath} from "../../../../utils/functions/files";
+import styles from "./PaymentImageSlider.module.scss"
 
 const settings = {
     dots: false,

@@ -24,3 +24,18 @@ export const imageTypes = [
 ]
 
 export const todayYear = new Date().getFullYear()
+
+export const months = [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь'
+];
