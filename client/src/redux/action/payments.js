@@ -59,6 +59,7 @@ export const savePayments = (data, index, totalCount, page, successType) => (dis
         totalCount,
         page
     }
+
     dispatch({type: successType, payload})
 }
 
@@ -197,3 +198,4 @@ export const deleteOnePayment = (id, monthIndex, page, clb) => async (dispatch) 
 export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS, payload})
 export const setCurYear = (payload) => dispatch => dispatch({type: SET_CUR_YEAR, payload})
 export const initPaymentParams = () => dispatch => dispatch({type: INIT_PAYMENT_PARAMS})
+
