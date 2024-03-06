@@ -141,7 +141,7 @@ function PaymentFilterModal({show, onClose, onSaveFilters}) {
                             <MainBtn
                                 type={'submit'}
                                 className={styles['filterModal__btn']}
-                            >Создать фильтр</MainBtn>
+                            >Поиск</MainBtn>
                         </div>
                     </form>
                 </TransitionProvider>

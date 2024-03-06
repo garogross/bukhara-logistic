@@ -136,7 +136,7 @@ function PaymentList({isAdmin}) {
                                         className={styles["paymentList__deleteBtn"]}
                                     >Удалить Списания</SecondaryBtn>
                             }
-                            <SecondaryBtn onClick={openFilterModal}>Фильтры</SecondaryBtn>
+                            <SecondaryBtn onClick={openFilterModal}>Поиск</SecondaryBtn>
                         </div>
                         : null
                 }
