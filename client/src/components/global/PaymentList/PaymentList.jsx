@@ -159,6 +159,15 @@ function PaymentList({isAdmin}) {
                                     >
                                         <>
                                             {
+                                                totalCount > paginationItemCount ?
+                                                    <PaymentListPagination
+                                                        totalCount={totalCount}
+                                                        curPage={page}
+                                                        onChange={onPageChange}
+                                                    />
+                                                    : null
+                                            }
+                                            {
                                                 curCard && curData.length ?
                                                     <div className={styles["paymentList__main"]}>
                                                         {
@@ -178,15 +187,6 @@ function PaymentList({isAdmin}) {
                                                     : null
                                             }
                                             <DataLoader loading={cardLoading || getLoading === index+1} isEmpty={!curCard || !curData.length}/>
-                                            {
-                                                totalCount > paginationItemCount ?
-                                                    <PaymentListPagination
-                                                        totalCount={totalCount}
-                                                        curPage={page}
-                                                        onChange={onPageChange}
-                                                    />
-                                                    : null
-                                            }
                                         </>
                                     </Accordion>
                                 )
