@@ -55,8 +55,7 @@ function PaymentList({isAdmin}) {
     const [accordionsOpenedIndex, setAccordionsOpenedIndex] = useState(-1)
 
     const curCard = cards.find(item => item._id === id)
-    const curFiles = payments.find(item => item._id === filesModalId)?.files
-
+    const curFiles = accordionsOpenedIndex !== -1 ? payments[accordionsOpenedIndex].data.find(item => item._id === filesModalId)?.files : null
 
     useEffect(() => {
         if (!cards.length) dispatch(getCards())
@@ -136,7 +135,7 @@ function PaymentList({isAdmin}) {
                                         className={styles["paymentList__deleteBtn"]}
                                     >Удалить Списания</SecondaryBtn>
                             }
-                            <SecondaryBtn onClick={openFilterModal}>Фильтры</SecondaryBtn>
+                            <SecondaryBtn onClick={openFilterModal}>Поиск</SecondaryBtn>
                         </div>
                         : null
                 }
@@ -159,6 +158,15 @@ function PaymentList({isAdmin}) {
                                     >
                                         <>
                                             {
+                                                totalCount > paginationItemCount ?
+                                                    <PaymentListPagination
+                                                        totalCount={totalCount}
+                                                        curPage={page}
+                                                        onChange={onPageChange}
+                                                    />
+                                                    : null
+                                            }
+                                            {
                                                 curCard && curData.length ?
                                                     <div className={styles["paymentList__main"]}>
                                                         {
@@ -178,15 +186,6 @@ function PaymentList({isAdmin}) {
                                                     : null
                                             }
                                             <DataLoader loading={cardLoading || getLoading === index+1} isEmpty={!curCard || !curData.length}/>
-                                            {
-                                                totalCount > paginationItemCount ?
-                                                    <PaymentListPagination
-                                                        totalCount={totalCount}
-                                                        curPage={page}
-                                                        onChange={onPageChange}
-                                                    />
-                                                    : null
-                                            }
                                         </>
                                     </Accordion>
                                 )
@@ -236,4 +235,7 @@ function PaymentList({isAdmin}) {
 }
 
 export default PaymentList;
+
+
+
 

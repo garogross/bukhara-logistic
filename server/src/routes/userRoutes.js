@@ -17,8 +17,8 @@ userRoutes.post('/login', login)
 
 const restricts = signupRestrictToParams()
 userRoutes.post('/signup',
-    protect,
-    restrictTo(...restricts),
+    // protect,
+    // restrictTo(...restricts),
     signUp
 )
 

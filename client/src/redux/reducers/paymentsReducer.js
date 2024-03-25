@@ -52,7 +52,7 @@ export const paymentsReducer = (state = initialState, action) => {
         case GET_PAYMENTS_SUCCESS: {
             return {
                 ...state,
-                data: payload,
+                data: payload || data,
                 getLoading: 0,
             }
         }

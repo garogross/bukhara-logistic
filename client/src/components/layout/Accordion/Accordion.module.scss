@@ -13,9 +13,6 @@
 
   &__container {
     color: $color-white;
-    padding: 10px 4px 9px 1px;
-
-
   }
 
   &__header {
@@ -27,7 +24,7 @@
     width: 100%;
     @include setFont(20px, 500);
     margin-right: 30px;
-    line-height: 44px;
+    line-height: 30px;
     cursor: pointer;
 
 
@@ -126,8 +123,8 @@
   }
 
   &__iconItem {
-    width: 30px;
-    height: 3px;
+    width: 10px;
+    height: 2px;
     background-color: $color-white;
     position: absolute;
     left: 50%;
@@ -140,9 +137,5 @@
       transform: translate(-50%, -50%) rotate(90deg);
     }
 
-
-    @include smScreenMedia {
-      width: 14px;
-    }
   }
 }
