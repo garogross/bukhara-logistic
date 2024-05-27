@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
-import {getPayments, hideAddNotPopup, initPaymentParams} from "../../../redux/action/payments";
+import {getPayments, hideAddNotPopup, initPaymentParams, setCurYear} from "../../../redux/action/payments";
 import {setCardNumText} from "../../../utils/functions/card";
 import {getCards} from "../../../redux/action/cards";
 
@@ -83,7 +83,9 @@ function PaymentList({isAdmin}) {
     const onGetData = (index,page = 1,clb) => {
         dispatch(getPayments(id,index,page,clb))
     }
-    const closeFilterModal = () => setFilterModalOpened(false)
+    const closeFilterModal = () => {
+        setFilterModalOpened(false)
+    }
     const openFilterModal = () => setFilterModalOpened(true)
     const closeDeleteModal = () => setDeleteModalOpened(false)
     const openDeleteModal = () => setDeleteModalOpened(true)
@@ -107,9 +109,16 @@ function PaymentList({isAdmin}) {
 
 
 
-    const onSaveFilters = () => {
-        const clb = () => openNotModal(notModalTexts.filter)
-        onGetData(accordionsOpenedIndex,1,clb)
+    const onSaveFilters = (monthIndex,checkNumChanged) => {
+        const clb = (date) => {
+            if(checkNumChanged && date) {
+                dispatch(setCurYear(date.year))
+                setAccordionsOpenedIndex(date.month)
+            }
+            openNotModal(notModalTexts.filter)
+        }
+        if(monthIndex) setAccordionsOpenedIndex(monthIndex)
+        onGetData(monthIndex || accordionsOpenedIndex,1,clb)
     }
 
     const onChangeYear = () => {

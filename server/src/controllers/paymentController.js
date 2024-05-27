@@ -19,6 +19,36 @@ export const downloadFile = catchAsync(async (req, res) => {
     res.download("public/files/" + req.params.fileName, req.params.fileName)
 })
 
+const setPaymentsDateFilters = (regQuery) => {
+    let year = new Date().getFullYear()
+    const month = regQuery.month.toString().padStart(2, '0')
+
+    delete regQuery.month
+    if (regQuery.year) {
+        year = regQuery.year
+        delete regQuery.year
+    }
+    let filterBy = {}
+
+
+    if (!regQuery.date) {
+        const yearStartDate = new Date(`${year}-${month}-01`)
+        const yearEndDate = new Date(`${year}-${month}-31`)
+
+        filterBy.date = {
+            $gte: yearStartDate,
+            $lte: yearEndDate
+        }
+    } else {
+        const reqDate = new Date(regQuery.date)
+        const date = new Date(`${year}-${month}-${reqDate.getDate().toString().padStart(2, "0")}`)
+        filterBy.date = date
+        delete regQuery.date
+    }
+
+    return filterBy
+}
+
 const getFilteredPayments = async (cardId, regQuery, getCard) => {
     const filterParams = {card: cardId}
     const query = Payment.find(filterParams).populate({
@@ -26,27 +56,14 @@ const getFilteredPayments = async (cardId, regQuery, getCard) => {
         select: "fullName"
     })
     regQuery.sort = '-date'
+    let filterBy = null
 
-
-    let year = new Date().getFullYear()
-    const  month = regQuery.month.toString().padStart(2,'0')
-
-    delete regQuery.month
-    if (regQuery.year) {
-        year = regQuery.year
+    if(regQuery.checkNum) {
+        delete regQuery.month
         delete regQuery.year
+    } else {
+        filterBy = setPaymentsDateFilters(regQuery)
     }
-
-    const yearStartDate = new Date(`${year}-${month}-01`)
-    const yearEndDate = new Date(`${year}-${month}-31`)
-
-    const filterBy = {
-        date: {
-            $gte: yearStartDate,
-            $lte: yearEndDate
-        }
-    }
-
     const features = new ApiFeatures(query, {
         ...regQuery,
         card: cardId
@@ -63,10 +80,9 @@ const getFilteredPayments = async (cardId, regQuery, getCard) => {
 
     const result = {totalCount, data}
     if (getCard) {
-        const card = await getCards(regQuery.year,cardId, true)
+        const card = await getCards(regQuery.year, cardId, true)
         result.card = card ? card[0] : null
     }
-
     return result
 }
 
@@ -108,11 +124,12 @@ export const updatePaymentFiles = catchAsync(async (req, res, next) => {
 
 export const createPayment = handleFactory.create()
 export const getAllPayment = catchAsync(async (req, res, next) => {
-    if(!+req.query.month) {
+    if (!+req.query.month && !req.query.checkNum) {
         res.send({
             status: "success",
             data: [],
         })
+        return;
     }
 
     if (req.user.role === userRoles.employee) {

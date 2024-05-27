@@ -68,8 +68,16 @@ export const getPayments = (id, index, page = 1, clb) => async (dispatch, getSta
     try {
         const url = dispatch(getUrlWithFiltersQuery(`${getPaymentsUrl}${id}`, index, page))
         const {data, totalCount} = await fetchRequest(url)
-        dispatch(savePayments(data, index, totalCount, page, GET_PAYMENTS_SUCCESS))
-        if (clb) clb()
+        let date = null
+        if(url.includes('checkNum') && data.length) {
+            const itemDate = new Date(data[0].date)
+            date = {
+                year: itemDate.getFullYear(),
+                month: itemDate.getMonth()
+            }
+        }
+        dispatch(savePayments(data, date?.month || index, totalCount, page, GET_PAYMENTS_SUCCESS))
+        if (clb) clb(date)
     } catch (payload) {
         console.error("err", payload)
         dispatch({type: GET_PAYMENTS_ERROR, payload})
@@ -196,6 +204,18 @@ export const deleteOnePayment = (id, monthIndex, page, clb) => async (dispatch) 
 
 
 export const setPaymentFilters = (payload) => dispatch => dispatch({type: SET_PAYMENT_FILTERS, payload})
-export const setCurYear = (payload) => dispatch => dispatch({type: SET_CUR_YEAR, payload})
+export const setCurYear = (payload) => (dispatch,getState) => {
+    const stateYear = getState().payments.curYear
+    if(payload === stateYear) return;
+    const filters = getState().payments.filters
+    if(filters.checkNum || filters.date) {
+        const filtersCopy = {...filters}
+        delete filtersCopy.date
+        delete filtersCopy.checkNum
+
+        dispatch(setPaymentFilters(filtersCopy))
+    }
+    dispatch({type: SET_CUR_YEAR, payload})
+}
 export const initPaymentParams = () => dispatch => dispatch({type: INIT_PAYMENT_PARAMS})
 

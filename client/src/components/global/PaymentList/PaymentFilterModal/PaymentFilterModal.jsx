@@ -11,7 +11,7 @@ import Select from "../../../layout/Select/Select";
 
 import styles from "./PaymentFilterModal.module.scss"
 import {useDispatch} from "react-redux";
-import {setPaymentFilters} from "../../../../redux/action/payments";
+import {setCurYear, setPaymentFilters} from "../../../../redux/action/payments";
 import {setSelectValues} from "../../../../utils/functions/setSelectValues";
 import {paymentStatuses} from "../../../../constants";
 
@@ -68,8 +68,14 @@ function PaymentFilterModal({show, onClose, onSaveFilters}) {
 
     const onSubmit = (e) => {
         e.preventDefault()
+        let monthIndex = null
+        if(formData.date) {
+            const date = new Date(formData.date)
+            dispatch(setCurYear(date.getFullYear()))
+            monthIndex = date.getMonth()
+        }
         dispatch(setPaymentFilters(formData))
-        onSaveFilters()
+        onSaveFilters(monthIndex,!!(formData.checkNum))
         onClose()
     }
 

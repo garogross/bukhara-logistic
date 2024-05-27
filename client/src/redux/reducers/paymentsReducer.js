@@ -174,7 +174,7 @@ export const paymentsReducer = (state = initialState, action) => {
         case SET_CUR_YEAR: {
             return {
                 ...state,
-                curYear: payload
+                curYear: payload,
             }
         }
         case RESET_PAYMENT_STATE:
